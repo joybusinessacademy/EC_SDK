@@ -1,0 +1,18 @@
+{
+    "name": "com.skillsvr.EnterpriseCloudSDK.editor",
+    "references": [
+        "GUID:c640e9b0b7f579148a62ae3526c10000",
+        "GUID:478a2357cc57436488a56e564b08d223"
+    ],
+    "includePlatforms": [
+        "Editor"
+    ],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}

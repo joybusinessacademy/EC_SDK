@@ -1,0 +1,23 @@
+{
+  "name": "com.skillsvr.enterprisecloudsdk",
+  "version": "1.0.0",
+  "displayName": "SkillsVR Enterprise Cloud SDK",
+  "description": "Enterprise Cloud SDK package for SkillsVR games.",
+  "unity": "2019.4",
+  "unityRelease": "17f1",
+  "dependencies": {
+    "com.unity.editorcoroutines": "1.0.0"
+  },
+  "keywords": [
+    "SkillsVR",
+    "SVR",
+    "Enterprise",
+    "Cloud",
+    "Learning"
+  ],
+  "author": {
+    "name": "SkillsVR",
+    "email": "gg@prideandjoy.org",
+    "url": "https://skillsvr.com/"
+  }
+}

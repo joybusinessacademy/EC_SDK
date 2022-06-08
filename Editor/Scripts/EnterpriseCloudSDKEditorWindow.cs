@@ -111,7 +111,6 @@ namespace SkillsVR.EnterpriseCloudSDK.Editor
         private void LogError(string error)
         {
             interactable = true;
-            ShowPopup(error, "CLOSE");
             Debug.LogError(error);
         }
 
@@ -166,11 +165,6 @@ namespace SkillsVR.EnterpriseCloudSDK.Editor
         private void LearningRecordResponse(AbstractAPI.EmptyResponse obj)
         {
             Debug.Log(JsonUtility.ToJson(obj));
-        }
-
-        private void ShowPopup(string message, string buttonTitle)
-        {
-            EditorUtility.DisplayDialog("Enterprise Cloud SDK Error", message, buttonTitle);
         }
 
         public void SaveRecordAsset()

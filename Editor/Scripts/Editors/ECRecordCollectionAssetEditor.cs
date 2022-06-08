@@ -33,7 +33,7 @@ namespace SkillsVR.EnterpriseCloudSDK.Editor.Editors
             AssetDatabase.CreateAsset(asset, fileAssetPath);
             AssetDatabase.SaveAssets();
             AssetDatabase.Refresh();
-            return null;
+            return asset;
         }
 
         void OnEnable()

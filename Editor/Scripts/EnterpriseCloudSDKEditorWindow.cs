@@ -38,6 +38,10 @@ namespace SkillsVR.EnterpriseCloudSDK.Editor
 
         void OnGUI()
         {
+            if (null == recordAsset)
+            {
+                return;
+            }
             EditorGUILayout.Space(10);
             EditorGUILayout.BeginVertical();
 

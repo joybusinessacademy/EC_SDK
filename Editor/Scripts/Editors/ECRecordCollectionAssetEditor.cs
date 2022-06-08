@@ -46,7 +46,6 @@ namespace SkillsVR.EnterpriseCloudSDK.Editor.Editors
             EditorUtility.CopySerialized(smartTarget, smartTarget);
             AssetDatabase.SaveAssets();
             AssetDatabase.Refresh();
-            Debug.Log("Changed");
         }
 
         public override void OnInspectorGUI()

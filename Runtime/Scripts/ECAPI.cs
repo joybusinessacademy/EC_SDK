@@ -85,7 +85,7 @@ namespace SkillsVR.EnterpriseCloudSDK
             var scores = new List<SubmitLearningRecord.Data.Scores>();
             foreach (var record in recordCollection)
             {
-                if (null == record)
+                if (null == record || 0 != record.type)
                 {
                     continue;
                 }

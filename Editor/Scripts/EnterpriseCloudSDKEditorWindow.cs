@@ -168,7 +168,6 @@ namespace SkillsVR.EnterpriseCloudSDK.Editor
 
         private void LearningRecordResponse(AbstractAPI.EmptyResponse obj)
         {
-            Debug.Log(JsonUtility.ToJson(obj));
         }
 
         public void SaveRecordAsset()

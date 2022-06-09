@@ -38,12 +38,21 @@ namespace SkillsVR.EnterpriseCloudSDK.Data
             return instance;
         }
 
-        public bool SetGameScoreBool(int id, bool isOn)
+        public bool SetGameScoreBool(int id, bool isOn, Action<string> onFail = null)
         {
+            if (null == onFail)
+            {
+                onFail = Debug.LogError;
+            }
             var record = managedRecords.Find(x => id == x.id);
             if (null == record)
             {
-                Debug.LogError("No record found with id " + id);
+                onFail.Invoke("No record found with id " + id);
+                return false;
+            }
+            if (0 != record.type)
+            {
+                onFail.Invoke("Record " + id + " is not a boolean score record.");
                 return false;
             }
             record.gameScoreBool = isOn;

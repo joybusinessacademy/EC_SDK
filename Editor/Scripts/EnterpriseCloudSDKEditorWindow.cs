@@ -51,7 +51,7 @@ namespace SkillsVR.EnterpriseCloudSDK.Editor
 
 
             recordAsset.user = EditorGUILayout.TextField("Username:", recordAsset.user);
-            recordAsset.password = EditorGUILayout.TextField("Password:", recordAsset.password);
+            recordAsset.password = EditorGUILayout.PasswordField("Password:", recordAsset.password);
 
             GUI.enabled = interactable && !string.IsNullOrWhiteSpace(recordAsset.user) && !string.IsNullOrWhiteSpace(recordAsset.password) && !ECAPI.HasLoginToken();
             if (GUILayout.Button("Login"))

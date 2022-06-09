@@ -154,14 +154,14 @@ namespace SkillsVR.EnterpriseCloudSDK
             return null;
         }
 
-        public bool SetGameScoreBool(int id, bool isOn)
+        public bool SetGameScoreBool(int id, bool isOn, Action<string> onFail = null)
         {
             if (null == recordAsset)
             {
-                LogError(NO_ASSET_ERROR);
+                onFail?.Invoke(NO_ASSET_ERROR);
                 return false;
             }
-            return recordAsset.SetGameScoreBool(id, isOn);
+            return recordAsset.SetGameScoreBool(id, isOn, onFail);
         }
 
         public bool GetGameScoreBool(int id)
@@ -236,17 +236,19 @@ namespace SkillsVR.EnterpriseCloudSDK
             setScoreValue = value;
         }
 
+        
         public void SetScoreInvokeAction()
         {
-            bool success = SetGameScoreBool(setScoreId, setScoreValue);
-            if (!success)
-            {
-                LogError("Id " + setScoreId + " not found");
-            }
-            else
+            bool success = SetGameScoreBool(setScoreId, setScoreValue, LogError);
+            if (success)
             {
                 Log("Set record " + setScoreId + ": " + setScoreValue);
             }
+        }
+        public void GetScoreInvokeAction()
+        {
+            bool value = GetGameScoreBool(setScoreId);
+            onGetRecordBoolScore?.Invoke(setScoreId, value);
         }
 
     }

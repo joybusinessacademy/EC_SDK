@@ -26,8 +26,6 @@ namespace SkillsVR.EnterpriseCloudSDK
             };
             RESTService.Send(loginRequest, success, failed);
         }
-
-
         public static void LoginOrganisation(System.Action<Login.Response> success = null, System.Action<string> failed = null)
         {
             LoginOrganisation loginOrganisationRequest = new LoginOrganisation()
@@ -42,28 +40,41 @@ namespace SkillsVR.EnterpriseCloudSDK
             };
             RESTService.Send(loginOrganisationRequest, success, failed);
         }
-
-        public static void SubmitTestUserLearningRecord(int @scenarioId, System.Action<AbstractAPI.EmptyResponse> success = null, System.Action<string> failed = null)
+        public static bool SetUserGameScoreBool(int recordId, bool isOn, System.Action<string> failed = null)
         {
-            SubmitLearningRecord submitLearningRecordRequest = new SubmitLearningRecord()
+            failed = null == failed ? Debug.LogError : failed;
+            var asset = ECRecordCollectionAsset.GetECRecordAsset();
+            if (null == asset)
             {
-                data = new SubmitLearningRecord.Data
-                {
-                    scenarioId = @scenarioId,
-                    location = "SKILLSVR HQ",
-                    duration = System.DateTime.Now,
-                    project = "WE",
-                    scores = new SubmitLearningRecord.Data.Scores[] {
-                        new SubmitLearningRecord.Data.Scores(){
-                            gameScore = true,
-                            code = "255_256" }
-                    }
-                }
-            };
-
-            RESTService.Send(submitLearningRecordRequest, success, failed);
+                failed?.Invoke("No EC Record asset found.");
+                return false;
+            }
+            return asset.SetGameScoreBool(recordId, isOn, failed);
+        }
+        public static bool GetUserGameScoreBool(int recordId)
+        {
+            var asset = ECRecordCollectionAsset.GetECRecordAsset();
+            if (null == asset)
+            {
+                return false;
+            }
+            return asset.GetGameScoreBool(recordId);
         }
 
+        public static void ResetAllUserScores()
+        {
+            ECRecordCollectionAsset.GetECRecordAsset()?.ResetUserScores();
+        }
+        public static void SubmitUserLearningRecord(System.Action<AbstractAPI.EmptyResponse> success = null, System.Action<string> failed = null)
+        {
+            var asset = ECRecordCollectionAsset.GetECRecordAsset();
+            if (null == asset)
+            {
+                failed?.Invoke("No EC Record asset found.");
+                return;
+            }
+            SubmitUserLearningRecord(asset.scenarioId, asset.managedRecords, success, failed);
+        }
         public static void SubmitUserLearningRecord(int xScenarioId, IEnumerable<ECRecordContent> recordCollection, System.Action<AbstractAPI.EmptyResponse> success = null, System.Action<string> failed = null)
         {
             if (null == recordCollection)
@@ -103,7 +114,6 @@ namespace SkillsVR.EnterpriseCloudSDK
             };
             RESTService.Send(submitLearningRecordRequest, success, failed);
         }
-
         public static void GetConfig(int scenarioId, System.Action<GetConfig.Response> success = null, System.Action<string> failed = null)
         {
             GetConfig getConfigRequest = new GetConfig(scenarioId);

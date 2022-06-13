@@ -7,6 +7,12 @@ namespace SkillsVR.EnterpriseCloudSDK.Data
     [System.Serializable]
     public class ECRecordContent
     {
+        public enum ScoreType
+        {
+            Unknown = -1,
+            Bool = 0,
+            Title = 3,
+        }
         public int id;
         public string parentId;
         public string code;
@@ -21,15 +27,16 @@ namespace SkillsVR.EnterpriseCloudSDK.Data
 
         public bool gameScoreBool; // runtime user score from game
 
-        public void ResetGameScore()
+        public bool IsScoreType(ScoreType scoreType)
         {
-            gameScoreBool = false;
+            return (int)scoreType == type;
         }
 
+        public bool isScoreTypeBool => IsScoreType(ScoreType.Bool);
         public string PrintInLine()
         {
             return string.Join(" ",
-                0 == type && gameScoreBool ? "o" : "  ",
+                isScoreTypeBool && gameScoreBool ? "o" : "  ",
                 new string(' ', depth * 4),
                 id,
                 name,

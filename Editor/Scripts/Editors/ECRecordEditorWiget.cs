@@ -91,7 +91,7 @@ namespace SkillsVR.EnterpriseCloudSDK.Editor.Editors
                     isFoldoutOn = !isFoldoutOn;
                 }
             }
-            else if (0 == sourceRecordContent.type)
+            else if (sourceRecordContent.isScoreTypeBool)
             {
                 sourceRecordContent.gameScoreBool = GUILayout.Toggle(sourceRecordContent.gameScoreBool, "");
             }

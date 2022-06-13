@@ -11,34 +11,83 @@ namespace SkillsVR.EnterpriseCloudSDK
     public class ECRecordAgent : MonoBehaviour
     {
         public const string NO_ASSET_ERROR = "No EC record asset found in resource. Create in editor with Window->Login first.";
-        public string user;
-        public string password;
-        public int scenarioId;
+        private string user;
+        private string password;
+        private int organisationId;
+        private string userRoleName;
+        private string userProjectName;
+        private int scenarioId;
 
         [Serializable] public class UnityEventString : UnityEvent<string> { }
         [Serializable] public class UnityEventBool : UnityEvent<bool> { }
         [Serializable] public class UnityEventInt : UnityEvent<int> { }
+
+        [Serializable] public class UnityEventResponse : UnityEvent<AbstractResponse> { }
 
         public bool silentLoginUseAssetAccount = false;
 
 
         public UnityEventString onLogText = new UnityEventString();
 
-        public UnityEvent onLoginSuccess = new UnityEvent();
-        public UnityEventString onLoginFail = new UnityEventString();
-        public UnityEventBool onLoginStateChanged = new UnityEventBool();
+        [Serializable]
+        public class EventHandlerGroup
+        {
+            public UnityEvent onSuccess = new UnityEvent();
+            public UnityEventString onError = new UnityEventString();
+            public UnityEventBool onStateChanged = new UnityEventBool();
+            
+            public void TriggerEvent(bool success, string msg = null)
+            {
+                if (success)
+                {
+                    onSuccess?.Invoke();
+                }
+                else
+                {
+                    onError?.Invoke(msg);
+                }
+                onStateChanged?.Invoke(success);
+            }
 
-        public UnityEvent onGetConfigSuccess = new UnityEvent();
-        public UnityEventString onGetConfigFail = new UnityEventString();
-        public UnityEventBool onGetConfigStateChanged = new UnityEventBool();
+            
 
-        public UnityEventInt onRecordStateChanged = new UnityEventInt();
-        public ECRecordCollectionAsset.RecordBoolScoreChangeEvent onRecordBoolScoreChanged = new ECRecordCollectionAsset.RecordBoolScoreChangeEvent();
-        public ECRecordCollectionAsset.RecordBoolScoreChangeEvent onGetRecordBoolScore = new ECRecordCollectionAsset.RecordBoolScoreChangeEvent();
+            public void TriggerError(string error)
+            {
+                TriggerEvent(false, error);
+            }
+        }
 
-        public UnityEvent onSubmitScoreSuccess = new UnityEvent();
-        public UnityEventString onSubmitScoreFail = new UnityEventString();
-        public UnityEventBool onSubmitScoreStateChanged = new UnityEventBool();
+        [Serializable]
+        public class ResponsedEventHandlerGroup : EventHandlerGroup
+        {
+            public UnityEventResponse onRespoinseData = new UnityEventResponse();
+
+            public void TriggerResponse(AbstractResponse response)
+            {
+                TriggerEvent(true, null);
+                if  (null != response)
+                {
+                    onRespoinseData?.Invoke(response);
+                }
+            }
+        }
+
+        [Serializable]
+        public class RecordEventHandlerGroup
+        {
+            public UnityEvent onResetAllGameScores = new UnityEvent();
+            public UnityEventInt onRecordStateChanged = new UnityEventInt();
+            public ECRecordCollectionAsset.RecordBoolScoreChangeEvent onRecordBoolScoreChanged = new ECRecordCollectionAsset.RecordBoolScoreChangeEvent();
+            public ECRecordCollectionAsset.RecordBoolScoreChangeEvent onGetRecordBoolScore = new ECRecordCollectionAsset.RecordBoolScoreChangeEvent();
+            public ECRecordCollectionAsset.RecordBoolScoreChangeEvent onSetRecordBoolScore = new ECRecordCollectionAsset.RecordBoolScoreChangeEvent();
+            public EventHandlerGroup setScoreResultEvents = new EventHandlerGroup();
+        }
+
+        public ResponsedEventHandlerGroup loginEvents = new ResponsedEventHandlerGroup();
+        public ResponsedEventHandlerGroup loginOrganisationEvents = new ResponsedEventHandlerGroup();
+        public ResponsedEventHandlerGroup getConfigEvents = new ResponsedEventHandlerGroup();
+        public ResponsedEventHandlerGroup submitScoreEvents = new ResponsedEventHandlerGroup();
+        public RecordEventHandlerGroup recordEvents = new RecordEventHandlerGroup();
 
         protected ECRecordCollectionAsset recordAsset;
         private void Start()
@@ -47,12 +96,19 @@ namespace SkillsVR.EnterpriseCloudSDK
             if (null != recordAsset)
             {
                 recordAsset.onGameScoreBoolChanged.AddListener(OnRecordBoolScoreChangedCallback);
-                onGetConfigSuccess?.Invoke();
+                recordAsset.onResetAllGameScores.AddListener(recordEvents.onResetAllGameScores.Invoke);
 
-                if (silentLoginUseAssetAccount)
+                getConfigEvents?.onSuccess?.Invoke();
+
+                user = recordAsset.user;
+                password = recordAsset.password;
+
+                organisationId = recordAsset.organisationId;
+                userRoleName = recordAsset.userRoleName;
+                userProjectName = recordAsset.userProjectName;
+
+                if (silentLoginUseAssetAccount && !ECAPI.HasLoginToken())
                 {
-                    user = recordAsset.user;
-                    password = recordAsset.password;
                     Login();
                 }
             }
@@ -68,12 +124,13 @@ namespace SkillsVR.EnterpriseCloudSDK
             if (null != recordAsset)
             {
                 recordAsset.onGameScoreBoolChanged.RemoveListener(OnRecordBoolScoreChangedCallback);
+                recordAsset.onResetAllGameScores.RemoveListener(recordEvents.onResetAllGameScores.Invoke);
             }
         }
 
         public void RefreshLoginState()
         {
-            onLoginStateChanged?.Invoke(ECAPI.HasLoginToken());
+            loginEvents?.TriggerEvent(ECAPI.HasLoginToken());
         }
 
         public void SetUser(string userName)
@@ -96,22 +153,25 @@ namespace SkillsVR.EnterpriseCloudSDK
         }
         private void OnRecordBoolScoreChangedCallback(int id, bool isOn)
         {
-            onRecordBoolScoreChanged?.Invoke(id, isOn);
-            onRecordStateChanged?.Invoke(id);
+            recordEvents.onRecordStateChanged?.Invoke(id);
+            recordEvents.onRecordBoolScoreChanged?.Invoke(id, isOn);
         }
 
         public void Login()
         {
             ECAPI.Login(user, password,
-                (resp) => { LoginOrganisation(); },
-                (error) => { onLoginFail.Invoke(error); onLoginStateChanged.Invoke(false); LogError(error); });
+                (resp) => { loginEvents.TriggerResponse(resp); Log("Login Success"); },
+                (error) => { loginEvents.TriggerEvent(false, error); LogError("Login Fail: " + error); });
         }
 
         public void LoginOrganisation()
         {
             ECAPI.LoginOrganisation(
-                (resp) => { onLoginSuccess?.Invoke(); onLoginStateChanged.Invoke(true); Log("Login Success"); },
-                (error) => { onLoginFail.Invoke(error); onLoginStateChanged.Invoke(false); LogError(error); });
+                organisationId,
+                userRoleName,
+                userProjectName,
+                (resp) => {loginOrganisationEvents.TriggerResponse(resp); Log("Login Organisation Success"); },
+                (error) => { loginOrganisationEvents.TriggerEvent(false, error); LogError("Login Organisation Fail: " + error); });
         }
 
         public void GetConfig()
@@ -120,17 +180,17 @@ namespace SkillsVR.EnterpriseCloudSDK
                 (resp) =>
                 {
                     string error = ProcessConfigResponse(scenarioId, resp);
-                    if (null == error)
+                    bool success = null == error;
+                    if (success)
                     {
-                        onGetConfigSuccess?.Invoke();
+                        getConfigEvents.TriggerResponse(resp);
                     }
                     else
                     {
-                        onGetConfigFail.Invoke(error);
+                        getConfigEvents.TriggerError(error);
                     }
-                    onGetConfigStateChanged.Invoke(null == error);
                 },
-                (error) => { onGetConfigFail.Invoke(error); onGetConfigStateChanged.Invoke(false); LogError(error); });
+                (error) => { getConfigEvents.TriggerEvent(false, error); LogError("Get Config Fail: " + error); });
         }
 
         protected string ProcessConfigResponse(int cfgId, GetConfig.Response response)
@@ -154,26 +214,34 @@ namespace SkillsVR.EnterpriseCloudSDK
             return null;
         }
 
-        public bool SetGameScoreBool(int id, bool isOn, Action<string> onFail = null)
+        public bool SetGameScoreBool(int id, bool isOn)
         {
             if (null == recordAsset)
             {
-                onFail?.Invoke(NO_ASSET_ERROR);
+                recordEvents.setScoreResultEvents.TriggerEvent(false, NO_ASSET_ERROR);
+                LogError("Set record " + setScoreId + " Fail: " + NO_ASSET_ERROR);
                 return false;
             }
-            return recordAsset.SetGameScoreBool(id, isOn, onFail);
+            bool success = recordAsset.SetGameScoreBool(id, isOn, (error) =>
+            {
+                recordEvents.setScoreResultEvents.TriggerError(error);
+                LogError("Set record " + setScoreId + " Fail: " + error);
+            });
+            if (success)
+            {
+                recordEvents.setScoreResultEvents.TriggerEvent(true);
+                recordEvents.onSetRecordBoolScore.Invoke(id, isOn);
+            }
+            return success;
         }
 
         public bool GetGameScoreBool(int id)
         {
             if (null == recordAsset)
             {
-                LogError(NO_ASSET_ERROR);
-                onGetRecordBoolScore?.Invoke(id, false);
                 return false;
             }
-            onGetRecordBoolScore?.Invoke(id, recordAsset.GetGameScoreBool(id));
-            return true;
+            return recordAsset.GetGameScoreBool(id);
         }
 
         public void ResetGameScore()
@@ -194,8 +262,8 @@ namespace SkillsVR.EnterpriseCloudSDK
                 return;
             }
             recordAsset.SubmitUserScore(
-               (resp) => { onSubmitScoreSuccess?.Invoke(); onSubmitScoreStateChanged.Invoke(true); Log("Submit Score Success"); },
-               (error) => { onSubmitScoreFail.Invoke(error); onSubmitScoreStateChanged.Invoke(false); LogError(error); });
+               (resp) => { submitScoreEvents.TriggerResponse(resp); Log("Submit Score Success"); },
+               (error) => { submitScoreEvents.TriggerEvent(false, error); LogError(error); });
         }
 
         protected void Log(string msg)
@@ -236,20 +304,19 @@ namespace SkillsVR.EnterpriseCloudSDK
             setScoreValue = value;
         }
 
-        
         public void SetScoreInvokeAction()
         {
-            bool success = SetGameScoreBool(setScoreId, setScoreValue, LogError);
-            if (success)
-            {
-                Log("Set record " + setScoreId + ": " + setScoreValue);
-            }
+            SetGameScoreBool(setScoreId, setScoreValue);
         }
         public void GetScoreInvokeAction()
         {
             bool value = GetGameScoreBool(setScoreId);
-            onGetRecordBoolScore?.Invoke(setScoreId, value);
+            recordEvents?.onGetRecordBoolScore?.Invoke(setScoreId, value);
         }
 
+        public void LogScore(int id, bool value)
+        {
+            Log("Score " + id + " ==> " + value);
+        }
     }
 }

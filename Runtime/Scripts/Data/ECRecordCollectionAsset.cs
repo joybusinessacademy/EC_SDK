@@ -19,13 +19,17 @@ namespace SkillsVR.EnterpriseCloudSDK.Data
         public string user;
         public string password;
 
+        public int organisationId;
+        public string userRoleName;
+        public string userProjectName;
+
         public int scenarioId;
         public List<ECRecordContent> managedRecords = new List<ECRecordContent>();
 
-        [Serializable] public class RecordBoolScoreChangeEvent : UnityEvent<int, bool> { }
+        [Serializable] public class RecordBoolScoreChangeEvent : UnityEvent<int,bool> { }
 
         public RecordBoolScoreChangeEvent onGameScoreBoolChanged = new RecordBoolScoreChangeEvent();
-
+        public UnityEvent onResetAllGameScores = new UnityEvent();
         public static ECRecordCollectionAsset GetECRecordAsset()
         {
             if (null != instance)
@@ -36,6 +40,11 @@ namespace SkillsVR.EnterpriseCloudSDK.Data
             string fileResourcePath = fileNameForResources;
             instance = Resources.Load<ECRecordCollectionAsset>(fileResourcePath);
             return instance;
+        }
+
+        public bool Contains(int id)
+        {
+            return null != managedRecords.Find(x=>x.id == id);
         }
 
         public bool SetGameScoreBool(int id, bool isOn, Action<string> onFail = null)
@@ -50,25 +59,38 @@ namespace SkillsVR.EnterpriseCloudSDK.Data
                 onFail.Invoke("No record found with id " + id);
                 return false;
             }
-            if (0 != record.type)
+            return SetGameScoreBool(record, isOn, onFail);
+        }
+
+        public bool SetGameScoreBool(ECRecordContent record, bool isOn, Action<string> onFail = null)
+        {
+            if (null == onFail)
             {
-                onFail.Invoke("Record " + id + " is not a boolean score record.");
+                onFail = Debug.LogError;
+            }
+            if (null == record)
+            {
+                onFail?.Invoke("Record cannot be null.");
                 return false;
             }
+            if (!record.isScoreTypeBool)
+            {
+                onFail.Invoke("Record " + record.id + " is not a boolean score record.");
+                return false;
+            }
+            if (isOn == record.gameScoreBool)
+            {
+                return true;
+            }
             record.gameScoreBool = isOn;
-            onGameScoreBoolChanged?.Invoke(id, isOn);
+            onGameScoreBoolChanged?.Invoke(record.id, isOn);
             return true;
         }
 
         public bool GetGameScoreBool(int id)
         {
             var record = managedRecords.Find(x => id == x.id);
-            if (null == record)
-            {
-                Debug.LogError("No record found with id " + id);
-                return false;
-            }
-            return record.gameScoreBool;
+            return null == record ? false : record.gameScoreBool;
         }
 
         public void ResetUserScores()
@@ -79,8 +101,17 @@ namespace SkillsVR.EnterpriseCloudSDK.Data
             }
             foreach (var record in managedRecords)
             {
-                record?.ResetGameScore();
+                if (null == record)
+                {
+                    continue;
+                }
+                if (record.isScoreTypeBool)
+                {
+                    SetGameScoreBool(record, false);
+                }
+                
             }
+            onResetAllGameScores?.Invoke();
         }
 
         public void GetConfig(Action<GetConfig.Response> success = null, Action<string> failed = null)
@@ -106,10 +137,11 @@ namespace SkillsVR.EnterpriseCloudSDK.Data
                 Action<string> loginFailedAction = (error) => { onError?.Invoke(error); };
                 ECAPI.Login(user, password, (loginResp) =>
                 {
-                    ECAPI.LoginOrganisation((loginOrgResp) =>
-                    {
-                        actionAfterLogin?.Invoke();
-                    }, loginFailedAction);
+                    ECAPI.LoginOrganisation(organisationId,userRoleName, userProjectName,
+                        (loginOrgResp) =>
+                        {
+                            actionAfterLogin?.Invoke();
+                        }, loginFailedAction);
                 }, loginFailedAction);
             }
             else

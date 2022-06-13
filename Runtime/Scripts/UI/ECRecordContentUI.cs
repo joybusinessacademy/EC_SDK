@@ -20,6 +20,7 @@ namespace SkillsVR.EnterpriseCloudSDK.UI
 
         public bool isFoldoutOn = true;
 
+        public ECRecordCollectionAsset sourceRecordAsset;
         public ECRecordContent sourceRecordContent;
         public bool isOn => null == sourceRecordContent ? false : sourceRecordContent.gameScoreBool;
 
@@ -27,8 +28,9 @@ namespace SkillsVR.EnterpriseCloudSDK.UI
         public List<ECRecordContentUI> children = new List<ECRecordContentUI>();
 
 
-        public void SetSource(ECRecordContent source)
+        public void SetSource(ECRecordContent source, ECRecordCollectionAsset asset)
         {
+            sourceRecordAsset = asset;
             sourceRecordContent = source;
             gameObject.name = source.id.ToString();
         }
@@ -50,10 +52,10 @@ namespace SkillsVR.EnterpriseCloudSDK.UI
             foldoutToggle.gameObject.SetActive(hasChildren);
             foldoutToggle.onValueChanged.AddListener((isOn) => { isFoldoutOn = isOn; foldoutOffIcon.gameObject.SetActive(!isOn); });
 
-            gameScoreToggle.gameObject.SetActive(0 == sourceRecordContent.type);
+            gameScoreToggle.gameObject.SetActive(sourceRecordContent.isScoreTypeBool);
             gameScoreToggle.onValueChanged.AddListener((isOn) =>
             {
-                sourceRecordContent.gameScoreBool = isOn;
+                sourceRecordAsset.SetGameScoreBool(sourceRecordContent, isOn);
             });
 
             if (!gameScoreToggle.gameObject.activeInHierarchy && !foldoutToggle.gameObject.activeInHierarchy)
@@ -68,19 +70,19 @@ namespace SkillsVR.EnterpriseCloudSDK.UI
             labelText.text = string.Join(" ", sourceRecordContent.id.ToString(), sourceRecordContent.name);
         }
 
-        public static List<ECRecordContentUI> CreateUIHierarchyFromRecordCollection(Func<ECRecordContentUI> createUIAction, IEnumerable<ECRecordContent> recordCollection)
+        public static List<ECRecordContentUI> CreateUIHierarchyFromRecordCollection(Func<ECRecordContentUI> createUIAction, ECRecordCollectionAsset asset)
         {
             List<ECRecordContentUI> output = new List<ECRecordContentUI>();
-            if (null == recordCollection || null == createUIAction)
+            if (null == asset || null == asset.managedRecords || null == createUIAction)
             {
                 return output;
             }
-            recordCollection = ECRecordUtil.OrderContents(recordCollection);
+            asset.managedRecords = ECRecordUtil.OrderContents(asset.managedRecords);
 
-            foreach (var item in recordCollection)
+            foreach (var item in asset.managedRecords)
             {
                 var uiItem = createUIAction.Invoke();
-                uiItem.SetSource(item);
+                uiItem.SetSource(item, asset);
                 output.Add(uiItem);
             }
 
@@ -113,7 +115,7 @@ namespace SkillsVR.EnterpriseCloudSDK.UI
 
         private void Update()
         {
-            if (null != sourceRecordContent && 0 == sourceRecordContent.type && gameScoreToggle.isOn != sourceRecordContent.gameScoreBool)
+            if (null != sourceRecordContent && sourceRecordContent.isScoreTypeBool && gameScoreToggle.isOn != sourceRecordContent.gameScoreBool)
             {
                 gameScoreToggle.SetIsOnWithoutNotify(sourceRecordContent.gameScoreBool);
             }

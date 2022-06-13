@@ -987,81 +987,107 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a671e63b56060b045b1b271fc2d21ec9, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  user: 
-  password: 
-  scenarioId: 0
+  silentLoginUseAssetAccount: 1
   onLogText:
     m_PersistentCalls:
       m_Calls: []
-  onLoginSuccess:
-    m_PersistentCalls:
-      m_Calls: []
-  onLoginFail:
-    m_PersistentCalls:
-      m_Calls: []
-  onLoginStateChanged:
-    m_PersistentCalls:
-      m_Calls:
-      - m_Target: {fileID: 1941347012946382523}
-        m_MethodName: SetActive
-        m_Mode: 0
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
-      - m_Target: {fileID: 1941347013257127665}
-        m_MethodName: SetActive
-        m_Mode: 0
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
-  onGetConfigSuccess:
-    m_PersistentCalls:
-      m_Calls:
-      - m_Target: {fileID: 7542649836960792923}
-        m_MethodName: Rebuild
-        m_Mode: 1
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
-  onGetConfigFail:
-    m_PersistentCalls:
-      m_Calls: []
-  onGetConfigStateChanged:
-    m_PersistentCalls:
-      m_Calls: []
-  onRecordStateChanged:
-    m_PersistentCalls:
-      m_Calls: []
-  onRecordBoolScoreChanged:
-    m_PersistentCalls:
-      m_Calls: []
-  onGetRecordBoolScore:
-    m_PersistentCalls:
-      m_Calls: []
-  onSubmitScoreSuccess:
-    m_PersistentCalls:
-      m_Calls: []
-  onSubmitScoreFail:
-    m_PersistentCalls:
-      m_Calls: []
-  onSubmitScoreStateChanged:
-    m_PersistentCalls:
-      m_Calls: []
+  loginEvents:
+    onSuccess:
+      m_PersistentCalls:
+        m_Calls:
+        - m_Target: {fileID: 432533072176192292}
+          m_MethodName: LoginOrganisation
+          m_Mode: 1
+          m_Arguments:
+            m_ObjectArgument: {fileID: 0}
+            m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+            m_IntArgument: 0
+            m_FloatArgument: 0
+            m_StringArgument: 
+            m_BoolArgument: 0
+          m_CallState: 2
+    onError:
+      m_PersistentCalls:
+        m_Calls: []
+    onStateChanged:
+      m_PersistentCalls:
+        m_Calls: []
+    onRespoinseData:
+      m_PersistentCalls:
+        m_Calls: []
+  loginOrganisationEvents:
+    onSuccess:
+      m_PersistentCalls:
+        m_Calls: []
+    onError:
+      m_PersistentCalls:
+        m_Calls: []
+    onStateChanged:
+      m_PersistentCalls:
+        m_Calls: []
+    onRespoinseData:
+      m_PersistentCalls:
+        m_Calls: []
+  getConfigEvents:
+    onSuccess:
+      m_PersistentCalls:
+        m_Calls:
+        - m_Target: {fileID: 7542649836960792923}
+          m_MethodName: Rebuild
+          m_Mode: 1
+          m_Arguments:
+            m_ObjectArgument: {fileID: 0}
+            m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+            m_IntArgument: 0
+            m_FloatArgument: 0
+            m_StringArgument: 
+            m_BoolArgument: 0
+          m_CallState: 2
+    onError:
+      m_PersistentCalls:
+        m_Calls: []
+    onStateChanged:
+      m_PersistentCalls:
+        m_Calls: []
+    onRespoinseData:
+      m_PersistentCalls:
+        m_Calls: []
+  submitScoreEvents:
+    onSuccess:
+      m_PersistentCalls:
+        m_Calls: []
+    onError:
+      m_PersistentCalls:
+        m_Calls: []
+    onStateChanged:
+      m_PersistentCalls:
+        m_Calls: []
+    onRespoinseData:
+      m_PersistentCalls:
+        m_Calls: []
+  recordEvents:
+    onRecordStateChanged:
+      m_PersistentCalls:
+        m_Calls: []
+    onRecordBoolScoreChanged:
+      m_PersistentCalls:
+        m_Calls: []
+    onGetRecordBoolScore:
+      m_PersistentCalls:
+        m_Calls: []
+    onSetRecordBoolScore:
+      m_PersistentCalls:
+        m_Calls: []
+    setScoreResultEvents:
+      onSuccess:
+        m_PersistentCalls:
+          m_Calls: []
+      onError:
+        m_PersistentCalls:
+          m_Calls: []
+      onStateChanged:
+        m_PersistentCalls:
+          m_Calls: []
 --- !u!1 &1941347013191444484
 GameObject:
   m_ObjectHideFlags: 0
@@ -2006,7 +2032,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 0, y: 0}
-  m_AnchoredPosition: {x: 154.5751, y: 0}
+  m_AnchoredPosition: {x: 184.0751, y: 0}
   m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &1941347013989866910
@@ -2653,6 +2679,7 @@ MonoBehaviour:
   gameScoreToggle: {fileID: 866619221276284662}
   labelText: {fileID: 6745769046900304067}
   isFoldoutOn: 1
+  sourceRecordAsset: {fileID: 0}
   sourceRecordContent:
     id: 0
     parentId: 

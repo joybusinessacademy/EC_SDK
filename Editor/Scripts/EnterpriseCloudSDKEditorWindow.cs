@@ -140,8 +140,20 @@ namespace SkillsVR.EnterpriseCloudSDK.Editor
 
         private void SendLoginOrganisation(Login.Response response)
         {
+            try
+            {
+                var organisation = response.data.organisations[0];
+                recordAsset.organisationId = int.Parse(organisation.id);
+                recordAsset.userRoleName = organisation.roles[0].key;
+                recordAsset.userProjectName = organisation.name;
+            }
+            catch(Exception e)
+            {
+                Debug.LogException(e);
+            }
+            
             interactable = false;
-            ECAPI.LoginOrganisation( RecieveLoginOrganisation, LogError);
+            ECAPI.LoginOrganisation(recordAsset.organisationId, recordAsset.userRoleName, recordAsset.userProjectName, RecieveLoginOrganisation, LogError);
         }
 
         private void RecieveLoginOrganisation(Login.Response response)

@@ -17,7 +17,7 @@ namespace SkillsVR.EnterpriseCloudSDK.UI
             var asset = ECRecordCollectionAsset.GetECRecordAsset();
             if (null != asset)
             {
-                managedItems = ECRecordContentUI.CreateUIHierarchyFromRecordCollection(CreateUIItem, asset.managedRecords);
+                managedItems = ECRecordContentUI.CreateUIHierarchyFromRecordCollection(CreateUIItem, asset);
             }
         }
 

@@ -339,6 +339,18 @@ RectTransform:
     type: 3}
   m_PrefabInstance: {fileID: 1941347013160104176}
   m_PrefabAsset: {fileID: 0}
+--- !u!114 &962347910 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 432533072176192292, guid: 549ef4aae97dd5d438d4a9a74f201a4f,
+    type: 3}
+  m_PrefabInstance: {fileID: 1941347013160104176}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 962347908}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a671e63b56060b045b1b271fc2d21ec9, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &1299648611 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 9002670819895203443, guid: e7c80febd60803b4aa77ad30d8d6cd85,
@@ -521,16 +533,6 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 432533072176192292, guid: 549ef4aae97dd5d438d4a9a74f201a4f,
         type: 3}
-      propertyPath: scenarioId
-      value: 331
-      objectReference: {fileID: 0}
-    - target: {fileID: 432533072176192292, guid: 549ef4aae97dd5d438d4a9a74f201a4f,
-        type: 3}
-      propertyPath: silentLoginUseAssetAccount
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 432533072176192292, guid: 549ef4aae97dd5d438d4a9a74f201a4f,
-        type: 3}
       propertyPath: onLogText.m_PersistentCalls.m_Calls.Array.size
       value: 1
       objectReference: {fileID: 0}
@@ -556,8 +558,78 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 432533072176192292, guid: 549ef4aae97dd5d438d4a9a74f201a4f,
         type: 3}
+      propertyPath: recordEvents.onGetRecordBoolScore.m_PersistentCalls.m_Calls.Array.size
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 432533072176192292, guid: 549ef4aae97dd5d438d4a9a74f201a4f,
+        type: 3}
+      propertyPath: recordEvents.onRecordBoolScoreChanged.m_PersistentCalls.m_Calls.Array.size
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 432533072176192292, guid: 549ef4aae97dd5d438d4a9a74f201a4f,
+        type: 3}
+      propertyPath: recordEvents.onGetRecordBoolScore.m_PersistentCalls.m_Calls.Array.data[0].m_Mode
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 432533072176192292, guid: 549ef4aae97dd5d438d4a9a74f201a4f,
+        type: 3}
+      propertyPath: recordEvents.onGetRecordBoolScore.m_PersistentCalls.m_Calls.Array.data[0].m_Target
+      value: 
+      objectReference: {fileID: 962347910}
+    - target: {fileID: 432533072176192292, guid: 549ef4aae97dd5d438d4a9a74f201a4f,
+        type: 3}
+      propertyPath: recordEvents.onRecordBoolScoreChanged.m_PersistentCalls.m_Calls.Array.data[0].m_Mode
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 432533072176192292, guid: 549ef4aae97dd5d438d4a9a74f201a4f,
+        type: 3}
+      propertyPath: recordEvents.onGetRecordBoolScore.m_PersistentCalls.m_Calls.Array.data[0].m_CallState
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 432533072176192292, guid: 549ef4aae97dd5d438d4a9a74f201a4f,
+        type: 3}
+      propertyPath: recordEvents.onGetRecordBoolScore.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
+      value: LogScore
+      objectReference: {fileID: 0}
+    - target: {fileID: 432533072176192292, guid: 549ef4aae97dd5d438d4a9a74f201a4f,
+        type: 3}
+      propertyPath: recordEvents.onRecordBoolScoreChanged.m_PersistentCalls.m_Calls.Array.data[0].m_Target
+      value: 
+      objectReference: {fileID: 962347910}
+    - target: {fileID: 432533072176192292, guid: 549ef4aae97dd5d438d4a9a74f201a4f,
+        type: 3}
+      propertyPath: recordEvents.onRecordBoolScoreChanged.m_PersistentCalls.m_Calls.Array.data[0].m_CallState
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 432533072176192292, guid: 549ef4aae97dd5d438d4a9a74f201a4f,
+        type: 3}
+      propertyPath: recordEvents.onRecordBoolScoreChanged.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
+      value: LogScore
+      objectReference: {fileID: 0}
+    - target: {fileID: 432533072176192292, guid: 549ef4aae97dd5d438d4a9a74f201a4f,
+        type: 3}
       propertyPath: onLogText.m_PersistentCalls.m_Calls.Array.data[0].m_Arguments.m_ObjectArgumentAssemblyTypeName
       value: UnityEngine.Object, UnityEngine
+      objectReference: {fileID: 0}
+    - target: {fileID: 432533072176192292, guid: 549ef4aae97dd5d438d4a9a74f201a4f,
+        type: 3}
+      propertyPath: recordEvents.onGetRecordBoolScore.m_PersistentCalls.m_Calls.Array.data[0].m_Arguments.m_ObjectArgumentAssemblyTypeName
+      value: UnityEngine.Object, UnityEngine
+      objectReference: {fileID: 0}
+    - target: {fileID: 432533072176192292, guid: 549ef4aae97dd5d438d4a9a74f201a4f,
+        type: 3}
+      propertyPath: recordEvents.onRecordBoolScoreChanged.m_PersistentCalls.m_Calls.Array.data[0].m_Arguments.m_ObjectArgumentAssemblyTypeName
+      value: UnityEngine.Object, UnityEngine
+      objectReference: {fileID: 0}
+    - target: {fileID: 801520074657599481, guid: 549ef4aae97dd5d438d4a9a74f201a4f,
+        type: 3}
+      propertyPath: m_SizeDelta.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1830834989033584851, guid: 549ef4aae97dd5d438d4a9a74f201a4f,
+        type: 3}
+      propertyPath: m_SizeDelta.x
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 1941347012657191878, guid: 549ef4aae97dd5d438d4a9a74f201a4f,
         type: 3}
@@ -587,6 +659,11 @@ PrefabInstance:
     - target: {fileID: 1941347012885178988, guid: 549ef4aae97dd5d438d4a9a74f201a4f,
         type: 3}
       propertyPath: m_AnchoredPosition.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1941347012885178989, guid: 549ef4aae97dd5d438d4a9a74f201a4f,
+        type: 3}
+      propertyPath: m_Text
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 1941347012946382524, guid: 549ef4aae97dd5d438d4a9a74f201a4f,

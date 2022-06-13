@@ -39,7 +39,9 @@ namespace SkillsVR.EnterpriseCloudSDK.Networking
             GameObject runtimeServiceObject = new GameObject(nameof(RESTService));
             GameObject.DontDestroyOnLoad(runtimeServiceObject);
             globalRestServiceProvider = runtimeServiceObject.AddComponent<RESTService>();
-            Debug.Log("Reset sevice ready: " + globalRestServiceProvider.GetType().Name);
+#if UNITY_EDITOR
+            Debug.Log("Rest Service " + globalRestServiceProvider.GetType().Name);
+#endif
         }
 
         public void SendRequest<DATA, RESPONSE>(AbstractAPI<DATA, RESPONSE> request, Action<RESPONSE> onSuccess = null, Action<string> onError = null) where RESPONSE : AbstractResponse

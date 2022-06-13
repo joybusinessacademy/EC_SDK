@@ -164,6 +164,7 @@ namespace SkillsVR.EnterpriseCloudSDK.Editor
             {
                 Debug.Log("No context loaded.");
                 SaveRecordAsset();
+                interactable = true;
                 return;
             }
 

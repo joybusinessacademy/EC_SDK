@@ -7,6 +7,7 @@ using SkillsVR.EnterpriseCloudSDK.Editor.Editors;
 using SkillsVR.EnterpriseCloudSDK.Data;
 using SkillsVR.EnterpriseCloudSDK.Networking.API;
 using System;
+using SkillsVR.EnterpriseCloudSDK.Networking;
 
 namespace SkillsVR.EnterpriseCloudSDK.Editor
 {
@@ -20,6 +21,8 @@ namespace SkillsVR.EnterpriseCloudSDK.Editor
 
         SerializedProperty recordAssetSerializedProperty = null;
 
+        RESTCore.Environment originalRestEnv;
+
         bool interactable = true;
         [MenuItem("Window/SkillsVR Enterprise Cloud SDK")]
         public static void ShowWindow()
@@ -30,10 +33,16 @@ namespace SkillsVR.EnterpriseCloudSDK.Editor
         private void OnEnable()
         {
             recordAsset = ECRecordCollectionAssetEditor.CreateOrLoadAsset();
+            originalRestEnv = RESTCore.domainEnvironment;
             widgets.Clear();
             SerializedObject serializedObject = new SerializedObject(this);
             recordAssetSerializedProperty = serializedObject.FindProperty(nameof(recordAsset));
             interactable = true;
+        }
+
+        private void OnDisable()
+        {
+            RESTCore.domainEnvironment = originalRestEnv;
         }
 
         void OnGUI()
@@ -49,11 +58,15 @@ namespace SkillsVR.EnterpriseCloudSDK.Editor
             EditorGUILayout.ObjectField("Record Asset: ", recordAsset, recordAsset.GetType(), false);
             GUI.enabled = interactable;
 
+            EditorGUILayout.BeginHorizontal();
+            RESTCore.domainEnvironment = (RESTCore.Environment)EditorGUILayout.EnumPopup("Domain", RESTCore.domainEnvironment);
+            EditorGUILayout.LabelField(RESTCore.domain);
+            EditorGUILayout.EndHorizontal();
 
             recordAsset.user = EditorGUILayout.TextField("Username:", recordAsset.user);
             recordAsset.password = EditorGUILayout.PasswordField("Password:", recordAsset.password);
 
-            GUI.enabled = interactable && !string.IsNullOrWhiteSpace(recordAsset.user) && !string.IsNullOrWhiteSpace(recordAsset.password) && !ECAPI.HasLoginToken();
+            GUI.enabled = interactable && !string.IsNullOrWhiteSpace(recordAsset.user) && !string.IsNullOrWhiteSpace(recordAsset.password);
             if (GUILayout.Button("Login"))
             {
                 SendLogin();

@@ -11,7 +11,61 @@ namespace SkillsVR.EnterpriseCloudSDK.Networking
 {
     public static class RESTCore
     {
-        public static string DOMAIN = "https://develop-ec-bff.skillsvr.com";
+        public const string DEV_DOMAIN = "https://develop-ec-bff.skillsvr.com";
+        public const string INT_DOMAIN = "https://internal-ec-bff.skillsvr.com";
+        public const string STG_DOMAIN = "https://staging-ec-bff.skillsvr.com";
+        public const string PRO_DOMAIN = "https://product-ec-bff.skillsvr.com";
+
+        public enum Environment
+        {
+            Development,
+            Internal,
+            Staging,
+            Production,
+        }
+
+        private static Environment defaultEnv = Environment.Internal;
+        public static Environment domainEnvironment
+        {
+            get
+            {
+#if ENVIRONMENT_DEVELOPMENT && !UNITY_EDITOR
+                return Environment.Development;
+#elif ENVIRONMENT_INTERNAL && !UNITY_EDITOR
+                return Environment.Internal;
+#elif ENVIRONMENT_STAGING && !UNITY_EDITOR
+                return Environment.Staging;
+#elif ENVIRONMENT_PRODUCTION && !UNITY_EDITOR
+                return Environment.Production;
+#else
+                return defaultEnv;
+#endif
+            }
+            set
+            {
+                defaultEnv = value;
+            }
+        }
+
+        public static string domain
+        {
+            get
+            {
+                switch (domainEnvironment)
+                {
+                    case Environment.Development:
+                        return DEV_DOMAIN;
+                    case Environment.Internal:
+                        return INT_DOMAIN;
+                    case Environment.Staging:
+                        return STG_DOMAIN;
+                    case Environment.Production:
+                        return PRO_DOMAIN;
+                    default:
+                        return INT_DOMAIN;
+                }
+            }
+        }
 
         public static string AccessToken => accessToken;
         private static string accessToken = string.Empty;

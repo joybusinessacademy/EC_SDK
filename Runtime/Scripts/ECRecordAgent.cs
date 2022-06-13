@@ -90,22 +90,24 @@ namespace SkillsVR.EnterpriseCloudSDK
         public RecordEventHandlerGroup recordEvents = new RecordEventHandlerGroup();
 
         protected ECRecordCollectionAsset recordAsset;
+        protected ECRecordCollectionAssetConfig recordAssetConfig;
         private void Start()
         {
             recordAsset = ECRecordCollectionAsset.GetECRecordAsset();
             if (null != recordAsset)
             {
+                recordAssetConfig = recordAsset.currentConfig;
                 recordAsset.onGameScoreBoolChanged.AddListener(OnRecordBoolScoreChangedCallback);
                 recordAsset.onResetAllGameScores.AddListener(recordEvents.onResetAllGameScores.Invoke);
 
                 getConfigEvents?.onSuccess?.Invoke();
 
-                user = recordAsset.user;
-                password = recordAsset.password;
+                user = recordAssetConfig.user;
+                password = recordAssetConfig.password;
 
-                organisationId = recordAsset.organisationId;
-                userRoleName = recordAsset.userRoleName;
-                userProjectName = recordAsset.userProjectName;
+                organisationId = recordAssetConfig.organisationId;
+                userRoleName = recordAssetConfig.userRoleName;
+                userProjectName = recordAssetConfig.userProjectName;
 
                 if (silentLoginUseAssetAccount && !ECAPI.HasLoginToken())
                 {
@@ -217,13 +219,13 @@ namespace SkillsVR.EnterpriseCloudSDK
                 LogError(error);
                 return error;
             }
-            if (null == recordAsset)
+            if (null == recordAssetConfig || null == recordAsset)
             {
                 error = NO_ASSET_ERROR;
                 LogError(error);
                 return error;
             }
-            recordAsset.scenarioId = cfgId;
+            recordAssetConfig.scenarioId = cfgId;
             recordAsset.AddRange(response.data);
             Log("GetConfig " + cfgId + " Success");
             return null;
@@ -231,7 +233,7 @@ namespace SkillsVR.EnterpriseCloudSDK
 
         public bool ECSetGameScoreBool(int id, bool isOn)
         {
-            if (null == recordAsset)
+            if (null == recordAssetConfig || null == recordAsset)
             {
                 recordEvents.setScoreResultEvents.TriggerEvent(false, NO_ASSET_ERROR);
                 LogError("Set record " + setScoreId + " Fail: " + NO_ASSET_ERROR);

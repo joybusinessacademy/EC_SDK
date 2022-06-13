@@ -73,13 +73,13 @@ namespace SkillsVR.EnterpriseCloudSDK.UI
         public static List<ECRecordContentUI> CreateUIHierarchyFromRecordCollection(Func<ECRecordContentUI> createUIAction, ECRecordCollectionAsset asset)
         {
             List<ECRecordContentUI> output = new List<ECRecordContentUI>();
-            if (null == asset || null == asset.managedRecords || null == createUIAction)
+            if (null == asset || null == asset.currentConfig.managedRecords || null == createUIAction)
             {
                 return output;
             }
-            asset.managedRecords = ECRecordUtil.OrderContents(asset.managedRecords);
+            asset.currentConfig.managedRecords = ECRecordUtil.OrderContents(asset.currentConfig.managedRecords);
 
-            foreach (var item in asset.managedRecords)
+            foreach (var item in asset.currentConfig.managedRecords)
             {
                 var uiItem = createUIAction.Invoke();
                 uiItem.SetSource(item, asset);

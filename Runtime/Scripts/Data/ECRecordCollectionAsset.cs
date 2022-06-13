@@ -1,4 +1,5 @@
-﻿using SkillsVR.EnterpriseCloudSDK.Networking.API;
+﻿using SkillsVR.EnterpriseCloudSDK.Networking;
+using SkillsVR.EnterpriseCloudSDK.Networking.API;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -8,14 +9,10 @@ using UnityEngine.Events;
 
 namespace SkillsVR.EnterpriseCloudSDK.Data
 {
-    public class ECRecordCollectionAsset : ScriptableObject
+    [Serializable]
+    public class ECRecordCollectionAssetConfig
     {
-        public const string ASSET_PATH = "Assets";
-        public const string RESOURCE_PATH = "Resources";
-        public const string ASSET_FILE_NAME = "ECRecordConfig.asset";
-
-        private static ECRecordCollectionAsset instance;
-
+        public ECAPI.Environment environment;
         public string user;
         public string password;
 
@@ -26,6 +23,38 @@ namespace SkillsVR.EnterpriseCloudSDK.Data
         public int scenarioId;
         public List<ECRecordContent> managedRecords = new List<ECRecordContent>();
 
+    }
+    public class ECRecordCollectionAsset : ScriptableObject
+    {
+        public const string ASSET_PATH = "Assets";
+        public const string RESOURCE_PATH = "Resources";
+        public const string ASSET_FILE_NAME = "ECRecordConfig.asset";
+
+        private static ECRecordCollectionAsset instance;
+
+        public List<ECRecordCollectionAssetConfig> managedConfigs = new List<ECRecordCollectionAssetConfig>();
+
+        public ECRecordCollectionAssetConfig currentConfig
+        {
+            get
+            {
+                if (null == managedConfigs)
+                {
+                    managedConfigs = new List<ECRecordCollectionAssetConfig>();
+                }
+                var config = managedConfigs.Find(x => null != x && x.environment == ECAPI.environment);
+                if (null == config)
+                {
+                    config = new ECRecordCollectionAssetConfig()
+                    {
+                        environment = ECAPI.environment
+                    };
+                    managedConfigs.Add(config);
+                }
+                return config;
+            }
+        }
+        
         [Serializable] public class RecordBoolScoreChangeEvent : UnityEvent<int,bool> { }
 
         public RecordBoolScoreChangeEvent onGameScoreBoolChanged = new RecordBoolScoreChangeEvent();
@@ -42,9 +71,14 @@ namespace SkillsVR.EnterpriseCloudSDK.Data
             return instance;
         }
 
+        private void OnEnable()
+        {
+            
+        }
+
         public bool Contains(int id)
         {
-            return null != managedRecords.Find(x=>x.id == id);
+            return null != currentConfig.managedRecords.Find(x=>x.id == id);
         }
 
         public bool SetGameScoreBool(int id, bool isOn, Action<string> onFail = null)
@@ -53,7 +87,7 @@ namespace SkillsVR.EnterpriseCloudSDK.Data
             {
                 onFail = Debug.LogError;
             }
-            var record = managedRecords.Find(x => id == x.id);
+            var record = currentConfig.managedRecords.Find(x => id == x.id);
             if (null == record)
             {
                 onFail.Invoke("No record found with id " + id);
@@ -89,17 +123,17 @@ namespace SkillsVR.EnterpriseCloudSDK.Data
 
         public bool GetGameScoreBool(int id)
         {
-            var record = managedRecords.Find(x => id == x.id);
+            var record = currentConfig.managedRecords.Find(x => id == x.id);
             return null == record ? false : record.gameScoreBool;
         }
 
         public void ResetUserScores()
         {
-            if (null == managedRecords)
+            if (null == currentConfig.managedRecords)
             {
                 return;
             }
-            foreach (var record in managedRecords)
+            foreach (var record in currentConfig.managedRecords)
             {
                 if (null == record)
                 {
@@ -116,12 +150,12 @@ namespace SkillsVR.EnterpriseCloudSDK.Data
 
         public void GetConfig(Action<GetConfig.Response> success = null, Action<string> failed = null)
         {
-            TryLoginThen(() => { ECAPI.GetConfig(this.scenarioId, success, failed); }, failed);
+            TryLoginThen(() => { ECAPI.GetConfig(this.currentConfig.scenarioId, success, failed); }, failed);
         }
 
         public void SubmitUserScore(Action<AbstractAPI.EmptyResponse> success = null, Action<string> failed = null)
         {
-            TryLoginThen(() => { ECAPI.SubmitUserLearningRecord(scenarioId, managedRecords, success, failed); }, failed);
+            TryLoginThen(() => { ECAPI.SubmitUserLearningRecord(currentConfig.scenarioId, currentConfig.managedRecords, success, failed); }, failed);
         }
 
         public void TryLoginThen(Action actionAfterLogin, Action<string> onError)
@@ -129,15 +163,15 @@ namespace SkillsVR.EnterpriseCloudSDK.Data
 
             if (!ECAPI.HasLoginToken())
             {
-                if (string.IsNullOrWhiteSpace(user) || string.IsNullOrWhiteSpace(password))
+                if (string.IsNullOrWhiteSpace(currentConfig.user) || string.IsNullOrWhiteSpace(currentConfig.password))
                 {
                     onError?.Invoke("User or password cannot be null or empty.");
                     return;
                 }
                 Action<string> loginFailedAction = (error) => { onError?.Invoke(error); };
-                ECAPI.Login(user, password, (loginResp) =>
+                ECAPI.Login(currentConfig.user, currentConfig.password, (loginResp) =>
                 {
-                    ECAPI.LoginOrganisation(organisationId,userRoleName, userProjectName,
+                    ECAPI.LoginOrganisation(currentConfig.organisationId, currentConfig.userRoleName, currentConfig.userProjectName,
                         (loginOrgResp) =>
                         {
                             actionAfterLogin?.Invoke();
@@ -152,8 +186,8 @@ namespace SkillsVR.EnterpriseCloudSDK.Data
 
         public void PrintRecords()
         {
-            string info = "Scenario " + scenarioId + "\r\n";
-            foreach (var record in managedRecords)
+            string info = "Scenario " + currentConfig.scenarioId + "\r\n";
+            foreach (var record in currentConfig.managedRecords)
             {
                 info += record.PrintInLine();
             }
@@ -162,7 +196,7 @@ namespace SkillsVR.EnterpriseCloudSDK.Data
 
         public void OrderManagedRecords()
         {
-            managedRecords = ECRecordUtil.OrderContents(managedRecords);
+            currentConfig.managedRecords = ECRecordUtil.OrderContents(currentConfig.managedRecords);
         }
 
         public void AddRange(IEnumerable<ECRecordContent> contentCollection)
@@ -171,8 +205,8 @@ namespace SkillsVR.EnterpriseCloudSDK.Data
             {
                 return;
             }
-            managedRecords.Clear();
-            managedRecords.AddRange(contentCollection);
+            currentConfig.managedRecords.Clear();
+            currentConfig.managedRecords.AddRange(contentCollection);
             OrderManagedRecords();
         }
     }

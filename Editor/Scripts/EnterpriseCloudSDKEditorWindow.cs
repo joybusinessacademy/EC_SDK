@@ -21,8 +21,6 @@ namespace SkillsVR.EnterpriseCloudSDK.Editor
 
         SerializedProperty recordAssetSerializedProperty = null;
 
-        RESTCore.Environment originalRestEnv;
-
         bool interactable = true;
         [MenuItem("Window/SkillsVR Enterprise Cloud SDK")]
         public static void ShowWindow()
@@ -33,7 +31,6 @@ namespace SkillsVR.EnterpriseCloudSDK.Editor
         private void OnEnable()
         {
             recordAsset = ECRecordCollectionAssetEditor.CreateOrLoadAsset();
-            originalRestEnv = RESTCore.domainEnvironment;
             widgets.Clear();
             SerializedObject serializedObject = new SerializedObject(this);
             recordAssetSerializedProperty = serializedObject.FindProperty(nameof(recordAsset));
@@ -42,7 +39,7 @@ namespace SkillsVR.EnterpriseCloudSDK.Editor
 
         private void OnDisable()
         {
-            RESTCore.domainEnvironment = originalRestEnv;
+            SaveRecordAsset();
         }
 
         void OnGUI()
@@ -59,25 +56,27 @@ namespace SkillsVR.EnterpriseCloudSDK.Editor
             GUI.enabled = interactable;
 
             EditorGUILayout.BeginHorizontal();
-            RESTCore.domainEnvironment = (RESTCore.Environment)EditorGUILayout.EnumPopup("Domain", RESTCore.domainEnvironment);
+            GUI.enabled = !EditorApplication.isPlayingOrWillChangePlaymode;
+            ECAPI.environment = (ECAPI.Environment)EditorGUILayout.EnumPopup("Test Env", ECAPI.environment);
+            GUI.enabled = interactable;
             EditorGUILayout.LabelField(RESTCore.domain);
             EditorGUILayout.EndHorizontal();
 
-            recordAsset.user = EditorGUILayout.TextField("Username:", recordAsset.user);
-            recordAsset.password = EditorGUILayout.PasswordField("Password:", recordAsset.password);
+            recordAsset.currentConfig.user = EditorGUILayout.TextField("Username:", recordAsset.currentConfig.user);
+            recordAsset.currentConfig.password = EditorGUILayout.PasswordField("Password:", recordAsset.currentConfig.password);
 
-            GUI.enabled = interactable && !string.IsNullOrWhiteSpace(recordAsset.user) && !string.IsNullOrWhiteSpace(recordAsset.password);
+            GUI.enabled = interactable && !string.IsNullOrWhiteSpace(recordAsset.currentConfig.user) && !string.IsNullOrWhiteSpace(recordAsset.currentConfig.password);
             if (GUILayout.Button("Login"))
             {
                 SendLogin();
             }
             GUI.enabled = interactable;
 
-            recordAsset.scenarioId = EditorGUILayout.IntField("Scenario ID:", recordAsset.scenarioId);
+            recordAsset.currentConfig.scenarioId = EditorGUILayout.IntField("Scenario ID:", recordAsset.currentConfig.scenarioId);
 
             if (ECAPI.HasLoginToken())
             {
-                GUI.enabled = interactable && 0 < recordAsset.scenarioId;
+                GUI.enabled = interactable && 0 < recordAsset.currentConfig.scenarioId;
                 if (GUILayout.Button("Get Config"))
                 {
                     SendGetConfig();
@@ -89,11 +88,11 @@ namespace SkillsVR.EnterpriseCloudSDK.Editor
                 EditorGUILayout.HelpBox("Display records from local cached . Please login to enable submit and more functions.", MessageType.Warning);
             }
 
-            if (recordAsset.managedRecords.Count > 0)
+            if (recordAsset.currentConfig.managedRecords.Count > 0)
             {
                 if (null == widgets || 0 == widgets.Count)
                 {
-                    widgets = ECRecordContentEditorWidget.GetEditorRenderingWidgetListFromRecordCollection(recordAsset.managedRecords);
+                    widgets = ECRecordContentEditorWidget.GetEditorRenderingWidgetListFromRecordCollection(recordAsset.currentConfig.managedRecords);
                 }
                 scrollViewPos = EditorGUILayout.BeginScrollView(scrollViewPos, GUILayout.ExpandHeight(true));
                 foreach(var item in widgets)
@@ -134,7 +133,7 @@ namespace SkillsVR.EnterpriseCloudSDK.Editor
         private void SendLogin()
         {
             interactable = false;
-            ECAPI.Login(recordAsset.user, recordAsset.password, SendLoginOrganisation, LogError);
+            ECAPI.Login(recordAsset.currentConfig.user, recordAsset.currentConfig.password, SendLoginOrganisation, LogError);
         }
 
 
@@ -143,9 +142,9 @@ namespace SkillsVR.EnterpriseCloudSDK.Editor
             try
             {
                 var organisation = response.data.organisations[0];
-                recordAsset.organisationId = int.Parse(organisation.id);
-                recordAsset.userRoleName = organisation.roles[0].key;
-                recordAsset.userProjectName = organisation.name;
+                recordAsset.currentConfig.organisationId = int.Parse(organisation.id);
+                recordAsset.currentConfig.userRoleName = organisation.roles[0].key;
+                recordAsset.currentConfig.userProjectName = organisation.name;
             }
             catch(Exception e)
             {
@@ -153,7 +152,7 @@ namespace SkillsVR.EnterpriseCloudSDK.Editor
             }
             
             interactable = false;
-            ECAPI.LoginOrganisation(recordAsset.organisationId, recordAsset.userRoleName, recordAsset.userProjectName, RecieveLoginOrganisation, LogError);
+            ECAPI.LoginOrganisation(recordAsset.currentConfig.organisationId, recordAsset.currentConfig.userRoleName, recordAsset.currentConfig.userProjectName, RecieveLoginOrganisation, LogError);
         }
 
         private void RecieveLoginOrganisation(Login.Response response)
@@ -164,13 +163,13 @@ namespace SkillsVR.EnterpriseCloudSDK.Editor
         private void SendGetConfig()
         {
             interactable = false;
-            ECAPI.GetConfig(recordAsset.scenarioId, RecieveConfigResponse, LogError);
+            ECAPI.GetConfig(recordAsset.currentConfig.scenarioId, RecieveConfigResponse, LogError);
         }
 
         private void RecieveConfigResponse(GetConfig.Response obj)
         {
             widgets.Clear();
-            recordAsset.managedRecords.Clear();
+            recordAsset.currentConfig.managedRecords.Clear();
 
             if (null == obj || null == obj.data || 0 == obj.data.Length)
             {
@@ -183,13 +182,13 @@ namespace SkillsVR.EnterpriseCloudSDK.Editor
             recordAsset.AddRange(obj.data);
             SaveRecordAsset();
 
-            widgets = ECRecordContentEditorWidget.GetEditorRenderingWidgetListFromRecordCollection(recordAsset.managedRecords);
+            widgets = ECRecordContentEditorWidget.GetEditorRenderingWidgetListFromRecordCollection(recordAsset.currentConfig.managedRecords);
             interactable = true;
         }
 
         public void SendLearningRecord()
         {
-            ECAPI.SubmitUserLearningRecord(recordAsset.scenarioId, recordAsset.managedRecords, LearningRecordResponse, LogError);
+            ECAPI.SubmitUserLearningRecord(recordAsset.currentConfig.scenarioId, recordAsset.currentConfig.managedRecords, LearningRecordResponse, LogError);
         }
 
         private void LearningRecordResponse(AbstractAPI.EmptyResponse obj)

@@ -16,50 +16,19 @@ namespace SkillsVR.EnterpriseCloudSDK.Networking
         public const string STG_DOMAIN = "https://staging-ec-bff.skillsvr.com";
         public const string PRO_DOMAIN = "https://product-ec-bff.skillsvr.com";
 
-        public enum Environment
-        {
-            Development,
-            Internal,
-            Staging,
-            Production,
-        }
-
-        private static Environment defaultEnv = Environment.Internal;
-        public static Environment domainEnvironment
-        {
-            get
-            {
-#if ENVIRONMENT_DEVELOPMENT && !UNITY_EDITOR
-                return Environment.Development;
-#elif ENVIRONMENT_INTERNAL && !UNITY_EDITOR
-                return Environment.Internal;
-#elif ENVIRONMENT_STAGING && !UNITY_EDITOR
-                return Environment.Staging;
-#elif ENVIRONMENT_PRODUCTION && !UNITY_EDITOR
-                return Environment.Production;
-#else
-                return defaultEnv;
-#endif
-            }
-            set
-            {
-                defaultEnv = value;
-            }
-        }
-
         public static string domain
         {
             get
             {
-                switch (domainEnvironment)
+                switch (ECAPI.environment)
                 {
-                    case Environment.Development:
+                    case ECAPI.Environment.Development:
                         return DEV_DOMAIN;
-                    case Environment.Internal:
+                    case ECAPI.Environment.Internal:
                         return INT_DOMAIN;
-                    case Environment.Staging:
+                    case ECAPI.Environment.Staging:
                         return STG_DOMAIN;
-                    case Environment.Production:
+                    case ECAPI.Environment.Production:
                         return PRO_DOMAIN;
                     default:
                         return INT_DOMAIN;
@@ -69,6 +38,12 @@ namespace SkillsVR.EnterpriseCloudSDK.Networking
 
         public static string AccessToken => accessToken;
         private static string accessToken = string.Empty;
+
+        [RuntimeInitializeOnLoadMethod]
+        public static void ResetAssessToken()
+        {
+            accessToken = string.Empty;
+        }
         public static void SetAccessToken(string token)
         {
             accessToken = token;

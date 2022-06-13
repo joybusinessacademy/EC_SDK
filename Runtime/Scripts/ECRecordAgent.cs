@@ -138,7 +138,7 @@ namespace SkillsVR.EnterpriseCloudSDK
             user = userName;
         }
 
-        public void ECSetPassworkd(string userPassword)
+        public void ECSetPassword(string userPassword)
         {
             password = userPassword;
         }
@@ -165,6 +165,20 @@ namespace SkillsVR.EnterpriseCloudSDK
                 (error) => { loginEvents.TriggerEvent(false, error); LogError("Login Fail: " + error); });
         }
 
+
+        public void ECSetOrganisationId(int id)
+        {
+            organisationId = id;
+        }
+        public void ECSetUserRoleName(string role)
+        {
+            userRoleName = role;
+        }
+        public void ECSetUserProjectName(string project)
+        {
+            userProjectName = project;
+        }
+        
         public void ECLoginOrganisation()
         {
             ECAPI.LoginOrganisation(

@@ -659,7 +659,7 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls:
       - m_Target: {fileID: 432533072176192292}
-        m_MethodName: SetScenarioId
+        m_MethodName: ECSetScenarioId
         m_Mode: 0
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -800,7 +800,7 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls:
       - m_Target: {fileID: 432533072176192292}
-        m_MethodName: GetConfig
+        m_MethodName: ECGetConfig
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -996,7 +996,7 @@ MonoBehaviour:
       m_PersistentCalls:
         m_Calls:
         - m_Target: {fileID: 432533072176192292}
-          m_MethodName: LoginOrganisation
+          m_MethodName: ECLoginOrganisation
           m_Mode: 1
           m_Arguments:
             m_ObjectArgument: {fileID: 0}
@@ -1066,6 +1066,9 @@ MonoBehaviour:
       m_PersistentCalls:
         m_Calls: []
   recordEvents:
+    onResetAllGameScores:
+      m_PersistentCalls:
+        m_Calls: []
     onRecordStateChanged:
       m_PersistentCalls:
         m_Calls: []
@@ -1322,7 +1325,7 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls:
       - m_Target: {fileID: 432533072176192292}
-        m_MethodName: SubmitScore
+        m_MethodName: ECSubmitScore
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -1603,7 +1606,7 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls:
       - m_Target: {fileID: 432533072176192292}
-        m_MethodName: ResetGameScore
+        m_MethodName: ECResetGameScore
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -2032,7 +2035,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 0, y: 0}
-  m_AnchoredPosition: {x: 184.0751, y: 0}
+  m_AnchoredPosition: {x: 174.0751, y: 0}
   m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &1941347013989866910
@@ -2944,7 +2947,7 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls:
       - m_Target: {fileID: 432533072176192292}
-        m_MethodName: SetScoreIdAction
+        m_MethodName: ECSetScoreIdAction
         m_Mode: 0
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -3085,7 +3088,7 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls:
       - m_Target: {fileID: 432533072176192292}
-        m_MethodName: SetScoreInvokeAction
+        m_MethodName: ECSetScoreInvokeAction
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -3292,7 +3295,7 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls:
       - m_Target: {fileID: 432533072176192292}
-        m_MethodName: SetScoreValueAction
+        m_MethodName: ECSetScoreValueAction
         m_Mode: 0
         m_Arguments:
           m_ObjectArgument: {fileID: 0}

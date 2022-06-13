@@ -109,14 +109,14 @@ namespace SkillsVR.EnterpriseCloudSDK
 
                 if (silentLoginUseAssetAccount && !ECAPI.HasLoginToken())
                 {
-                    Login();
+                    ECLogin();
                 }
             }
         }
 
         private void OnEnable()
         {
-            RefreshLoginState();
+            ECRefreshLoginState();
         }
 
         private void OnDestroy()
@@ -128,43 +128,44 @@ namespace SkillsVR.EnterpriseCloudSDK
             }
         }
 
-        public void RefreshLoginState()
+        public void ECRefreshLoginState()
         {
             loginEvents?.TriggerEvent(ECAPI.HasLoginToken());
         }
 
-        public void SetUser(string userName)
+        public void ECSetUser(string userName)
         {
             user = userName;
         }
 
-        public void SetScenarioId(int id)
-        {
-            scenarioId = id;
-        }
-        public void SetScenarioId(string id)
-        {
-            int.TryParse(id, out scenarioId);
-        }
-
-        public void SetPassworkd(string userPassword)
+        public void ECSetPassworkd(string userPassword)
         {
             password = userPassword;
         }
+
+        public void ECSetScenarioId(int id)
+        {
+            scenarioId = id;
+        }
+        public void ECSetScenarioId(string id)
+        {
+            int.TryParse(id, out scenarioId);
+        }
+        
         private void OnRecordBoolScoreChangedCallback(int id, bool isOn)
         {
             recordEvents.onRecordStateChanged?.Invoke(id);
             recordEvents.onRecordBoolScoreChanged?.Invoke(id, isOn);
         }
 
-        public void Login()
+        public void ECLogin()
         {
             ECAPI.Login(user, password,
                 (resp) => { loginEvents.TriggerResponse(resp); Log("Login Success"); },
                 (error) => { loginEvents.TriggerEvent(false, error); LogError("Login Fail: " + error); });
         }
 
-        public void LoginOrganisation()
+        public void ECLoginOrganisation()
         {
             ECAPI.LoginOrganisation(
                 organisationId,
@@ -174,7 +175,7 @@ namespace SkillsVR.EnterpriseCloudSDK
                 (error) => { loginOrganisationEvents.TriggerEvent(false, error); LogError("Login Organisation Fail: " + error); });
         }
 
-        public void GetConfig()
+        public void ECGetConfig()
         {
             ECAPI.GetConfig(scenarioId,
                 (resp) =>
@@ -214,7 +215,7 @@ namespace SkillsVR.EnterpriseCloudSDK
             return null;
         }
 
-        public bool SetGameScoreBool(int id, bool isOn)
+        public bool ECSetGameScoreBool(int id, bool isOn)
         {
             if (null == recordAsset)
             {
@@ -235,7 +236,7 @@ namespace SkillsVR.EnterpriseCloudSDK
             return success;
         }
 
-        public bool GetGameScoreBool(int id)
+        public bool ECGetGameScoreBool(int id)
         {
             if (null == recordAsset)
             {
@@ -244,7 +245,7 @@ namespace SkillsVR.EnterpriseCloudSDK
             return recordAsset.GetGameScoreBool(id);
         }
 
-        public void ResetGameScore()
+        public void ECResetGameScore()
         {
             if (null == recordAsset)
             {
@@ -254,7 +255,7 @@ namespace SkillsVR.EnterpriseCloudSDK
             recordAsset.ResetUserScores();
         }
 
-        public void SubmitScore()
+        public void ECSubmitScore()
         {
             if (null == recordAsset)
             {
@@ -289,28 +290,28 @@ namespace SkillsVR.EnterpriseCloudSDK
         private int setScoreId;
         private bool setScoreValue;
 
-        public void SetScoreIdAction(int id)
+        public void ECSetScoreIdAction(int id)
         {
             setScoreId = id;
         }
 
-        public void SetScoreIdAction(string id)
+        public void ECSetScoreIdAction(string id)
         {
             int.TryParse(id, out setScoreId);
         }
 
-        public void SetScoreValueAction(bool value)
+        public void ECSetScoreValueAction(bool value)
         {
             setScoreValue = value;
         }
 
-        public void SetScoreInvokeAction()
+        public void ECSetScoreInvokeAction()
         {
-            SetGameScoreBool(setScoreId, setScoreValue);
+            ECSetGameScoreBool(setScoreId, setScoreValue);
         }
-        public void GetScoreInvokeAction()
+        public void ECGetScoreInvokeAction()
         {
-            bool value = GetGameScoreBool(setScoreId);
+            bool value = ECGetGameScoreBool(setScoreId);
             recordEvents?.onGetRecordBoolScore?.Invoke(setScoreId, value);
         }
 

@@ -2,7 +2,7 @@
 {
     public class SubmitLearningRecord : AbstractAPI<SubmitLearningRecord.Data, AbstractAPI.EmptyResponse>
     {
-        public SubmitLearningRecord() : base(RESTCore.DOMAIN + "/api/userlearningrecord") {
+        public SubmitLearningRecord() : base(RESTCore.domain + "/api/userlearningrecord") {
             requestType = HttpRequestType.POST;
             authenticated = true;
         }

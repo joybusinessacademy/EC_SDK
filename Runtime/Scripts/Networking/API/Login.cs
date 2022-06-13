@@ -2,7 +2,7 @@
 {
     public class Login : AbstractAPI<Login.Data, Login.Response>
     {
-        public Login() : base(RESTCore.DOMAIN + "/api/auth/login") {
+        public Login() : base(RESTCore.domain + "/api/auth/login") {
             requestType = HttpRequestType.POST;
         }
 

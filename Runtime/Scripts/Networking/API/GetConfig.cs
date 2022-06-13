@@ -4,7 +4,7 @@ namespace SkillsVR.EnterpriseCloudSDK.Networking.API
 {
     public partial class GetConfig : AbstractAPI<AbstractAPI.EmptyData, GetConfig.Response>
     {
-        public GetConfig(int recordId) : base(string.Format(RESTCore.DOMAIN + "/api/LearningRecordTemplate/{0}", recordId.ToString()))
+        public GetConfig(int recordId) : base(string.Format(RESTCore.domain + "/api/LearningRecordTemplate/{0}", recordId.ToString()))
         {
             requestType = HttpRequestType.GET;
             authenticated = true;

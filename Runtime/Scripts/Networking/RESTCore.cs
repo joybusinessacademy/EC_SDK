@@ -1,7 +1,8 @@
-﻿using SkillsVR.EnterpriseCloudSDK.Networking.API;
+using SkillsVR.EnterpriseCloudSDK.Networking.API;
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.IO;
 using System.Runtime.CompilerServices;
 using System.Text;
 using UnityEngine;
@@ -43,7 +44,14 @@ namespace SkillsVR.EnterpriseCloudSDK.Networking
         public static void ResetAssessToken()
         {
             accessToken = string.Empty;
+#if UNITY_ANDROID && !UNITY_EDITOR
+            AndroidJavaClass jc = new AndroidJavaClass("android.os.Environment");
+            var path = jc.CallStatic<AndroidJavaObject>("getExternalStorageDirectory").Call<string>("getAbsolutePath");
+            var combinedPath = Path.Combine(path, "accessToken.txt");
+            accessToken = File.ReadAllText(combinedPath);
+#endif
         }
+
         public static void SetAccessToken(string token)
         {
             accessToken = token;

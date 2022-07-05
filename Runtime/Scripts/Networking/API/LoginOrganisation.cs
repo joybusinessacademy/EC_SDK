@@ -2,7 +2,7 @@
 {
     public class LoginOrganisation : AbstractAPI<LoginOrganisation.Data, Login.Response>
     {
-        public LoginOrganisation() : base(RESTCore.domain + "/api/auth/pick/organisation") {
+        public LoginOrganisation() : base(ECAPI.domain + "/api/auth/pick/organisation") {
             requestType = HttpRequestType.POST;
         }
 

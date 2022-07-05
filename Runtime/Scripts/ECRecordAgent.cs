@@ -97,6 +97,7 @@ namespace SkillsVR.EnterpriseCloudSDK
             if (null != recordAsset)
             {
                 recordAssetConfig = recordAsset.currentConfig;
+                ECAPI.domain = recordAsset.currentConfig.domain;
                 recordAsset.onGameScoreBoolChanged.AddListener(OnRecordBoolScoreChangedCallback);
                 recordAsset.onResetAllGameScores.AddListener(recordEvents.onResetAllGameScores.Invoke);
 

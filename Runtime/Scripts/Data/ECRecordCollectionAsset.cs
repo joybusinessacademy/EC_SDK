@@ -12,7 +12,8 @@ namespace SkillsVR.EnterpriseCloudSDK.Data
     [Serializable]
     public class ECRecordCollectionAssetConfig
     {
-        public ECAPI.Environment environment;
+        public string name => string.Join("_", scenarioId, null == domain ? "" : domain, null == user ? "" : user);
+        public string domain;
         public string user;
         public string password;
 
@@ -33,7 +34,9 @@ namespace SkillsVR.EnterpriseCloudSDK.Data
         private static ECRecordCollectionAsset instance;
 
         public List<ECRecordCollectionAssetConfig> managedConfigs = new List<ECRecordCollectionAssetConfig>();
-
+        
+        [SerializeField, HideInInspector]
+        public int currentConfigIndex = 0;
         public ECRecordCollectionAssetConfig currentConfig
         {
             get
@@ -42,16 +45,18 @@ namespace SkillsVR.EnterpriseCloudSDK.Data
                 {
                     managedConfigs = new List<ECRecordCollectionAssetConfig>();
                 }
-                var config = managedConfigs.Find(x => null != x && x.environment == ECAPI.environment);
-                if (null == config)
+                if (0 == managedConfigs.Count)
                 {
-                    config = new ECRecordCollectionAssetConfig()
-                    {
-                        environment = ECAPI.environment
-                    };
-                    managedConfigs.Add(config);
+                    managedConfigs.Add(new ECRecordCollectionAssetConfig());
+                    currentConfigIndex = 0;
                 }
-                return config;
+
+                if (0 > currentConfigIndex || managedConfigs.Count <= currentConfigIndex)
+                {
+                    currentConfigIndex = 0;
+                }
+
+                return managedConfigs[currentConfigIndex];
             }
         }
         
@@ -163,6 +168,7 @@ namespace SkillsVR.EnterpriseCloudSDK.Data
 
             if (!ECAPI.HasLoginToken())
             {
+                ECAPI.domain = currentConfig.domain;
                 if (string.IsNullOrWhiteSpace(currentConfig.user) || string.IsNullOrWhiteSpace(currentConfig.password))
                 {
                     onError?.Invoke("User or password cannot be null or empty.");

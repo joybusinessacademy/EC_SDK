@@ -57,11 +57,22 @@ namespace SkillsVR.EnterpriseCloudSDK.Editor
 
             EditorGUILayout.BeginHorizontal();
             GUI.enabled = !EditorApplication.isPlayingOrWillChangePlaymode;
-            ECAPI.environment = (ECAPI.Environment)EditorGUILayout.EnumPopup("Test Env", ECAPI.environment);
-            GUI.enabled = interactable;
-            EditorGUILayout.LabelField(RESTCore.domain);
-            EditorGUILayout.EndHorizontal();
 
+            if (recordAsset.managedConfigs.Count > 1)
+            {
+                List<string> nameList = new List<string>();
+                foreach (var item in recordAsset.managedConfigs)
+                {
+                    nameList.Add(item.name.Replace("/", "").Replace("\\", ""));
+                }
+                recordAsset.currentConfigIndex = EditorGUILayout.Popup(new GUIContent("Switch Config"), recordAsset.currentConfigIndex, nameList.ToArray());
+            }
+            
+
+            GUI.enabled = interactable;
+            EditorGUILayout.EndHorizontal();
+            recordAsset.currentConfig.domain = EditorGUILayout.TextField("Domain:", recordAsset.currentConfig.domain);
+            ECAPI.domain = recordAsset.currentConfig.domain;
             recordAsset.currentConfig.user = EditorGUILayout.TextField("Username:", recordAsset.currentConfig.user);
             recordAsset.currentConfig.password = EditorGUILayout.PasswordField("Password:", recordAsset.currentConfig.password);
 

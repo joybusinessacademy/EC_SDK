@@ -29,7 +29,7 @@ namespace SkillsVR.EnterpriseCloudSDK.Networking
             globalRestServiceProvider = provider;
         }
 
-        [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.AfterSceneLoad)]
+        [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.AfterAssembliesLoaded)]
         private static void InitRuntimeRestService()
         {
             if (null != globalRestServiceProvider && typeof(RESTService) == globalRestServiceProvider.GetType())

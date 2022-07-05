@@ -9,36 +9,7 @@ namespace SkillsVR.EnterpriseCloudSDK
 {
     public class ECAPI
     {
-        public enum Environment
-        {
-            Development,
-            Internal,
-            Staging,
-            Production,
-        }
-        public static Environment environment = Environment.Internal;
-
-        [RuntimeInitializeOnLoadMethod]
-        private static void SetupEnvironment()
-        {
-            environment = GetEnvironmentByDefineSymbol();
-            Debug.Log("EC ENV: " + environment);
-        }
-
-        public static Environment GetEnvironmentByDefineSymbol()
-        {
-#if ENVIRONMENT_DEVELOPMENT
-            return Environment.Development;
-#elif ENVIRONMENT_INTERNAL
-            return Environment.Internal;
-#elif ENVIRONMENT_STAGING
-            return Environment.Staging;
-#elif ENVIRONMENT_PRODUCTION
-            return Environment.Production;
-#else
-            return environment;
-#endif
-        }
+        public static string domain = ""; // https://internal-ec-bff.skillsvr.com
 
         /// <summary>
         /// Check already have token for authenticated requests.

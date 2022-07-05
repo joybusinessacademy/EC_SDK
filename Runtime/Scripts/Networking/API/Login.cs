@@ -5,7 +5,7 @@ namespace SkillsVR.EnterpriseCloudSDK.Networking.API
 {
     public class Login : AbstractAPI<Login.Data, Login.Response>
     {
-        public Login() : base(RESTCore.domain + "/api/auth/login") {
+        public Login() : base(ECAPI.domain + "/api/auth/login") {
             requestType = HttpRequestType.POST;
         }
 

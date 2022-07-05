@@ -1,8 +1,7 @@
-using SkillsVR.EnterpriseCloudSDK.Networking.API;
+﻿using SkillsVR.EnterpriseCloudSDK.Networking.API;
 using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.IO;
 using System.Runtime.CompilerServices;
 using System.Text;
 using UnityEngine;
@@ -12,31 +11,7 @@ namespace SkillsVR.EnterpriseCloudSDK.Networking
 {
     public static class RESTCore
     {
-        public const string DEV_DOMAIN = "https://develop-ec-bff.skillsvr.com";
-        public const string INT_DOMAIN = "https://internal-ec-bff.skillsvr.com";
-        public const string STG_DOMAIN = "https://staging-ec-bff.skillsvr.com";
-        public const string PRO_DOMAIN = "https://product-ec-bff.skillsvr.com";
-
-        public static string domain
-        {
-            get
-            {
-                switch (ECAPI.environment)
-                {
-                    case ECAPI.Environment.Development:
-                        return DEV_DOMAIN;
-                    case ECAPI.Environment.Internal:
-                        return INT_DOMAIN;
-                    case ECAPI.Environment.Staging:
-                        return STG_DOMAIN;
-                    case ECAPI.Environment.Production:
-                        return PRO_DOMAIN;
-                    default:
-                        return INT_DOMAIN;
-                }
-            }
-        }
-
+       
         public static string AccessToken => accessToken;
         private static string accessToken = string.Empty;
 
@@ -44,14 +19,7 @@ namespace SkillsVR.EnterpriseCloudSDK.Networking
         public static void ResetAssessToken()
         {
             accessToken = string.Empty;
-#if UNITY_ANDROID && !UNITY_EDITOR
-            AndroidJavaClass jc = new AndroidJavaClass("android.os.Environment");
-            var path = jc.CallStatic<AndroidJavaObject>("getExternalStorageDirectory").Call<string>("getAbsolutePath");
-            var combinedPath = Path.Combine(path, "accessToken.txt");
-            accessToken = File.ReadAllText(combinedPath);
-#endif
         }
-
         public static void SetAccessToken(string token)
         {
             accessToken = token;

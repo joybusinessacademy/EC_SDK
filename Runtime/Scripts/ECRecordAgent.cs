@@ -80,7 +80,6 @@ namespace SkillsVR.EnterpriseCloudSDK
         }
 
         public ResponsedEventHandlerGroup loginEvents = new ResponsedEventHandlerGroup();
-        public ResponsedEventHandlerGroup loginOrganisationEvents = new ResponsedEventHandlerGroup();
         public ResponsedEventHandlerGroup getConfigEvents = new ResponsedEventHandlerGroup();
         public ResponsedEventHandlerGroup submitScoreEvents = new ResponsedEventHandlerGroup();
         public RecordEventHandlerGroup recordEvents = new RecordEventHandlerGroup();

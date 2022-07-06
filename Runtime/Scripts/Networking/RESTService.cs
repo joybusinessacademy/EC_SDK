@@ -12,6 +12,8 @@ namespace SkillsVR.EnterpriseCloudSDK.Networking
     public interface IRestServiceProvider
     {
         void SendRequest<DATA, RESPONSE>(AbstractAPI<DATA, RESPONSE> request, Action<RESPONSE> onSuccess = null, Action<string> onError = null) where RESPONSE : AbstractResponse;
+
+        void SendCustomCoroutine(IEnumerator coro);
     }
 
     public class RESTService : MonoBehaviour, IRestServiceProvider
@@ -22,6 +24,11 @@ namespace SkillsVR.EnterpriseCloudSDK.Networking
         public static void Send<DATA, RESPONSE>(AbstractAPI<DATA, RESPONSE> request, Action<RESPONSE> onSuccess = null, Action<string> onError = null) where RESPONSE : AbstractResponse
         {
             globalRestServiceProvider.SendRequest(request, onSuccess, onError);
+        }
+
+        public static void SendByCustomCoroutine(IEnumerator coro)
+        {
+            globalRestServiceProvider.SendCustomCoroutine(coro);
         }
 
         public static void SetRestServiceProvider(IRestServiceProvider provider)
@@ -44,11 +51,17 @@ namespace SkillsVR.EnterpriseCloudSDK.Networking
 #endif
         }
 
+        public void SendCustomCoroutine(IEnumerator coro)
+        {
+            StartCoroutine(coro);
+        }
+
         public void SendRequest<DATA, RESPONSE>(AbstractAPI<DATA, RESPONSE> request, Action<RESPONSE> onSuccess = null, Action<string> onError = null) where RESPONSE : AbstractResponse
         {
             StartCoroutine(RESTCore.Send<DATA, RESPONSE>(request.URL, request.requestType.ToString(), request.data, request.authenticated, 
                 onSuccess: onSuccess, 
                 onError: onError));
         }
+
     }
 }

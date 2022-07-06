@@ -75,6 +75,9 @@ namespace SkillsVR.EnterpriseCloudSDK.Editor
             ECAPI.domain = recordAsset.currentConfig.domain;
             recordAsset.currentConfig.user = EditorGUILayout.TextField("Username:", recordAsset.currentConfig.user);
             recordAsset.currentConfig.password = EditorGUILayout.PasswordField("Password:", recordAsset.currentConfig.password);
+            recordAsset.currentConfig.clientId = EditorGUILayout.TextField("Client Id:", recordAsset.currentConfig.clientId);
+            recordAsset.currentConfig.loginUrl = EditorGUILayout.TextField("Login Url:", recordAsset.currentConfig.loginUrl);
+            //recordAsset.currentConfig.scope = EditorGUILayout.TextField("Scope:", recordAsset.currentConfig.scope);
 
             GUI.enabled = interactable && !string.IsNullOrWhiteSpace(recordAsset.currentConfig.user) && !string.IsNullOrWhiteSpace(recordAsset.currentConfig.password);
             if (GUILayout.Button("Login"))
@@ -144,12 +147,14 @@ namespace SkillsVR.EnterpriseCloudSDK.Editor
         private void SendLogin()
         {
             interactable = false;
-            ECAPI.Login(recordAsset.currentConfig.user, recordAsset.currentConfig.password, SendLoginOrganisation, LogError);
+            ECAPI.Login(recordAsset.currentConfig.user, recordAsset.currentConfig.password, recordAsset.currentConfig.clientId, recordAsset.currentConfig.loginUrl, SendLoginOrganisation, LogError);
         }
 
 
-        private void SendLoginOrganisation(Login.Response response)
+        private void SendLoginOrganisation(AbstractResponse response)
         {
+            interactable = true;
+            /*
             try
             {
                 var organisation = response.data.organisations[0];
@@ -164,6 +169,7 @@ namespace SkillsVR.EnterpriseCloudSDK.Editor
             
             interactable = false;
             ECAPI.LoginOrganisation(recordAsset.currentConfig.organisationId, recordAsset.currentConfig.userRoleName, recordAsset.currentConfig.userProjectName, RecieveLoginOrganisation, LogError);
+            */
         }
 
         private void RecieveLoginOrganisation(Login.Response response)

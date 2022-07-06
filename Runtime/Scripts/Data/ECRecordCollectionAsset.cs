@@ -16,6 +16,9 @@ namespace SkillsVR.EnterpriseCloudSDK.Data
         public string domain;
         public string user;
         public string password;
+        public string clientId;
+        public string loginUrl;
+        public string scope;
 
         public int organisationId;
         public string userRoleName;
@@ -175,7 +178,7 @@ namespace SkillsVR.EnterpriseCloudSDK.Data
                     return;
                 }
                 Action<string> loginFailedAction = (error) => { onError?.Invoke(error); };
-                ECAPI.Login(currentConfig.user, currentConfig.password, (loginResp) =>
+                ECAPI.Login(currentConfig.user, currentConfig.password, currentConfig.clientId, currentConfig.loginUrl, (loginResp) =>
                 {
                     ECAPI.LoginOrganisation(currentConfig.organisationId, currentConfig.userRoleName, currentConfig.userProjectName,
                         (loginOrgResp) =>

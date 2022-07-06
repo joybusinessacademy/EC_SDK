@@ -23,21 +23,14 @@ namespace SkillsVR.EnterpriseCloudSDK
         /// <summary>
         /// Login user to EC backend and grab access token.
         /// </summary>
-        /// <param name="email">user account</param>
+        /// <param name="userName">user account</param>
         /// <param name="password">user password</param>
         /// <param name="success">Action runs when login success. Params: Login.Response - response data for login request.</param>
         /// <param name="failed">Action runs when login fail, including http and network errors. Params: string - the error message.</param>
-        public static void Login(string @email, string @password, System.Action<Login.Response> success = null, System.Action<string> failed = null)
+        public static void Login(string userName, string password, string clientId, string loginUrl, System.Action<AbstractResponse> success = null, System.Action<string> failed = null)
         {
-            Login loginRequest = new Login()
-            {
-                data = new Login.Data
-                {
-                    email = @email,
-                    password = @password
-                }
-            };
-            RESTService.Send(loginRequest, success, failed);
+            var form = SSOLogin.CreateLoginForm(userName, password, SSOLogin.GetScope(), clientId);
+            RESTService.SendByCustomCoroutine(SSOLogin.SendSSOLoginForm(form, loginUrl, success, failed));
         }
         /// <summary>
         /// Login use to organisation with access token.

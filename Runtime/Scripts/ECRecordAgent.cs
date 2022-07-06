@@ -13,6 +13,8 @@ namespace SkillsVR.EnterpriseCloudSDK
         public const string NO_ASSET_ERROR = "No EC record asset found in resource. Create in editor with Window->Login first.";
         private string user;
         private string password;
+        private string clientId;
+        private string loginUrl;
         private int organisationId;
         private string userRoleName;
         private string userProjectName;
@@ -105,6 +107,8 @@ namespace SkillsVR.EnterpriseCloudSDK
 
                 user = recordAssetConfig.user;
                 password = recordAssetConfig.password;
+                clientId = recordAssetConfig.clientId;
+                loginUrl = recordAssetConfig.loginUrl;
 
                 organisationId = recordAssetConfig.organisationId;
                 userRoleName = recordAssetConfig.userRoleName;
@@ -154,7 +158,17 @@ namespace SkillsVR.EnterpriseCloudSDK
         {
             int.TryParse(id, out scenarioId);
         }
-        
+
+        public void ECSetClientId(string id)
+        {
+            clientId = id;
+        }
+
+        public void ECSetLoginUrl(string url)
+        {
+            loginUrl = url;
+        }
+
         private void OnRecordBoolScoreChangedCallback(int id, bool isOn)
         {
             recordEvents.onRecordStateChanged?.Invoke(id);
@@ -163,7 +177,7 @@ namespace SkillsVR.EnterpriseCloudSDK
 
         public void ECLogin()
         {
-            ECAPI.Login(user, password,
+            ECAPI.Login(user, password, clientId, loginUrl,
                 (resp) => { loginEvents.TriggerResponse(resp); Log("Login Success"); },
                 (error) => { loginEvents.TriggerEvent(false, error); LogError("Login Fail: " + error); });
         }

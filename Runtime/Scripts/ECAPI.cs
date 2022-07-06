@@ -23,38 +23,13 @@ namespace SkillsVR.EnterpriseCloudSDK
         /// <summary>
         /// Login user to EC backend and grab access token.
         /// </summary>
-        /// <param name="userName">user account</param>
-        /// <param name="password">user password</param>
-        /// <param name="success">Action runs when login success. Params: Login.Response - response data for login request.</param>
+        /// <param name="loginData">user login data includes: user name, password, client id, login url and scope.</param>
+        /// <param name="success">Action runs when login success. Params: SSOLoginResponse - response data for login request.</param>
         /// <param name="failed">Action runs when login fail, including http and network errors. Params: string - the error message.</param>
-        public static void Login(string userName, string password, string clientId, string loginUrl, System.Action<AbstractResponse> success = null, System.Action<string> failed = null)
+        public static void Login(SSOLoginData loginData, System.Action<SSOLoginResponse> success = null, System.Action<string> failed = null)
         {
-            var form = SSOLogin.CreateLoginForm(userName, password, SSOLogin.GetScope(), clientId);
-            RESTService.SendByCustomCoroutine(SSOLogin.SendSSOLoginForm(form, loginUrl, success, failed));
+            RESTService.SendByCustomCoroutine(SSOLogin.SendSSOLoginForm(loginData, success, failed));
         }
-        /// <summary>
-        /// Login use to organisation with access token.
-        /// </summary>
-        /// <param name="organisationId">User organisation id.Can get from LoginResponse.data.organisations.id.</param>
-        /// <param name="userRoleName">User role name. Can get from LoginResponse.data.organisations.roles.key.</param>
-        /// <param name="userProjectName">User project name. Can get from LoginResponse.data.organisations.name.</param>
-        /// <param name="success">Action runs when login success. Params: Login.Response - response data for login request.</param>
-        /// <param name="failed">Action runs when login fail, including http and network errors. Params: string - the error message.</param>
-        public static void LoginOrganisation(int organisationId, string userRoleName, string userProjectName, System.Action<Login.Response> success = null, System.Action<string> failed = null)
-        {
-            LoginOrganisation loginOrganisationRequest = new LoginOrganisation()
-            {
-                data = new LoginOrganisation.Data
-                {
-                    accessToken = RESTCore.AccessToken,
-                    organisation = organisationId,
-                    role = userRoleName,
-                    project = userProjectName
-                }
-            };
-            RESTService.Send(loginOrganisationRequest, success, failed);
-        }
-
        
         /// <summary>
         /// Set bool type game score to a record by record id.

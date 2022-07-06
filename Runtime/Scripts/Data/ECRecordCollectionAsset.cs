@@ -12,17 +12,10 @@ namespace SkillsVR.EnterpriseCloudSDK.Data
     [Serializable]
     public class ECRecordCollectionAssetConfig
     {
-        public string name => string.Join("_", scenarioId, null == domain ? "" : domain, null == user ? "" : user);
+        public string name => string.Join("_", scenarioId, null == domain ? "" : domain, (null == loginData || null== loginData.userName) ? "" : loginData.userName);
         public string domain;
-        public string user;
-        public string password;
-        public string clientId;
-        public string loginUrl;
-        public string scope;
 
-        public int organisationId;
-        public string userRoleName;
-        public string userProjectName;
+        public SSOLoginData loginData = new SSOLoginData();
 
         public int scenarioId;
         public List<ECRecordContent> managedRecords = new List<ECRecordContent>();
@@ -77,11 +70,6 @@ namespace SkillsVR.EnterpriseCloudSDK.Data
             string fileResourcePath = fileNameForResources;
             instance = Resources.Load<ECRecordCollectionAsset>(fileResourcePath);
             return instance;
-        }
-
-        private void OnEnable()
-        {
-            
         }
 
         public bool Contains(int id)
@@ -172,19 +160,15 @@ namespace SkillsVR.EnterpriseCloudSDK.Data
             if (!ECAPI.HasLoginToken())
             {
                 ECAPI.domain = currentConfig.domain;
-                if (string.IsNullOrWhiteSpace(currentConfig.user) || string.IsNullOrWhiteSpace(currentConfig.password))
+                if (string.IsNullOrWhiteSpace(currentConfig.loginData.userName) || string.IsNullOrWhiteSpace(currentConfig.loginData.password))
                 {
                     onError?.Invoke("User or password cannot be null or empty.");
                     return;
                 }
-                Action<string> loginFailedAction = (error) => { onError?.Invoke(error); };
-                ECAPI.Login(currentConfig.user, currentConfig.password, currentConfig.clientId, currentConfig.loginUrl, (loginResp) =>
+                Action<string> loginFailedAction = (error) => { onError?.Invoke(error); }; 
+                ECAPI.Login(currentConfig.loginData, (loginResp) =>
                 {
-                    ECAPI.LoginOrganisation(currentConfig.organisationId, currentConfig.userRoleName, currentConfig.userProjectName,
-                        (loginOrgResp) =>
-                        {
-                            actionAfterLogin?.Invoke();
-                        }, loginFailedAction);
+                    actionAfterLogin?.Invoke();
                 }, loginFailedAction);
             }
             else

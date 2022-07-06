@@ -11,13 +11,7 @@ namespace SkillsVR.EnterpriseCloudSDK
     public class ECRecordAgent : MonoBehaviour
     {
         public const string NO_ASSET_ERROR = "No EC record asset found in resource. Create in editor with Window->Login first.";
-        private string user;
-        private string password;
-        private string clientId;
-        private string loginUrl;
-        private int organisationId;
-        private string userRoleName;
-        private string userProjectName;
+        private SSOLoginData loginData = new SSOLoginData();
         private int scenarioId;
 
         [Serializable] public class UnityEventString : UnityEvent<string> { }
@@ -105,14 +99,7 @@ namespace SkillsVR.EnterpriseCloudSDK
 
                 getConfigEvents?.onSuccess?.Invoke();
 
-                user = recordAssetConfig.user;
-                password = recordAssetConfig.password;
-                clientId = recordAssetConfig.clientId;
-                loginUrl = recordAssetConfig.loginUrl;
-
-                organisationId = recordAssetConfig.organisationId;
-                userRoleName = recordAssetConfig.userRoleName;
-                userProjectName = recordAssetConfig.userProjectName;
+                loginData = new SSOLoginData(recordAssetConfig.loginData);
 
                 if (silentLoginUseAssetAccount && !ECAPI.HasLoginToken())
                 {
@@ -140,14 +127,14 @@ namespace SkillsVR.EnterpriseCloudSDK
             loginEvents?.TriggerEvent(ECAPI.HasLoginToken());
         }
 
-        public void ECSetUser(string userName)
+        public void ECSetLoginUser(string userName)
         {
-            user = userName;
+            loginData.userName = userName;
         }
 
-        public void ECSetPassword(string userPassword)
+        public void ECSetLoginPassword(string userPassword)
         {
-            password = userPassword;
+            loginData.password = userPassword;
         }
 
         public void ECSetScenarioId(int id)
@@ -159,14 +146,19 @@ namespace SkillsVR.EnterpriseCloudSDK
             int.TryParse(id, out scenarioId);
         }
 
-        public void ECSetClientId(string id)
+        public void ECSetLoginClientId(string id)
         {
-            clientId = id;
+            loginData.clientId = id;
+        }
+
+        public void ECSetLoginScope(string scope)
+        {
+            loginData.scope = scope;
         }
 
         public void ECSetLoginUrl(string url)
         {
-            loginUrl = url;
+            loginData.loginUrl = url;
         }
 
         private void OnRecordBoolScoreChangedCallback(int id, bool isOn)
@@ -177,33 +169,9 @@ namespace SkillsVR.EnterpriseCloudSDK
 
         public void ECLogin()
         {
-            ECAPI.Login(user, password, clientId, loginUrl,
+            ECAPI.Login(loginData,
                 (resp) => { loginEvents.TriggerResponse(resp); Log("Login Success"); },
                 (error) => { loginEvents.TriggerEvent(false, error); LogError("Login Fail: " + error); });
-        }
-
-
-        public void ECSetOrganisationId(int id)
-        {
-            organisationId = id;
-        }
-        public void ECSetUserRoleName(string role)
-        {
-            userRoleName = role;
-        }
-        public void ECSetUserProjectName(string project)
-        {
-            userProjectName = project;
-        }
-        
-        public void ECLoginOrganisation()
-        {
-            ECAPI.LoginOrganisation(
-                organisationId,
-                userRoleName,
-                userProjectName,
-                (resp) => {loginOrganisationEvents.TriggerResponse(resp); Log("Login Organisation Success"); },
-                (error) => { loginOrganisationEvents.TriggerEvent(false, error); LogError("Login Organisation Fail: " + error); });
         }
 
         public void ECGetConfig()

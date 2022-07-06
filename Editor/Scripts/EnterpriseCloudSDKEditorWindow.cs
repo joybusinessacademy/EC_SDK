@@ -21,7 +21,9 @@ namespace SkillsVR.EnterpriseCloudSDK.Editor
 
         SerializedProperty recordAssetSerializedProperty = null;
 
-        bool interactable = true;
+        protected bool interactable = true;
+
+        protected bool enableEditScope = false;
         [MenuItem("Window/SkillsVR Enterprise Cloud SDK")]
         public static void ShowWindow()
         {
@@ -49,6 +51,7 @@ namespace SkillsVR.EnterpriseCloudSDK.Editor
                 return;
             }
             EditorGUILayout.Space(10);
+
             EditorGUILayout.BeginVertical();
 
             GUI.enabled = false;
@@ -73,13 +76,10 @@ namespace SkillsVR.EnterpriseCloudSDK.Editor
             EditorGUILayout.EndHorizontal();
             recordAsset.currentConfig.domain = EditorGUILayout.TextField("Domain:", recordAsset.currentConfig.domain);
             ECAPI.domain = recordAsset.currentConfig.domain;
-            recordAsset.currentConfig.user = EditorGUILayout.TextField("Username:", recordAsset.currentConfig.user);
-            recordAsset.currentConfig.password = EditorGUILayout.PasswordField("Password:", recordAsset.currentConfig.password);
-            recordAsset.currentConfig.clientId = EditorGUILayout.TextField("Client Id:", recordAsset.currentConfig.clientId);
-            recordAsset.currentConfig.loginUrl = EditorGUILayout.TextField("Login Url:", recordAsset.currentConfig.loginUrl);
-            //recordAsset.currentConfig.scope = EditorGUILayout.TextField("Scope:", recordAsset.currentConfig.scope);
 
-            GUI.enabled = interactable && !string.IsNullOrWhiteSpace(recordAsset.currentConfig.user) && !string.IsNullOrWhiteSpace(recordAsset.currentConfig.password);
+            recordAsset.currentConfig.loginData = DrawLoginDataGUI(recordAsset.currentConfig.loginData);
+
+            GUI.enabled = interactable && recordAsset.currentConfig.loginData.IsValid();
             if (GUILayout.Button("Login"))
             {
                 SendLogin();
@@ -138,6 +138,72 @@ namespace SkillsVR.EnterpriseCloudSDK.Editor
             GUI.enabled = true;
         }
 
+        private SSOLoginData DrawLoginDataGUI(SSOLoginData loginData)
+        {
+            if (null == loginData)
+            {
+                loginData = new SSOLoginData();
+            }
+            loginData.userName = EditorGUILayout.TextField("Username:", loginData.userName);
+            loginData.password = EditorGUILayout.PasswordField("Password:", loginData.password);
+            loginData.clientId = EditorGUILayout.TextField("Client Id:", loginData.clientId);
+            loginData.loginUrl = EditorGUILayout.TextField("Login Url:", loginData.loginUrl);
+            loginData.scope = DrawScopeGUI(loginData.scope);
+            return loginData;
+        }
+
+        private string DrawScopeGUI(string scope)
+        {
+            enableEditScope = GUILayout.Toggle(enableEditScope, "Edit Scope");
+            if (!enableEditScope)
+            {
+                return scope;
+            }
+            GUILayout.BeginHorizontal();
+            GUILayout.Space(40);
+            GUILayout.BeginVertical();
+            GUILayout.BeginHorizontal();
+            GUILayout.FlexibleSpace();
+            if (GUILayout.Button("Reset to Default", GUILayout.ExpandWidth(false)))
+            {
+                scope = SSOLoginData.GetDefaultScopeString();
+            }
+            if (GUILayout.Button("Clear", GUILayout.ExpandWidth(false)))
+            {
+                scope = "";
+            }
+            GUILayout.EndHorizontal();
+            List<string> scopeList = null;
+            try
+            {
+                scopeList = scope.Split(' ').ToList();
+            }
+            catch {
+                scopeList = new List<string>();
+            }
+            scopeList.RemoveAll(x => string.IsNullOrWhiteSpace(x));
+            for (int i = 0; i < scopeList.Count; i++)
+            {
+                GUILayout.BeginHorizontal();
+                if (GUILayout.Button("-", GUILayout.ExpandWidth(false)))
+                {
+                    scopeList[i] = "";
+                    continue;
+                }
+                scopeList[i] = EditorGUILayout.TextField(scopeList[i]);
+                GUILayout.EndHorizontal();
+            }
+            if (GUILayout.Button("+", GUILayout.ExpandWidth(true)))
+            {
+                scopeList.Add("NewScope");
+            }
+            scopeList.RemoveAll(x => string.IsNullOrWhiteSpace(x));
+            GUILayout.EndVertical();
+            GUILayout.EndHorizontal();
+            GUILayout.Space(20);
+            return string.Join(" ", scopeList);
+        }
+
         private void LogError(string error)
         {
             interactable = true;
@@ -147,32 +213,10 @@ namespace SkillsVR.EnterpriseCloudSDK.Editor
         private void SendLogin()
         {
             interactable = false;
-            ECAPI.Login(recordAsset.currentConfig.user, recordAsset.currentConfig.password, recordAsset.currentConfig.clientId, recordAsset.currentConfig.loginUrl, SendLoginOrganisation, LogError);
+            ECAPI.Login(recordAsset.currentConfig.loginData, OnLoginSuccess, LogError);
         }
 
-
-        private void SendLoginOrganisation(AbstractResponse response)
-        {
-            interactable = true;
-            /*
-            try
-            {
-                var organisation = response.data.organisations[0];
-                recordAsset.currentConfig.organisationId = int.Parse(organisation.id);
-                recordAsset.currentConfig.userRoleName = organisation.roles[0].key;
-                recordAsset.currentConfig.userProjectName = organisation.name;
-            }
-            catch(Exception e)
-            {
-                Debug.LogException(e);
-            }
-            
-            interactable = false;
-            ECAPI.LoginOrganisation(recordAsset.currentConfig.organisationId, recordAsset.currentConfig.userRoleName, recordAsset.currentConfig.userProjectName, RecieveLoginOrganisation, LogError);
-            */
-        }
-
-        private void RecieveLoginOrganisation(Login.Response response)
+        private void OnLoginSuccess(SSOLoginResponse response)
         {
             interactable = true;
         }

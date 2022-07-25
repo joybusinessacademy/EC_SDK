@@ -1,4 +1,4 @@
-﻿using SkillsVR.EnterpriseCloudSDK.Data;
+using SkillsVR.EnterpriseCloudSDK.Data;
 using SkillsVR.EnterpriseCloudSDK.Networking;
 using SkillsVR.EnterpriseCloudSDK.Networking.API;
 using System.Collections;
@@ -18,6 +18,20 @@ namespace SkillsVR.EnterpriseCloudSDK
         public static bool HasLoginToken()
         {
             return !string.IsNullOrWhiteSpace(RESTCore.AccessToken);
+        }
+
+        /// <summary>
+        /// Check if access token exist on activity intent
+        /// Use by Skills VR B2C login
+        /// </summary>        
+        public static void TryFetchAccessTokenFromIntent()
+        {
+            AndroidJavaClass unityPlayer = new AndroidJavaClass("com.unity3d.player.UnityPlayer");
+            AndroidJavaObject currentActivity = unityPlayer.GetStatic<AndroidJavaObject>("currentActivity");
+            AndroidJavaObject activityIntent = currentActivity.Call<AndroidJavaObject>("getIntent");
+            string accessToken = activityIntent.Call<string>("getStringExtra", "ACCESS_TOKEN");
+            if (string.IsNullOrEmpty(accessToken) == false)
+                RESTCore.SetAccessToken(accessToken);
         }
 
         /// <summary>
@@ -161,7 +175,7 @@ namespace SkillsVR.EnterpriseCloudSDK
         /// <param name="failed">Action runs when submit fail, including http and network errors. Params: string - the error message.</param>
         public static void GetAllScenarios(System.Action<GetAllScenarios.Response> success = null, System.Action<string> failed = null)
         {
-            GetAllScenarios getAllScenariosRequest = new GetAllScenarios();
+            GetAllScenarios getAllScenariosRequest = new GetAllScenarios();            
             RESTService.Send(getAllScenariosRequest, success, failed);
         }
     }

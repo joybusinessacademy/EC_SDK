@@ -1,4 +1,4 @@
-﻿using SkillsVR.EnterpriseCloudSDK.Data;
+using SkillsVR.EnterpriseCloudSDK.Data;
 using System.Collections.Generic;
 
 namespace SkillsVR.EnterpriseCloudSDK.Networking.API
@@ -16,25 +16,29 @@ namespace SkillsVR.EnterpriseCloudSDK.Networking.API
         {
             public int code;
             public int message;
-            public List<ScenarioData> data;
+            public List<ScenarioData> data = new List<ScenarioData>();
         }
 
         [System.Serializable]
         public class ScenarioData
         {
+            public int id;
             public string name;
             public string version;
             public string description;
-
-            public List<ApkConfig> apkFiles;
+            public string packageName;            
+            public List<ApkConfig> apkFiles = new List<ApkConfig>();
         }
 
+        [System.Serializable]
         public class ApkConfig
         {
             public string name;            
             public string sas;
             public int scenarioId;
             public string device;
+            public string apkFileVersion;
+            public string description;
         }
     }
 }

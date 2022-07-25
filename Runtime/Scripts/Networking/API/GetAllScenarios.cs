@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace SkillsVR.EnterpriseCloudSDK.Networking.API
 {
-    public partial class GetAllScenarios : AbstractAPI<AbstractAPI.EmptyData, GetConfig.Response>
+    public partial class GetAllScenarios : AbstractAPI<AbstractAPI.EmptyData, GetAllScenarios.Response>
     {
         public GetAllScenarios() : base(string.Format(ECAPI.domain + "/api/scenario/all"))
         {

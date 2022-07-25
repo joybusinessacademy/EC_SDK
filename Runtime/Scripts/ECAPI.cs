@@ -153,5 +153,16 @@ namespace SkillsVR.EnterpriseCloudSDK
             GetConfig getConfigRequest = new GetConfig(scenarioId);
             RESTService.Send(getConfigRequest, success, failed);
         }
+                
+        /// <summary>
+        /// Get all scenario. 
+        /// </summary>       
+        /// <param name="success">Action runs when submit success. Params: GetConfig.Response - config data including a list of records.</param>
+        /// <param name="failed">Action runs when submit fail, including http and network errors. Params: string - the error message.</param>
+        public static void GetAllScenarios(System.Action<GetAllScenarios.Response> success = null, System.Action<string> failed = null)
+        {
+            GetAllScenarios getAllScenariosRequest = new GetAllScenarios();
+            RESTService.Send(getAllScenariosRequest, success, failed);
+        }
     }
 }

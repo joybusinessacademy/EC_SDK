@@ -26,7 +26,7 @@ namespace SkillsVR.EnterpriseCloudSDK.Networking.API
             public string name;
             public string version;
             public string description;
-            public string appName;            
+                  
             public List<ApkConfig> apkFiles = new List<ApkConfig>();
         }
 
@@ -38,6 +38,7 @@ namespace SkillsVR.EnterpriseCloudSDK.Networking.API
             public int scenarioId;
             public string device;
             public string apkFileVersion;
+            public string appName;      
             public string description;
         }
     }

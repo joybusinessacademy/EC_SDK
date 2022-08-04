@@ -12,7 +12,7 @@
         {
             public int scenarioId;
             public string location;
-            public System.DateTime duration;
+            public string duration;
             public string project;
 
             public Scores[] scores;

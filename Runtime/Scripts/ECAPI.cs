@@ -1,6 +1,7 @@
 using SkillsVR.EnterpriseCloudSDK.Data;
 using SkillsVR.EnterpriseCloudSDK.Networking;
 using SkillsVR.EnterpriseCloudSDK.Networking.API;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -100,7 +101,7 @@ namespace SkillsVR.EnterpriseCloudSDK
                 failed?.Invoke("No EC Record asset found.");
                 return;
             }
-            SubmitUserLearningRecord(asset.currentConfig.scenarioId, asset.currentConfig.managedRecords, success, failed);
+            SubmitUserLearningRecord(asset.currentConfig.scenarioId, asset.currentConfig.durationMS, asset.currentConfig.managedRecords, success, failed);
         }
 
         /// <summary>
@@ -110,7 +111,7 @@ namespace SkillsVR.EnterpriseCloudSDK
         /// <param name="recordCollection">List of records to be sent. Note: for v1.0.0 only send records that type is 0 (bool type game score).</param>
         /// <param name="success">Action runs when submit success. Params: AbstractAPI.EmptyResponse - not in use, empty data.</param>
         /// <param name="failed">Action runs when submit fail, including http and network errors. Params: string - the error message.</param>
-        public static void SubmitUserLearningRecord(int xScenarioId, IEnumerable<ECRecordContent> recordCollection, System.Action<AbstractAPI.EmptyResponse> success = null, System.Action<string> failed = null)
+        public static void SubmitUserLearningRecord(int xScenarioId, long durationMS, IEnumerable<ECRecordContent> recordCollection, System.Action<AbstractAPI.EmptyResponse> success = null, System.Action<string> failed = null)
         {
             if (null == recordCollection)
             {
@@ -142,17 +143,21 @@ namespace SkillsVR.EnterpriseCloudSDK
                 failed?.Invoke("Record collection cannot be empty.");
                 return;
             }
+
+            System.TimeSpan span = new System.TimeSpan(0, 25, 0);
+            
+            var dt = new System.DateTime(TimeSpan.TicksPerMillisecond * durationMS);
+            var durationWebUTC = dt.ToString("yyyy'-'MM'-'dd'T'HH':'mm':'ss'.'fff'Z'").Split('.')[0];
             SubmitLearningRecord submitLearningRecordRequest = new SubmitLearningRecord()
             {
                 data = new SubmitLearningRecord.Data
                 {
                     scenarioId = xScenarioId,
-                    location = "SKILLSVR HQ",
-                    duration = System.DateTime.Now,
-                    project = "WE",
+                    duration = durationWebUTC,
                     scores = scoreArray,
                 }
             };
+
             RESTService.Send(submitLearningRecordRequest, success, failed);
         }
 

@@ -249,7 +249,7 @@ namespace SkillsVR.EnterpriseCloudSDK.Editor
 
         public void SendLearningRecord()
         {
-            ECAPI.SubmitUserLearningRecord(recordAsset.currentConfig.scenarioId, recordAsset.currentConfig.managedRecords, LearningRecordResponse, LogError);
+            ECAPI.SubmitUserLearningRecord(recordAsset.currentConfig.scenarioId, recordAsset.currentConfig.durationMS, recordAsset.currentConfig.managedRecords, LearningRecordResponse, LogError);
         }
 
         private void LearningRecordResponse(AbstractAPI.EmptyResponse obj)

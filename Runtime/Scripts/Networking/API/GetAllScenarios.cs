@@ -26,7 +26,7 @@ namespace SkillsVR.EnterpriseCloudSDK.Networking.API
             public string name;
             public string version;
             public string description;
-                  
+            public string uri;      
             public List<ApkConfig> apkFiles = new List<ApkConfig>();
         }
 

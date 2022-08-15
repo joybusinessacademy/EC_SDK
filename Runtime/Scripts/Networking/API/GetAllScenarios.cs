@@ -5,7 +5,7 @@ namespace SkillsVR.EnterpriseCloudSDK.Networking.API
 {
     public partial class GetAllScenarios : AbstractAPI<AbstractAPI.EmptyData, GetAllScenarios.Response>
     {
-        public GetAllScenarios() : base(string.Format(ECAPI.domain + "/api/scenario/all"))
+        public GetAllScenarios() : base(string.Format(ECAPI.domain + "/api/scenario/all-for-headsets"))
         {
             requestType = HttpRequestType.GET;
             authenticated = true;

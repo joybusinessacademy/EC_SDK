@@ -34,6 +34,14 @@ namespace SkillsVR.EnterpriseCloudSDK
             if (string.IsNullOrEmpty(accessToken) == false)
                 RESTCore.SetAccessToken(accessToken);
         }
+        
+        public static string TryFetchStringFromIntent(string key)
+        {
+            AndroidJavaClass unityPlayer = new AndroidJavaClass("com.unity3d.player.UnityPlayer");
+            AndroidJavaObject currentActivity = unityPlayer.GetStatic<AndroidJavaObject>("currentActivity");
+            AndroidJavaObject activityIntent = currentActivity.Call<AndroidJavaObject>("getIntent");
+            return activityIntent.Call<string>("getStringExtra", key);
+        }
 
         /// <summary>
         /// Login user to EC backend and grab access token.

@@ -191,5 +191,23 @@ namespace SkillsVR.EnterpriseCloudSDK
             GetAllScenarios getAllScenariosRequest = new GetAllScenarios();            
             RESTService.Send(getAllScenariosRequest, success, failed);
         }
+
+        /// <summary>
+        /// Create new session. 
+        /// </summary>       
+        public static void CreateSession(int scenarioId, System.Action<CreateSession.Response> success = null, System.Action<string> failed = null)
+        {
+            CreateSession createSessionRequest = new CreateSession(scenarioId);
+            RESTService.Send(createSessionRequest, success, failed);
+        }
+
+        /// <summary>
+        /// Join session via pincode. 
+        /// </summary>       
+        public static void JoinSession(int scenarioId, string pinCode, System.Action<JoinSession.Response> success = null, System.Action<string> failed = null)
+        {
+            JoinSession joinSessionRequest = new JoinSession(scenarioId, pinCode);
+            RESTService.Send(joinSessionRequest, success, failed);
+        }
     }
 }

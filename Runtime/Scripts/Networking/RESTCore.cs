@@ -29,6 +29,12 @@ namespace SkillsVR.EnterpriseCloudSDK.Networking
 
         public static UnityWebRequest BuildUnityWebRequest<DATA>(string url, string httpType, DATA data, bool authenticated = false)
         {
+            if (data is WWWForm)
+            {
+                var postRequest = UnityWebRequest.Post(url, data as WWWForm);
+                return postRequest; 
+            }
+            
             var request = new UnityWebRequest(url, httpType);
 
             if (authenticated)

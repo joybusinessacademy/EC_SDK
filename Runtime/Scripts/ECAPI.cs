@@ -27,20 +27,24 @@ namespace SkillsVR.EnterpriseCloudSDK
         /// </summary>        
         public static void TryFetchAccessTokenFromIntent()
         {
+#if !UNITY_EDITOR && UNITY_ANDROID            
             AndroidJavaClass unityPlayer = new AndroidJavaClass("com.unity3d.player.UnityPlayer");
             AndroidJavaObject currentActivity = unityPlayer.GetStatic<AndroidJavaObject>("currentActivity");
             AndroidJavaObject activityIntent = currentActivity.Call<AndroidJavaObject>("getIntent");
             string accessToken = activityIntent.Call<string>("getStringExtra", "ACCESS_TOKEN");
             if (string.IsNullOrEmpty(accessToken) == false)
                 RESTCore.SetAccessToken(accessToken);
+#endif
         }
         
         public static string TryFetchStringFromIntent(string key)
         {
+#if !UNITY_EDITOR && UNITY_ANDROID            
             AndroidJavaClass unityPlayer = new AndroidJavaClass("com.unity3d.player.UnityPlayer");
             AndroidJavaObject currentActivity = unityPlayer.GetStatic<AndroidJavaObject>("currentActivity");
             AndroidJavaObject activityIntent = currentActivity.Call<AndroidJavaObject>("getIntent");
             return activityIntent.Call<string>("getStringExtra", key);
+#endif
         }
 
         /// <summary>

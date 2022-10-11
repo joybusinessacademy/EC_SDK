@@ -45,6 +45,7 @@ namespace SkillsVR.EnterpriseCloudSDK
             AndroidJavaObject activityIntent = currentActivity.Call<AndroidJavaObject>("getIntent");
             return activityIntent.Call<string>("getStringExtra", key);
 #endif
+            return null;
         }
 
         /// <summary>

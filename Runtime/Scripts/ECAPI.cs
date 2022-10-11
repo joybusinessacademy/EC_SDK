@@ -209,7 +209,7 @@ namespace SkillsVR.EnterpriseCloudSDK
         /// <summary>
         /// Join session via pincode. 
         /// </summary>       
-        public static void JoinSession(int scenarioId, string pinCode, System.Action<JoinSession.Response> success = null, System.Action<string> failed = null)
+        public static void JoinSession(int scenarioId, string pinCode, System.Action<CreateSession.Response> success = null, System.Action<string> failed = null)
         {
             JoinSession joinSessionRequest = new JoinSession(scenarioId, pinCode);
             RESTService.Send(joinSessionRequest, success, failed);

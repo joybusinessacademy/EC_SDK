@@ -24,7 +24,10 @@
         public enum HttpRequestType
         {
             POST,
-            GET
+            GET,
+            PUT,
+            UPDATE,
+            DELETE
         }
 
         [System.Serializable]

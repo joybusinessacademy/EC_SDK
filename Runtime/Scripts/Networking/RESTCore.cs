@@ -41,7 +41,10 @@ namespace SkillsVR.EnterpriseCloudSDK.Networking
                 request.SetRequestHeader("Authorization", string.Format("Bearer {0}", accessToken));
 
             if (data != null)
-                request.uploadHandler = (UploadHandler)new UploadHandlerRaw(Encoding.UTF8.GetBytes(JsonUtility.ToJson(data)));
+            {
+                var bytes = Encoding.UTF8.GetBytes(JsonUtility.ToJson(data as object));
+                request.uploadHandler = (UploadHandler)new UploadHandlerRaw(bytes);                
+            }
 
             
             request.SetRequestHeader("Content-Type", "application/json");

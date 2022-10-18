@@ -1,9 +1,10 @@
-﻿using SkillsVR.EnterpriseCloudSDK.Networking;
+using SkillsVR.EnterpriseCloudSDK.Networking;
 using SkillsVR.EnterpriseCloudSDK.Networking.API;
 using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using UnityEngine;
 using UnityEngine.Events;
 
@@ -70,6 +71,8 @@ namespace SkillsVR.EnterpriseCloudSDK.Data
             string fileNameForResources = Path.GetFileNameWithoutExtension(ASSET_FILE_NAME);
             string fileResourcePath = fileNameForResources;
             instance = Resources.Load<ECRecordCollectionAsset>(fileResourcePath);
+            if (instance == null)
+                instance = Resources.LoadAll<ECRecordCollectionAsset>("").ToList().First();
             return instance;
         }
 

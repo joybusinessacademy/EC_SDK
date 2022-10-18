@@ -72,7 +72,11 @@ namespace SkillsVR.EnterpriseCloudSDK.Data
             string fileResourcePath = fileNameForResources;
             instance = Resources.Load<ECRecordCollectionAsset>(fileResourcePath);
             if (instance == null)
-                instance = Resources.LoadAll<ECRecordCollectionAsset>("").ToList().First();
+            {
+                var assets = Resources.LoadAll<ECRecordCollectionAsset>("").ToList();
+                if (assets.Count > 0)
+                    instance = assets.First();
+            }
             return instance;
         }
 

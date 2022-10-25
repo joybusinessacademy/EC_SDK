@@ -172,7 +172,7 @@ namespace SkillsVR.EnterpriseCloudSDK
                 }
             };
 
-            if (string.IsNullOrEmpty(activePinCode))
+            if (!string.IsNullOrEmpty(activePinCode))
                 submitLearningRecordRequest.data.pinCode = int.Parse(activePinCode);
 
             RESTService.Send(submitLearningRecordRequest, success, failed);

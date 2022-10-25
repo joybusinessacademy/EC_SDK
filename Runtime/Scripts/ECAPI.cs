@@ -4,6 +4,7 @@ using SkillsVR.EnterpriseCloudSDK.Networking.API;
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 namespace SkillsVR.EnterpriseCloudSDK
@@ -11,7 +12,7 @@ namespace SkillsVR.EnterpriseCloudSDK
     public class ECAPI
     {
         public static string domain = ""; // https://internal-ec-bff.skillsvr.com
-
+        public static string activePinCode = "";
         /// <summary>
         /// Check already have token for authenticated requests.
         /// </summary>
@@ -167,9 +168,12 @@ namespace SkillsVR.EnterpriseCloudSDK
                 {
                     scenarioId = xScenarioId,
                     duration = durationWebUTC,
-                    scores = scoreArray,
+                    scores = scoreArray.ToList(),
                 }
             };
+
+            if (string.IsNullOrEmpty(activePinCode))
+                submitLearningRecordRequest.data.pinCode = int.Parse(activePinCode);
 
             RESTService.Send(submitLearningRecordRequest, success, failed);
         }
@@ -212,7 +216,11 @@ namespace SkillsVR.EnterpriseCloudSDK
         public static void JoinSession(int scenarioId, string pinCode, System.Action<CreateSession.Response> success = null, System.Action<string> failed = null)
         {
             JoinSession joinSessionRequest = new JoinSession(scenarioId, pinCode);
-            RESTService.Send(joinSessionRequest, success, failed);
+            RESTService.Send(joinSessionRequest, (s1) => {
+                activePinCode = pinCode;
+                if (success != null)
+                    success.Invoke(s1);
+            }, failed);
         }
     }
 }

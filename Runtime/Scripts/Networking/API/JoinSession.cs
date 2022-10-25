@@ -9,6 +9,7 @@ namespace SkillsVR.EnterpriseCloudSDK.Networking.API
         {
             requestType = HttpRequestType.POST;
             authenticated = true;
+            data = new Data();
         }
 
         [System.Serializable]

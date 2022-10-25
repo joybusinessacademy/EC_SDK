@@ -1,4 +1,6 @@
-﻿namespace SkillsVR.EnterpriseCloudSDK.Networking.API
+using System.Collections.Generic;
+
+namespace SkillsVR.EnterpriseCloudSDK.Networking.API
 {
     public class SubmitLearningRecord : AbstractAPI<SubmitLearningRecord.Data, AbstractAPI.EmptyResponse>
     {
@@ -14,14 +16,22 @@
             public string location;
             public string duration;
             public string project;
+            public int pinCode;
 
-            public Scores[] scores;
+            public List<Scores> scores = new List<Scores>();
+            public List<SkillScores> skillScores = new List<SkillScores>();
 
             [System.Serializable]
             public class Scores
             {
                 public bool gameScore;
                 public string code;
+            }
+
+            public class SkillScores
+            {
+                public int skillId;
+                public string score;
             }
         }
     }

@@ -27,7 +27,8 @@ namespace SkillsVR.EnterpriseCloudSDK.Networking.API
                 public bool gameScore;
                 public string code;
             }
-
+            
+            [System.Serializable]
             public class SkillScores
             {
                 public int skillId;

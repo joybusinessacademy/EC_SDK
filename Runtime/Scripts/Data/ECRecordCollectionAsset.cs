@@ -162,7 +162,7 @@ namespace SkillsVR.EnterpriseCloudSDK.Data
 
         public void SubmitUserScore(Action<AbstractAPI.EmptyResponse> success = null, Action<string> failed = null)
         {
-            TryLoginThen(() => { ECAPI.SubmitUserLearningRecord(currentConfig.scenarioId, currentConfig.durationMS, currentConfig.managedRecords, success, failed); }, failed);
+            TryLoginThen(() => { ECAPI.SubmitUserLearningRecord(currentConfig.scenarioId, currentConfig.durationMS, currentConfig.managedRecords, currentConfig.skillRecords, success, failed); }, failed);
         }
 
         public void TryLoginThen(Action actionAfterLogin, Action<string> onError)

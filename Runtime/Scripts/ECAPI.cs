@@ -107,7 +107,7 @@ namespace SkillsVR.EnterpriseCloudSDK
         /// </summary>
         /// <param name="success">Action runs when submit success. Params: AbstractAPI.EmptyResponse - not in use, empty data.</param>
         /// <param name="failed">Action runs when submit fail, including http and network errors. Params: string - the error message.</param>
-        public static void SubmitUserLearningRecord(System.Action<AbstractAPI.EmptyResponse> success = null, System.Action<string> failed = null)
+        public static void SubmitUserLearningRecord(Dictionary<string,string> userScore = null, System.Action<AbstractAPI.EmptyResponse> success = null, System.Action<string> failed = null)
         {
             var asset = ECRecordCollectionAsset.GetECRecordAsset();
             if (null == asset)
@@ -115,7 +115,26 @@ namespace SkillsVR.EnterpriseCloudSDK
                 failed?.Invoke("No EC Record asset found.");
                 return;
             }
-            SubmitUserLearningRecord(asset.currentConfig.scenarioId, asset.currentConfig.durationMS, asset.currentConfig.managedRecords, success, failed);
+
+            if (userScore != null)
+            {
+                var list = userScore.ToList();
+                list.ForEach(pair =>
+                {
+                    int skId = -999;
+                    int.TryParse(pair.Key, out skId);
+                    if (skId != -999)
+                    {
+                        asset.currentConfig.skillRecords.Add(new ECRecordSkillScore()
+                        {
+                            skillId = skId,
+                            score = pair.Value
+                        });
+                    }
+                });
+            }
+
+            SubmitUserLearningRecord(asset.currentConfig.scenarioId, asset.currentConfig.durationMS, asset.currentConfig.managedRecords, asset.currentConfig.skillRecords, success, failed);
         }
 
         /// <summary>
@@ -125,7 +144,7 @@ namespace SkillsVR.EnterpriseCloudSDK
         /// <param name="recordCollection">List of records to be sent. Note: for v1.0.0 only send records that type is 0 (bool type game score).</param>
         /// <param name="success">Action runs when submit success. Params: AbstractAPI.EmptyResponse - not in use, empty data.</param>
         /// <param name="failed">Action runs when submit fail, including http and network errors. Params: string - the error message.</param>
-        public static void SubmitUserLearningRecord(int xScenarioId, long durationMS, IEnumerable<ECRecordContent> recordCollection, System.Action<AbstractAPI.EmptyResponse> success = null, System.Action<string> failed = null)
+        public static void SubmitUserLearningRecord(int xScenarioId, long durationMS, IEnumerable<ECRecordContent> recordCollection, IEnumerable<ECRecordSkillScore> skillCollection = null, System.Action<AbstractAPI.EmptyResponse> success = null, System.Action<string> failed = null)
         {
             if (null == recordCollection)
             {
@@ -151,6 +170,23 @@ namespace SkillsVR.EnterpriseCloudSDK
                     });
                 }
             }
+
+
+            var skillScores = new List<SubmitLearningRecord.Data.SkillScores>();
+
+            if (skillCollection != null)
+            {
+                foreach (var skill in skillCollection)
+                {
+                    if (null == skill)
+                    {
+                        continue;
+                    }
+                    string json = JsonUtility.ToJson(skill);
+                    skillScores.Add(JsonUtility.FromJson<SubmitLearningRecord.Data.SkillScores>(json));
+                }
+            }
+
             var scoreArray = scores.ToArray();
             /*if (null == scoreArray || 0 == scoreArray.Length)
             {
@@ -169,6 +205,7 @@ namespace SkillsVR.EnterpriseCloudSDK
                     scenarioId = xScenarioId,
                     duration = durationWebUTC,
                     scores = scoreArray.ToList(),
+                    skillScores = skillScores.ToList()
                 }
             };
 

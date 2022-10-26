@@ -33,6 +33,7 @@ namespace SkillsVR.EnterpriseCloudSDK.Networking.API
             public string pinCode;
             public string playerRoleId;
             public string plannedSessionId;
+            public string deviceId;
         }
 
         [System.Serializable]

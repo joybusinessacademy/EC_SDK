@@ -27,8 +27,8 @@ namespace SkillsVR.EnterpriseCloudSDK.Data
 
         public bool gameScoreBool; // runtime user score from game
 
-        public int skillId = -1;
-        public string skillScoreText;
+        public int skillScoreId = -1;
+        public string skillScoreValue = string.Empty;
         
         public bool IsScoreType(ScoreType scoreType)
         {

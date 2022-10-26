@@ -21,6 +21,9 @@ namespace SkillsVR.EnterpriseCloudSDK.Data
         public int scenarioId;
         public long durationMS;
         public List<ECRecordContent> managedRecords = new List<ECRecordContent>();
+        
+        [System.NonSerialized]
+        public List<ECRecordSkillScore> skillRecords = new List<ECRecordSkillScore>();
 
     }
     public class ECRecordCollectionAsset : ScriptableObject

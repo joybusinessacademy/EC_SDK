@@ -29,6 +29,7 @@ namespace SkillsVR.EnterpriseCloudSDK.Data
 
         public int skillId = -1;
         public string skillScoreText;
+        
         public bool IsScoreType(ScoreType scoreType)
         {
             return (int)scoreType == type;

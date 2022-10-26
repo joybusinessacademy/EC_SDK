@@ -152,11 +152,11 @@ namespace SkillsVR.EnterpriseCloudSDK
                 }
             }
             var scoreArray = scores.ToArray();
-            if (null == scoreArray || 0 == scoreArray.Length)
+            /*if (null == scoreArray || 0 == scoreArray.Length)
             {
                 failed?.Invoke("Record collection cannot be empty.");
                 return;
-            }
+            }*/
 
             System.TimeSpan span = new System.TimeSpan(0, 25, 0);
             

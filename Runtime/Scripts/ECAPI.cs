@@ -187,6 +187,27 @@ namespace SkillsVR.EnterpriseCloudSDK
                 }
             }
 
+            // final score exist ??
+            if (skillScores.Find(k => k.skillId == 16) == null)
+            {
+                // force compute final score
+                float total = 0;
+                float summed = 0;
+                skillScores.ForEach(i =>
+                {
+                    int parsedScore = -1;
+                    int.TryParse(i.score, out parsedScore);
+                    if (parsedScore > -1)
+                    {
+                        total += parsedScore;
+                        summed++;
+                    }
+                });
+                float ave = summed == 0 ? 0f : (total / summed) * 100f;
+                skillScores.Add(new SubmitLearningRecord.Data.SkillScores() { skillId = 16, score = ave.ToString() });
+            }
+
+
             var scoreArray = scores.ToArray();
             /*if (null == scoreArray || 0 == scoreArray.Length)
             {
@@ -210,7 +231,7 @@ namespace SkillsVR.EnterpriseCloudSDK
             };
 
             if (!string.IsNullOrEmpty(activePinCode))
-                submitLearningRecordRequest.data.pinCode = int.Parse(activePinCode);
+                submitLearningRecordRequest.data.pinCode = activePinCode;
 
             RESTService.Send(submitLearningRecordRequest, success, failed);
         }

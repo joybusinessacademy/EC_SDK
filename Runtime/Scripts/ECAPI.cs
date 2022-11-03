@@ -188,7 +188,7 @@ namespace SkillsVR.EnterpriseCloudSDK
             }
 
             // final score exist ??
-            if (skillScores.Find(k => k.skillId == 16) == null)
+            if (skillScores.Find(k => k.skillId == 16) == null && skillScores.Count != 0)
             {
                 // force compute final score
                 float total = 0;

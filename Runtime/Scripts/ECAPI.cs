@@ -13,6 +13,7 @@ namespace SkillsVR.EnterpriseCloudSDK
     {
         public static string domain = ""; // https://internal-ec-bff.skillsvr.com
         public static string activePinCode = "";
+        public const string domainIntentId = "DOMAIN";
         /// <summary>
         /// Check already have token for authenticated requests.
         /// </summary>
@@ -42,12 +43,12 @@ namespace SkillsVR.EnterpriseCloudSDK
         /// Fetch intent session id from library app
         /// Use by Skills VR B2C login
         /// </summary>        
-        public static void TryFetchSessionIdFromIntent()
+        public static string TryFetchSessionIdFromIntent()
         {
-
 #if !UNITY_EDITOR && UNITY_ANDROID
             return TryFetchStringFromIntent("SESSION_ID");
 #endif
+            return string.Empty;
         }
 
         /// <summary>
@@ -254,10 +255,15 @@ namespace SkillsVR.EnterpriseCloudSDK
         public static void UpdateCurrentSessionStatus(UpdateSessionStatus.Status status, System.Action<AbstractAPI.EmptyResponse> success = null, System.Action<string> failed = null)
         {
             ECAPI.TryFetchAccessTokenFromIntent();
-            ECAPI.domain = ECAPI.TryFetchStringFromIntent(IntentDomainUrlKey);
+            if (ECAPI.HasLoginToken())
+            {
+                ECAPI.domain = ECAPI.TryFetchStringFromIntent(domainIntentId);
+                UpdateSessionStatus updateSessionStatusRequest = new UpdateSessionStatus(int.Parse(TryFetchSessionIdFromIntent()), status);
+                RESTService.Send(updateSessionStatusRequest, success, failed);
+                return;
+            }
 
-            UpdateSessionStatus updateSessionStatusRequest = new UpdateSessionStatus(TryFetchSessionIdFromIntent(), status);
-            RESTService.Send(updateSessionStatusRequest, success, failed);
+            throw new FieldAccessException("Access token is missing, make sure you are logging in using Skills VR SSO?");
         }
     }
 }

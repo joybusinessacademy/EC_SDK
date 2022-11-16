@@ -76,7 +76,7 @@ namespace SkillsVR.EnterpriseCloudSDK
         {
             RESTService.SendByCustomCoroutine(SSOLogin.SendSSOLoginForm(loginData, success, failed));
         }
-       
+
         /// <summary>
         /// Set bool type game score to a record by record id.
         /// </summary>
@@ -124,7 +124,7 @@ namespace SkillsVR.EnterpriseCloudSDK
         /// </summary>
         /// <param name="success">Action runs when submit success. Params: AbstractAPI.EmptyResponse - not in use, empty data.</param>
         /// <param name="failed">Action runs when submit fail, including http and network errors. Params: string - the error message.</param>
-        public static void SubmitUserLearningRecord(System.Action<AbstractAPI.EmptyResponse> success = null, System.Action<string> failed = null)
+        public static void SubmitUserLearningRecord(Dictionary<string, string> userScore = null, System.Action<AbstractAPI.EmptyResponse> success = null, System.Action<string> failed = null)
         {
             var asset = ECRecordCollectionAsset.GetECRecordAsset();
             if (null == asset)
@@ -132,7 +132,26 @@ namespace SkillsVR.EnterpriseCloudSDK
                 failed?.Invoke("No EC Record asset found.");
                 return;
             }
-            SubmitUserLearningRecord(asset.currentConfig.scenarioId, asset.currentConfig.durationMS, asset.currentConfig.managedRecords, success, failed);
+
+            if (userScore != null)
+            {
+                var list = userScore.ToList();
+                list.ForEach(pair =>
+                {
+                    int skId = -999;
+                    int.TryParse(pair.Key, out skId);
+                    if (skId != -999)
+                    {
+                        asset.currentConfig.skillRecords.Add(new ECRecordSkillScore()
+                        {
+                            skillId = skId,
+                            score = pair.Value
+                        });
+                    }
+                });
+            }
+
+            SubmitUserLearningRecord(asset.currentConfig.scenarioId, asset.currentConfig.durationMS, asset.currentConfig.managedRecords, asset.currentConfig.skillRecords, success, failed);
         }
 
         /// <summary>
@@ -142,7 +161,7 @@ namespace SkillsVR.EnterpriseCloudSDK
         /// <param name="recordCollection">List of records to be sent. Note: for v1.0.0 only send records that type is 0 (bool type game score).</param>
         /// <param name="success">Action runs when submit success. Params: AbstractAPI.EmptyResponse - not in use, empty data.</param>
         /// <param name="failed">Action runs when submit fail, including http and network errors. Params: string - the error message.</param>
-        public static void SubmitUserLearningRecord(int xScenarioId, long durationMS, IEnumerable<ECRecordContent> recordCollection, System.Action<AbstractAPI.EmptyResponse> success = null, System.Action<string> failed = null)
+        public static void SubmitUserLearningRecord(int xScenarioId, long durationMS, IEnumerable<ECRecordContent> recordCollection, IEnumerable<ECRecordSkillScore> skillCollection = null, System.Action<AbstractAPI.EmptyResponse> success = null, System.Action<string> failed = null)
         {
             if (null == recordCollection)
             {
@@ -168,15 +187,53 @@ namespace SkillsVR.EnterpriseCloudSDK
                     });
                 }
             }
+
+
+            var skillScores = new List<SubmitLearningRecord.Data.SkillScores>();
+
+            if (skillCollection != null)
+            {
+                foreach (var skill in skillCollection)
+                {
+                    if (null == skill)
+                    {
+                        continue;
+                    }
+                    string json = JsonUtility.ToJson(skill);
+                    skillScores.Add(JsonUtility.FromJson<SubmitLearningRecord.Data.SkillScores>(json));
+                }
+            }
+
+            // final score exist ??
+            if (skillScores.Find(k => k.skillId == 16) == null)
+            {
+                // force compute final score
+                float total = 0;
+                float summed = 0;
+                skillScores.ForEach(i =>
+                {
+                    int parsedScore = -1;
+                    int.TryParse(i.score, out parsedScore);
+                    if (parsedScore > -1)
+                    {
+                        total += parsedScore;
+                        summed++;
+                    }
+                });
+                float ave = summed == 0 ? 0f : (total / summed) * 100f;
+                skillScores.Add(new SubmitLearningRecord.Data.SkillScores() { skillId = 16, score = ave.ToString() });
+            }
+
+
             var scoreArray = scores.ToArray();
-            if (null == scoreArray || 0 == scoreArray.Length)
+            /*if (null == scoreArray || 0 == scoreArray.Length)
             {
                 failed?.Invoke("Record collection cannot be empty.");
                 return;
-            }
+            }*/
 
             System.TimeSpan span = new System.TimeSpan(0, 25, 0);
-            
+
             var dt = new System.DateTime(TimeSpan.TicksPerMillisecond * durationMS);
             var durationWebUTC = dt.ToString("yyyy'-'MM'-'dd'T'HH':'mm':'ss'.'fff'Z'").Split('.')[0];
             SubmitLearningRecord submitLearningRecordRequest = new SubmitLearningRecord()
@@ -186,11 +243,12 @@ namespace SkillsVR.EnterpriseCloudSDK
                     scenarioId = xScenarioId,
                     duration = durationWebUTC,
                     scores = scoreArray.ToList(),
+                    skillScores = skillScores.ToList()
                 }
             };
 
             if (!string.IsNullOrEmpty(activePinCode))
-                submitLearningRecordRequest.data.pinCode = int.Parse(activePinCode);
+                submitLearningRecordRequest.data.pinCode = activePinCode;
 
             RESTService.Send(submitLearningRecordRequest, success, failed);
         }
@@ -206,7 +264,7 @@ namespace SkillsVR.EnterpriseCloudSDK
             GetConfig getConfigRequest = new GetConfig(scenarioId);
             RESTService.Send(getConfigRequest, success, failed);
         }
-                
+
         /// <summary>
         /// Get all scenario. 
         /// </summary>       
@@ -214,7 +272,7 @@ namespace SkillsVR.EnterpriseCloudSDK
         /// <param name="failed">Action runs when submit fail, including http and network errors. Params: string - the error message.</param>
         public static void GetAllScenarios(System.Action<GetAllScenarios.Response> success = null, System.Action<string> failed = null)
         {
-            GetAllScenarios getAllScenariosRequest = new GetAllScenarios();            
+            GetAllScenarios getAllScenariosRequest = new GetAllScenarios();
             RESTService.Send(getAllScenariosRequest, success, failed);
         }
 

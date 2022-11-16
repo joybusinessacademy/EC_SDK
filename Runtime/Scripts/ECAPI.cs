@@ -251,6 +251,7 @@ namespace SkillsVR.EnterpriseCloudSDK
 
         /// <summary>
         /// Update current session
+        /// only works using skills vr SSO library app
         /// </summary> 
         public static void UpdateCurrentSessionStatus(UpdateSessionStatus.Status status, System.Action<AbstractAPI.EmptyResponse> success = null, System.Action<string> failed = null)
         {

@@ -36,6 +36,7 @@ namespace SkillsVR.EnterpriseCloudSDK.Networking.API
         {
             public string name;            
             public string sas;
+            public string videoLink;
             public int scenarioId;
             public string device;
             public string apkFileVersion;

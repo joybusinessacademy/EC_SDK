@@ -86,11 +86,11 @@ namespace SkillsVR.EnterpriseCloudSDK.Editor
             }
             GUI.enabled = interactable;
 
-            recordAsset.currentConfig.scenarioId = EditorGUILayout.IntField("Scenario ID:", recordAsset.currentConfig.scenarioId);
+            recordAsset.currentConfig.scenarioId = EditorGUILayout.TextField("Scenario ID:", recordAsset.currentConfig.scenarioId);
 
             if (ECAPI.HasLoginToken())
             {
-                GUI.enabled = interactable && 0 < recordAsset.currentConfig.scenarioId;
+                GUI.enabled = interactable && !string.IsNullOrEmpty(recordAsset.currentConfig.scenarioId);
                 if (GUILayout.Button("Get Config"))
                 {
                     SendGetConfig();

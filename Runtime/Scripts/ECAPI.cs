@@ -161,7 +161,7 @@ namespace SkillsVR.EnterpriseCloudSDK
         /// <param name="recordCollection">List of records to be sent. Note: for v1.0.0 only send records that type is 0 (bool type game score).</param>
         /// <param name="success">Action runs when submit success. Params: AbstractAPI.EmptyResponse - not in use, empty data.</param>
         /// <param name="failed">Action runs when submit fail, including http and network errors. Params: string - the error message.</param>
-        public static void SubmitUserLearningRecord(int xScenarioId, long durationMS, IEnumerable<ECRecordContent> recordCollection, IEnumerable<ECRecordSkillScore> skillCollection = null, System.Action<AbstractAPI.EmptyResponse> success = null, System.Action<string> failed = null)
+        public static void SubmitUserLearningRecord(string xScenarioId, long durationMS, IEnumerable<ECRecordContent> recordCollection, IEnumerable<ECRecordSkillScore> skillCollection = null, System.Action<AbstractAPI.EmptyResponse> success = null, System.Action<string> failed = null)
         {
             if (null == recordCollection)
             {
@@ -240,9 +240,9 @@ namespace SkillsVR.EnterpriseCloudSDK
             {
                 data = new SubmitLearningRecord.Data
                 {
-                    scenarioId = xScenarioId,
+                    moduleId = xScenarioId,
                     duration = durationWebUTC,
-                    scores = scoreArray.ToList(),
+                    userLearningRecords = scoreArray.ToList(),
                     skillScores = skillScores.ToList()
                 }
             };
@@ -259,7 +259,7 @@ namespace SkillsVR.EnterpriseCloudSDK
         /// <param name="scenarioId">Scenario config id</param>
         /// <param name="success">Action runs when submit success. Params: GetConfig.Response - config data including a list of records.</param>
         /// <param name="failed">Action runs when submit fail, including http and network errors. Params: string - the error message.</param>
-        public static void GetConfig(int scenarioId, System.Action<GetConfig.Response> success = null, System.Action<string> failed = null)
+        public static void GetConfig(string scenarioId, System.Action<GetConfig.Response> success = null, System.Action<string> failed = null)
         {
             GetConfig getConfigRequest = new GetConfig(scenarioId);
             RESTService.Send(getConfigRequest, success, failed);
@@ -279,7 +279,7 @@ namespace SkillsVR.EnterpriseCloudSDK
         /// <summary>
         /// Create new session. 
         /// </summary>       
-        public static void CreateSession(int scenarioId, System.Action<CreateSession.Response> success = null, System.Action<string> failed = null)
+        public static void CreateSession(string scenarioId, System.Action<CreateSession.Response> success = null, System.Action<string> failed = null)
         {
             CreateSession createSessionRequest = new CreateSession(scenarioId);
             RESTService.Send(createSessionRequest, success, failed);
@@ -288,7 +288,7 @@ namespace SkillsVR.EnterpriseCloudSDK
         /// <summary>
         /// Join session via pincode. 
         /// </summary>       
-        public static void JoinSession(int scenarioId, string pinCode, System.Action<CreateSession.Response> success = null, System.Action<string> failed = null)
+        public static void JoinSession(string scenarioId, string pinCode, System.Action<CreateSession.Response> success = null, System.Action<string> failed = null)
         {
             JoinSession joinSessionRequest = new JoinSession(scenarioId, pinCode);
             RESTService.Send(joinSessionRequest, (s1) => {

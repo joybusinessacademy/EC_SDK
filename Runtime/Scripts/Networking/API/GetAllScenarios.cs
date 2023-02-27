@@ -22,7 +22,7 @@ namespace SkillsVR.EnterpriseCloudSDK.Networking.API
         [System.Serializable]
         public class ScenarioData
         {
-            public int id;
+            public string id;
             public string name;
             public string version;
             public string description;

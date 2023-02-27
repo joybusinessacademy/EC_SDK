@@ -12,13 +12,13 @@ namespace SkillsVR.EnterpriseCloudSDK.Networking.API
         [System.Serializable]
         public class Data
         {
-            public int scenarioId;
+            public string moduleId;
             public string location;
             public string duration;
             public string project;
             public string pinCode;
 
-            public List<Scores> scores = new List<Scores>();
+            public List<Scores> userLearningRecords = new List<Scores>();
             public List<SkillScores> skillScores = new List<SkillScores>();
 
             [System.Serializable]

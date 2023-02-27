@@ -5,7 +5,7 @@ namespace SkillsVR.EnterpriseCloudSDK.Networking.API
 {
     public partial class CreateSession : AbstractAPI<AbstractAPI.EmptyData, CreateSession.Response>
     {
-        public CreateSession(int scenarioId) : base(string.Format(ECAPI.domain + "/api/plannedsession/create/{0}", scenarioId))
+        public CreateSession(string scenarioId) : base(string.Format(ECAPI.domain + "/api/plannedsession/create/{0}", scenarioId))
         {
             requestType = HttpRequestType.POST;
             authenticated = true;

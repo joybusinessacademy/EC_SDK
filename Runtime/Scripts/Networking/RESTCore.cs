@@ -70,6 +70,8 @@ namespace SkillsVR.EnterpriseCloudSDK.Networking
             }
 
             UnityWebRequest request = BuildUnityWebRequest(url, httpType, data, authenticated);
+            string key = ECAPI.TryFetchStringFromIntent("OCAPIM_SUB_KEY") ?? PlayerPrefs.GetString("OCAPIM_SUB_KEY");
+            request.SetRequestHeader("Ocp-Apim-Subscription-Key", !string.IsNullOrEmpty(key) ? key : "e1e2e5ddf41640b3afe061c02df1bd8a");
             if (0 == retryCount)
             {
                 string dataStr = "";

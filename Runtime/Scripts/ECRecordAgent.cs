@@ -12,7 +12,7 @@ namespace SkillsVR.EnterpriseCloudSDK
     {
         public const string NO_ASSET_ERROR = "No EC record asset found in resource. Create in editor with Window->Login first.";
         private SSOLoginData loginData = new SSOLoginData();
-        private int scenarioId;
+        private string scenarioId;
 
         [Serializable] public class UnityEventString : UnityEvent<string> { }
         [Serializable] public class UnityEventBool : UnityEvent<bool> { }
@@ -136,13 +136,9 @@ namespace SkillsVR.EnterpriseCloudSDK
             loginData.password = userPassword;
         }
 
-        public void ECSetScenarioId(int id)
-        {
-            scenarioId = id;
-        }
         public void ECSetScenarioId(string id)
         {
-            int.TryParse(id, out scenarioId);
+            scenarioId = id;
         }
 
         public void ECSetLoginClientId(string id)
@@ -192,7 +188,7 @@ namespace SkillsVR.EnterpriseCloudSDK
                 (error) => { getConfigEvents.TriggerEvent(false, error); LogError("Get Config Fail: " + error); });
         }
 
-        protected string ProcessConfigResponse(int cfgId, GetConfig.Response response)
+        protected string ProcessConfigResponse(string cfgId, GetConfig.Response response)
         {
             string error = null;
             if (null == response || null == response.data || 0 == response.data.Length)

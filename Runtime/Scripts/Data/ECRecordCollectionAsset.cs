@@ -18,7 +18,7 @@ namespace SkillsVR.EnterpriseCloudSDK.Data
 
         public SSOLoginData loginData = new SSOLoginData();
 
-        public int scenarioId;
+        public string scenarioId;
         public long durationMS;
         public List<ECRecordContent> managedRecords = new List<ECRecordContent>();
         

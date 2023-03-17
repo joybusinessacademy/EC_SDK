@@ -37,15 +37,18 @@ namespace SkillsVR.EnterpriseCloudSDK.Networking
             
             var request = new UnityWebRequest(url, httpType);
             string key = ECAPI.TryFetchStringFromIntent("OCAPIM_SUB_KEY") ?? PlayerPrefs.GetString("OCAPIM_SUB_KEY");
-            request.SetRequestHeader("Ocp-Apim-Subscription-Key", !string.IsNullOrEmpty(key) ? key : "373a68fc76d1440aa2ada7d03d9dc464");
-            
+            request.SetRequestHeader("Ocp-Apim-Subscription-Key", !string.IsNullOrEmpty(key) ? key : "e1e2e5ddf41640b3afe061c02df1bd8a");
+
+            string orgCode = ECAPI.TryFetchStringFromIntent("ORGCODE") ?? PlayerPrefs.GetString("ORGCODE");
+            request.SetRequestHeader("x-ent-org-code", !string.IsNullOrEmpty(orgCode) ? orgCode : "skillsvrqanz");
+
             if (authenticated)
                 request.SetRequestHeader("Authorization", string.Format("Bearer {0}", accessToken));
 
             if (data != null)
             {
                 var bytes = Encoding.UTF8.GetBytes(JsonUtility.ToJson(data as object));
-                request.uploadHandler = (UploadHandler)new UploadHandlerRaw(bytes);                
+                request.uploadHandler = (UploadHandler)new UploadHandlerRaw(bytes);    
             }
 
             
@@ -72,6 +75,10 @@ namespace SkillsVR.EnterpriseCloudSDK.Networking
             UnityWebRequest request = BuildUnityWebRequest(url, httpType, data, authenticated);
             string key = ECAPI.TryFetchStringFromIntent("OCAPIM_SUB_KEY") ?? PlayerPrefs.GetString("OCAPIM_SUB_KEY");
             request.SetRequestHeader("Ocp-Apim-Subscription-Key", !string.IsNullOrEmpty(key) ? key : "e1e2e5ddf41640b3afe061c02df1bd8a");
+
+            string orgCode = ECAPI.TryFetchStringFromIntent("ORGCODE") ?? PlayerPrefs.GetString("ORGCODE");
+            request.SetRequestHeader("x-ent-org-code", !string.IsNullOrEmpty(orgCode) ? orgCode : "skillsvrqanz"); 
+
             if (0 == retryCount)
             {
                 string dataStr = "";

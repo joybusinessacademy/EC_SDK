@@ -36,11 +36,11 @@ namespace SkillsVR.EnterpriseCloudSDK.Networking
             }
             
             var request = new UnityWebRequest(url, httpType);
-            string key = ECAPI.TryFetchStringFromIntent("OCAPIM_SUB_KEY") ?? PlayerPrefs.GetString("OCAPIM_SUB_KEY");
-            request.SetRequestHeader("Ocp-Apim-Subscription-Key", !string.IsNullOrEmpty(key) ? key : "e1e2e5ddf41640b3afe061c02df1bd8a");
+            string key = ECAPI.TryFetchStringFromIntent("OCAPIM_SUB_KEY") ?? PlayerPrefs.GetString("OCAPIM_SUB_KEY", "2d0a094d71ab400d866008be60a3f37c");
+            request.SetRequestHeader("Ocp-Apim-Subscription-Key", key);
 
-            string orgCode = ECAPI.TryFetchStringFromIntent("ORGCODE") ?? PlayerPrefs.GetString("ORGCODE");
-            request.SetRequestHeader("x-ent-org-code", !string.IsNullOrEmpty(orgCode) ? orgCode : "skillsvrqanz");
+            string orgCode = ECAPI.TryFetchStringFromIntent("ORGCODE") ?? PlayerPrefs.GetString("ORGCODE", "skillsvrnz");
+            request.SetRequestHeader("x-ent-org-code", orgCode);
 
             if (authenticated)
                 request.SetRequestHeader("Authorization", string.Format("Bearer {0}", accessToken));
@@ -73,11 +73,11 @@ namespace SkillsVR.EnterpriseCloudSDK.Networking
             }
 
             UnityWebRequest request = BuildUnityWebRequest(url, httpType, data, authenticated);
-            string key = ECAPI.TryFetchStringFromIntent("OCAPIM_SUB_KEY") ?? PlayerPrefs.GetString("OCAPIM_SUB_KEY");
-            request.SetRequestHeader("Ocp-Apim-Subscription-Key", !string.IsNullOrEmpty(key) ? key : "e1e2e5ddf41640b3afe061c02df1bd8a");
+            string key = ECAPI.TryFetchStringFromIntent("OCAPIM_SUB_KEY") ?? PlayerPrefs.GetString("OCAPIM_SUB_KEY", "2d0a094d71ab400d866008be60a3f37c");
+            request.SetRequestHeader("Ocp-Apim-Subscription-Key", key);
 
-            string orgCode = ECAPI.TryFetchStringFromIntent("ORGCODE") ?? PlayerPrefs.GetString("ORGCODE");
-            request.SetRequestHeader("x-ent-org-code", !string.IsNullOrEmpty(orgCode) ? orgCode : "skillsvrqanz"); 
+            string orgCode = ECAPI.TryFetchStringFromIntent("ORGCODE") ?? PlayerPrefs.GetString("ORGCODE", "skillsvrnz");
+            request.SetRequestHeader("x-ent-org-code", orgCode);
 
             if (0 == retryCount)
             {

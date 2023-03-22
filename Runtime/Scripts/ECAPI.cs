@@ -84,7 +84,7 @@ namespace SkillsVR.EnterpriseCloudSDK
         /// <param name="isOn">Tick the game score or not.</param>
         /// <param name="failed">Action runs when error occurs. Params: string - the error string.</param>
         /// <returns>Is success of setting user game score.</returns>
-        public static bool SetUserGameScoreBool(int recordId, bool isOn, System.Action<string> failed = null)
+        public static bool SetUserGameScoreBool(string recordId, bool isOn, System.Action<string> failed = null)
         {
             failed = null == failed ? Debug.LogError : failed;
             var asset = ECRecordCollectionAsset.GetECRecordAsset();
@@ -101,7 +101,7 @@ namespace SkillsVR.EnterpriseCloudSDK
         /// </summary>
         /// <param name="recordId">Id that matches ECRecordContent.id.</param>
         /// <returns>Boolean type value of game score.</returns>
-        public static bool GetUserGameScoreBool(int recordId)
+        public static bool GetUserGameScoreBool(string recordId)
         {
             var asset = ECRecordCollectionAsset.GetECRecordAsset();
             if (null == asset)

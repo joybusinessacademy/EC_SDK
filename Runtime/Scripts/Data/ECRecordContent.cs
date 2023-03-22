@@ -13,7 +13,7 @@ namespace SkillsVR.EnterpriseCloudSDK.Data
             Bool = 0,
             Title = 3,
         }
-        public int id;
+        public string id;
         public string parentId;
         public string code;
         public int index;

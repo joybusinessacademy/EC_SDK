@@ -72,7 +72,7 @@ namespace SkillsVR.EnterpriseCloudSDK
         public class RecordEventHandlerGroup
         {
             public UnityEvent onResetAllGameScores = new UnityEvent();
-            public UnityEventInt onRecordStateChanged = new UnityEventInt();
+            public UnityEventString onRecordStateChanged = new UnityEventString();
             public ECRecordCollectionAsset.RecordBoolScoreChangeEvent onRecordBoolScoreChanged = new ECRecordCollectionAsset.RecordBoolScoreChangeEvent();
             public ECRecordCollectionAsset.RecordBoolScoreChangeEvent onGetRecordBoolScore = new ECRecordCollectionAsset.RecordBoolScoreChangeEvent();
             public ECRecordCollectionAsset.RecordBoolScoreChangeEvent onSetRecordBoolScore = new ECRecordCollectionAsset.RecordBoolScoreChangeEvent();
@@ -156,7 +156,7 @@ namespace SkillsVR.EnterpriseCloudSDK
             loginData.loginUrl = url;
         }
 
-        private void OnRecordBoolScoreChangedCallback(int id, bool isOn)
+        private void OnRecordBoolScoreChangedCallback(string id, bool isOn)
         {
             recordEvents.onRecordStateChanged?.Invoke(id);
             recordEvents.onRecordBoolScoreChanged?.Invoke(id, isOn);
@@ -209,7 +209,7 @@ namespace SkillsVR.EnterpriseCloudSDK
             return null;
         }
 
-        public bool ECSetGameScoreBool(int id, bool isOn)
+        public bool ECSetGameScoreBool(string id, bool isOn)
         {
             if (null == recordAssetConfig || null == recordAsset)
             {
@@ -230,7 +230,7 @@ namespace SkillsVR.EnterpriseCloudSDK
             return success;
         }
 
-        public bool ECGetGameScoreBool(int id)
+        public bool ECGetGameScoreBool(string id)
         {
             if (null == recordAsset)
             {
@@ -281,18 +281,14 @@ namespace SkillsVR.EnterpriseCloudSDK
             onLogText?.Invoke("<color=red>" + msg + "</color>");
         }
 
-        private int setScoreId;
+        private string setScoreId;
         private bool setScoreValue;
 
-        public void ECSetScoreIdAction(int id)
+        public void ECSetScoreIdAction(string id)
         {
             setScoreId = id;
         }
 
-        public void ECSetScoreIdAction(string id)
-        {
-            int.TryParse(id, out setScoreId);
-        }
 
         public void ECSetScoreValueAction(bool value)
         {

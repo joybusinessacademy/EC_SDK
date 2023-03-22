@@ -61,7 +61,7 @@ namespace SkillsVR.EnterpriseCloudSDK.Data
             }
         }
         
-        [Serializable] public class RecordBoolScoreChangeEvent : UnityEvent<int,bool> { }
+        [Serializable] public class RecordBoolScoreChangeEvent : UnityEvent<string,bool> { }
 
         public RecordBoolScoreChangeEvent onGameScoreBoolChanged = new RecordBoolScoreChangeEvent();
         public UnityEvent onResetAllGameScores = new UnityEvent();
@@ -83,12 +83,12 @@ namespace SkillsVR.EnterpriseCloudSDK.Data
             return instance;
         }
 
-        public bool Contains(int id)
+        public bool Contains(string id)
         {
             return null != currentConfig.managedRecords.Find(x=>x.id == id);
         }
 
-        public bool SetGameScoreBool(int id, bool isOn, Action<string> onFail = null)
+        public bool SetGameScoreBool(string id, bool isOn, Action<string> onFail = null)
         {
             if (null == onFail)
             {
@@ -128,7 +128,7 @@ namespace SkillsVR.EnterpriseCloudSDK.Data
             return true;
         }
 
-        public bool GetGameScoreBool(int id)
+        public bool GetGameScoreBool(string id)
         {
             var record = currentConfig.managedRecords.Find(x => id == x.id);
             return null == record ? false : record.gameScoreBool;

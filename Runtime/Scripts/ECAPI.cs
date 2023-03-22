@@ -13,7 +13,9 @@ namespace SkillsVR.EnterpriseCloudSDK
     {
         public static string domain = ""; // https://internal-ec-bff.skillsvr.com
         public static string activePinCode = "";
-        public const string domainIntentId = "DOMAIN";
+        public const string domainIntentId = "DOMAIN";        
+        public const string IntentScenarioIdKey = "SCENARIO_ID";
+        
         /// <summary>
         /// Check already have token for authenticated requests.
         /// </summary>

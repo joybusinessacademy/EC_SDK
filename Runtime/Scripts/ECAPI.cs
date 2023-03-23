@@ -38,9 +38,11 @@ namespace SkillsVR.EnterpriseCloudSDK
             AndroidJavaObject activityIntent = currentActivity.Call<AndroidJavaObject>("getIntent");
             string accessToken = activityIntent.Call<string>("getStringExtra", "ACCESS_TOKEN");
             if (string.IsNullOrEmpty(accessToken) == false)
+            {
                 RESTCore.SetAccessToken(accessToken);
-            
-            activePinCode = TryFetchStringFromIntent(IntentPinCodeIdKey) ?? string.Empty;
+                activePinCode = TryFetchStringFromIntent(IntentPinCodeIdKey) ?? string.Empty;
+                ECAPI.domain = ECAPI.TryFetchStringFromIntent(domainIntentId);
+            }                        
 #endif
         }
 
@@ -183,7 +185,6 @@ namespace SkillsVR.EnterpriseCloudSDK
                 // for v1.0.0: backend server only accept bool game score records.
                 // otherwise will receive error 400.
                 // May changes later.
-                if (record.isScoreTypeBool)
                 {
                     scores.Add(new SubmitLearningRecord.Data.Scores()
                     {
@@ -320,8 +321,7 @@ namespace SkillsVR.EnterpriseCloudSDK
         {
             ECAPI.TryFetchAccessTokenFromIntent();
             if (ECAPI.HasLoginToken())
-            {
-                ECAPI.domain = ECAPI.TryFetchStringFromIntent(domainIntentId);
+            {               
                 UpdateSessionStatus updateSessionStatusRequest = new UpdateSessionStatus(int.Parse(TryFetchSessionIdFromIntent()), status);
                 RESTService.Send(updateSessionStatusRequest, success, failed);
                 return;

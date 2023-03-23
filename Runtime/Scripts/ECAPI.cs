@@ -39,6 +39,8 @@ namespace SkillsVR.EnterpriseCloudSDK
             string accessToken = activityIntent.Call<string>("getStringExtra", "ACCESS_TOKEN");
             if (string.IsNullOrEmpty(accessToken) == false)
                 RESTCore.SetAccessToken(accessToken);
+            
+            activePinCode = TryFetchStringFromIntent(IntentPinCodeIdKey) ?? string.Empty;
 #endif
         }
 

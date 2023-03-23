@@ -15,6 +15,7 @@ namespace SkillsVR.EnterpriseCloudSDK
         public static string activePinCode = "";
         public const string domainIntentId = "DOMAIN";        
         public const string IntentScenarioIdKey = "SCENARIO_ID";
+        public const string IntentPinCodeIdKey = "PIN_CODE";
         
         /// <summary>
         /// Check already have token for authenticated requests.

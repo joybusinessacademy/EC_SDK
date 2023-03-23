@@ -35,9 +35,8 @@ namespace SkillsVR.EnterpriseCloudSDK.Networking
                 return postRequest; 
             }
 
-#if UNITY_ANDROID && !UNITY_EDITOR
             ECAPI.TryFetchAccessTokenFromIntent();                
-#endif           
+      
             var request = new UnityWebRequest(url, httpType);
             string key = ECAPI.TryFetchStringFromIntent("OCAPIM_SUB_KEY") ?? PlayerPrefs.GetString("OCAPIM_SUB_KEY", "2d0a094d71ab400d866008be60a3f37c");
             request.SetRequestHeader("Ocp-Apim-Subscription-Key", key);
@@ -75,10 +74,9 @@ namespace SkillsVR.EnterpriseCloudSDK.Networking
                 yield break;
             }
 
-#if UNITY_ANDROID && !UNITY_EDITOR
+
             ECAPI.TryFetchAccessTokenFromIntent();                
-#endif
-    
+
             UnityWebRequest request = BuildUnityWebRequest(url, httpType, data, authenticated);
             string key = ECAPI.TryFetchStringFromIntent("OCAPIM_SUB_KEY") ?? PlayerPrefs.GetString("OCAPIM_SUB_KEY", "2d0a094d71ab400d866008be60a3f37c");
             request.SetRequestHeader("Ocp-Apim-Subscription-Key", key);

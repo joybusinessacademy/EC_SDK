@@ -23,6 +23,7 @@ namespace SkillsVR.EnterpriseCloudSDK
         /// <returns>bool - have token or not</returns>
         public static bool HasLoginToken()
         {
+            TryFetchAccessTokenFromIntent();
             return !string.IsNullOrWhiteSpace(RESTCore.AccessToken);
         }
 

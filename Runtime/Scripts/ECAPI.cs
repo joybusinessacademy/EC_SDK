@@ -186,6 +186,7 @@ namespace SkillsVR.EnterpriseCloudSDK
                 // for v1.0.0: backend server only accept bool game score records.
                 // otherwise will receive error 400.
                 // May changes later.
+                if (record.isScoreTypeBool)
                 {
                     scores.Add(new SubmitLearningRecord.Data.Scores()
                     {

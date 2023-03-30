@@ -4,7 +4,7 @@ using UnityEngine;
 namespace SkillsVR.EnterpriseCloudSDK.Networking.API
 {
     
-    public partial class UpdateSessionStatus : AbstractAPI<AbstractAPI.Data, AbstractAPI.EmptyResponse>
+    public partial class UpdateSessionStatus : AbstractAPI<UpdateSessionStatus.Data, AbstractAPI.EmptyResponse>
     {
         public enum Status {
             Planned = 0,

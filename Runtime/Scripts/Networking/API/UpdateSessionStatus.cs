@@ -4,7 +4,7 @@ using UnityEngine;
 namespace SkillsVR.EnterpriseCloudSDK.Networking.API
 {
     
-    public partial class UpdateSessionStatus : AbstractAPI<AbstractAPI.EmptyData, AbstractAPI.EmptyResponse>
+    public partial class UpdateSessionStatus : AbstractAPI<AbstractAPI.Data, AbstractAPI.EmptyResponse>
     {
         public enum Status {
             Planned = 0,
@@ -15,8 +15,16 @@ namespace SkillsVR.EnterpriseCloudSDK.Networking.API
             Failed
         }
 
-        public UpdateSessionStatus(int sessionId, Status status) : base(string.Format(ECAPI.domain + "/api/plannedsession/{0}/{1}", sessionId.ToString(), ((int)status).ToString()))
+        [System.Serializable]
+        public class Data
         {
+            public string id;
+            public int status;
+        }
+        
+        public UpdateSessionStatus(int sessionId, Status istatus) : base(string.Format(ECAPI.domain + "/api/plannedsession/status").ToString()))
+        {
+            data = new Data() {id = sessionId, status = (int)istatus  };
             requestType = HttpRequestType.PUT;
             authenticated = true;            
         }

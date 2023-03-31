@@ -3,6 +3,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Runtime.CompilerServices;
+using System.Security.Policy;
 using System.Text;
 using UnityEngine;
 using UnityEngine.Networking;
@@ -11,8 +12,22 @@ namespace SkillsVR.EnterpriseCloudSDK.Networking
 {
     public static class RESTCore
     {
-       
+        [System.Serializable]
+        public class RequestJson
+        {
+            public List<KeyValuePair> pairs = new List<KeyValuePair>();
+            [System.Serializable]
+            public class KeyValuePair
+            {
+                public string key;
+                public string value;
+            }
+        }
+
+
         public static string AccessToken => accessToken;
+        public static string RefreshToken => ECAPI.TryFetchStringFromIntent(ECAPI.refreshToken);
+
         private static string accessToken = string.Empty;
 
         [RuntimeInitializeOnLoadMethod]
@@ -81,6 +96,23 @@ namespace SkillsVR.EnterpriseCloudSDK.Networking
 
             if (0 == retryCount)
             {
+                // if the session is created from the library app
+                // broadcast to library app the requ
+                if (!string.IsNullOrEmpty(ECAPI.TryFetchStringFromIntent("SVR_MANAGED")))
+                {
+                    RequestJson requestJson = new RequestJson();
+                    requestJson.pairs.Add(new RequestJson.KeyValuePair() { key = "url", value = url });
+                    requestJson.pairs.Add(new RequestJson.KeyValuePair() { key = "body", value = JsonUtility.ToJson(data) });
+                    requestJson.pairs.Add(new RequestJson.KeyValuePair() { key = "accessToken", value = RESTCore.AccessToken });
+                    requestJson.pairs.Add(new RequestJson.KeyValuePair() { key = "refreshToken", value = RESTCore.RefreshToken });
+                    requestJson.pairs.Add(new RequestJson.KeyValuePair() { key = "Ocp-Apim-Subscription-Key", value = request.GetRequestHeader("Ocp-Apim-Subscription-Key") });
+                    requestJson.pairs.Add(new RequestJson.KeyValuePair() { key = "x-ent-org-code", value = request.GetRequestHeader("x-ent-org-code") });
+
+                    ECAPI.SendToAndroid(JsonUtility.ToJson(requestJson));
+                    onSuccess.Invoke(JsonUtility.FromJson<RESPONSE>("{}"));
+                    yield break;
+                }
+
                 string dataStr = "";
                 try
                 {
@@ -104,6 +136,7 @@ namespace SkillsVR.EnterpriseCloudSDK.Networking
             {
                 try
                 {
+                    
                     response = JsonUtility.FromJson<RESPONSE>(request.downloadHandler.text);
                     Debug.LogFormat("Response {0}\r\n{1}", request.url, request.downloadHandler.text);
                     response.Read(request.downloadHandler.text);
@@ -113,7 +146,7 @@ namespace SkillsVR.EnterpriseCloudSDK.Networking
                 catch(Exception e)
                 {
                     success = false;
-                    errorMsg = e.Message;
+                    errorMsg = request.downloadHandler.text + "\n" + e.Message;
                 }
                 
             }

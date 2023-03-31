@@ -16,7 +16,9 @@ namespace SkillsVR.EnterpriseCloudSDK
         public const string domainIntentId = "DOMAIN";        
         public const string IntentScenarioIdKey = "SCENARIO_ID";
         public const string IntentPinCodeIdKey = "PIN_CODE";
-        
+        public const string refreshToken = "REFRESH_TOKEN";
+        public const string accessToken = "ACCESS_TOKEN";
+
         /// <summary>
         /// Check already have token for authenticated requests.
         /// </summary>
@@ -27,17 +29,22 @@ namespace SkillsVR.EnterpriseCloudSDK
             return !string.IsNullOrWhiteSpace(RESTCore.AccessToken);
         }
 
+#if !UNITY_EDITOR
         public static readonly AndroidJavaClass unityPlayerClass = new AndroidJavaClass("com.unity3d.player.UnityPlayer");
         public static readonly AndroidJavaObject unityPlayerActivityObject = unityPlayerClass.GetStatic<AndroidJavaObject>("currentActivity");
+#endif
+
         public static string EC_BROADCAST_ACTION = "com.skillsvr.ECAPI_ACTION";
 
         public static void SendToAndroid(string payload)
         {
-#if !UNITY_EDITOR && UNITY_ANDROID  
+#if !UNITY_EDITOR && UNITY_ANDROID
             AndroidJavaObject sendIntent = new AndroidJavaObject("android.content.Intent", EC_BROADCAST_ACTION);
             sendIntent.Call<AndroidJavaObject>("putExtra", "PAYLOAD", payload);
             unityPlayerActivityObject.Call("sendBroadcast", sendIntent);
-#endif            
+#else
+            Debug.Log("SendToAndroid " + payload);
+#endif
         }
         
         /// <summary>
@@ -50,10 +57,10 @@ namespace SkillsVR.EnterpriseCloudSDK
             AndroidJavaClass unityPlayer = new AndroidJavaClass("com.unity3d.player.UnityPlayer");
             AndroidJavaObject currentActivity = unityPlayer.GetStatic<AndroidJavaObject>("currentActivity");
             AndroidJavaObject activityIntent = currentActivity.Call<AndroidJavaObject>("getIntent");
-            string accessToken = activityIntent.Call<string>("getStringExtra", "ACCESS_TOKEN");
-            if (string.IsNullOrEmpty(accessToken) == false)
+            string token = activityIntent.Call<string>("getStringExtra", accessToken);
+            if (string.IsNullOrEmpty(token) == false)
             {
-                RESTCore.SetAccessToken(accessToken);
+                RESTCore.SetAccessToken(token);
                 activePinCode = TryFetchStringFromIntent(IntentPinCodeIdKey) ?? string.Empty;
                 ECAPI.domain = ECAPI.TryFetchStringFromIntent(domainIntentId);
             }                        

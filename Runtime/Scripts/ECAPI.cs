@@ -27,6 +27,19 @@ namespace SkillsVR.EnterpriseCloudSDK
             return !string.IsNullOrWhiteSpace(RESTCore.AccessToken);
         }
 
+        public static readonly AndroidJavaClass unityPlayerClass = new AndroidJavaClass("com.unity3d.player.UnityPlayer");
+        public static readonly AndroidJavaObject unityPlayerActivityObject = unityPlayerClass.GetStatic<AndroidJavaObject>("currentActivity");
+        public static string EC_BROADCAST_ACTION = "com.skillsvr.ECAPI_ACTION";
+
+        public static void SendToAndroid(string payload)
+        {
+#if !UNITY_EDITOR && UNITY_ANDROID  
+            AndroidJavaObject sendIntent = new AndroidJavaObject("android.content.Intent", EC_BROADCAST_ACTION);
+            sendIntent.Call<AndroidJavaObject>("putExtra", "PAYLOAD", payload);
+            unityPlayerActivityObject.Call("sendBroadcast", sendIntent);
+#endif            
+        }
+        
         /// <summary>
         /// Check if access token exist on activity intent
         /// Use by Skills VR B2C login

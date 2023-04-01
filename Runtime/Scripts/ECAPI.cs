@@ -179,7 +179,18 @@ namespace SkillsVR.EnterpriseCloudSDK
                 });
             }
 
-            SubmitUserLearningRecord(asset.currentConfig.scenarioId, asset.currentConfig.durationMS, asset.currentConfig.managedRecords, asset.currentConfig.skillRecords, success, failed);
+            var targeRecords = asset.currentConfig.managedRecords;
+
+            // remap here
+            if (asset.currentConfig.managedRecords.Count == asset.currentConfig.runtimeManagedRecords.Count)
+            {
+                for (int x = 0; x < asset.currentConfig.managedRecords.Count; x++)
+                {
+                    asset.currentConfig.runtimeManagedRecords[x].gameScoreBool = asset.currentConfig.managedRecords[x].gameScoreBool;
+                }
+            }
+
+            SubmitUserLearningRecord(asset.currentConfig.scenarioId, asset.currentConfig.durationMS, targeRecords, asset.currentConfig.skillRecords, success, failed);
         }
 
         /// <summary>

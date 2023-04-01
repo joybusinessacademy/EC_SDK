@@ -47,16 +47,16 @@ namespace SkillsVR.EnterpriseCloudSDK.Networking
             if (data is WWWForm)
             {
                 var postRequest = UnityWebRequest.Post(url, data as WWWForm);
-                return postRequest; 
+                return postRequest;
             }
 
-            ECAPI.TryFetchAccessTokenFromIntent();                
-      
+            ECAPI.TryFetchAccessTokenFromIntent();
+
             var request = new UnityWebRequest(url, httpType);
-            string key = ECAPI.TryFetchStringFromIntent("OCAPIM_SUB_KEY") ?? PlayerPrefs.GetString("OCAPIM_SUB_KEY", "2d0a094d71ab400d866008be60a3f37c");
+            string key = ECAPI.TryFetchStringFromIntent("OCAPIM_SUB_KEY") ?? PlayerPrefs.GetString("OCAPIM_SUB_KEY", "373a68fc76d1440aa2ada7d03d9dc464");
             request.SetRequestHeader("Ocp-Apim-Subscription-Key", key);
 
-            string orgCode = ECAPI.TryFetchStringFromIntent("ORGCODE") ?? PlayerPrefs.GetString("ORGCODE", "skillsvrnz");
+            string orgCode = ECAPI.TryFetchStringFromIntent("ORGCODE") ?? PlayerPrefs.GetString("ORGCODE", "asdad");
             request.SetRequestHeader("x-ent-org-code", orgCode);
 
             if (authenticated)
@@ -65,10 +65,10 @@ namespace SkillsVR.EnterpriseCloudSDK.Networking
             if (data != null)
             {
                 var bytes = Encoding.UTF8.GetBytes(JsonUtility.ToJson(data as object));
-                request.uploadHandler = (UploadHandler)new UploadHandlerRaw(bytes);    
+                request.uploadHandler = (UploadHandler)new UploadHandlerRaw(bytes);
             }
 
-            
+
             request.SetRequestHeader("Content-Type", "application/json");
             request.downloadHandler = new DownloadHandlerBuffer();
 
@@ -89,8 +89,9 @@ namespace SkillsVR.EnterpriseCloudSDK.Networking
                 yield break;
             }
 
+            ECAPI.TryFetchAccessTokenFromIntent();
 
-            ECAPI.TryFetchAccessTokenFromIntent();                
+
 
             UnityWebRequest request = BuildUnityWebRequest(url, httpType, data, authenticated);
 
@@ -121,7 +122,7 @@ namespace SkillsVR.EnterpriseCloudSDK.Networking
                 catch { }
                 Debug.LogFormat("{0} {1}\r\n{2}", request.method, request.url, dataStr);
             }
-            
+
 
             yield return request.SendWebRequest();
             bool success = false;
@@ -136,19 +137,19 @@ namespace SkillsVR.EnterpriseCloudSDK.Networking
             {
                 try
                 {
-                    
+
                     response = JsonUtility.FromJson<RESPONSE>(request.downloadHandler.text);
                     Debug.LogFormat("Response {0}\r\n{1}", request.url, request.downloadHandler.text);
                     response.Read(request.downloadHandler.text);
                     success = null != response;
                     errorMsg = null == response ? "No response data received." : null;
                 }
-                catch(Exception e)
+                catch (Exception e)
                 {
                     success = false;
                     errorMsg = request.downloadHandler.text + "\n" + e.Message;
                 }
-                
+
             }
 
             if (success)
@@ -171,5 +172,5 @@ namespace SkillsVR.EnterpriseCloudSDK.Networking
             }
         }
     }
-   
+
 }

@@ -21,6 +21,9 @@ namespace SkillsVR.EnterpriseCloudSDK.Data
         public string scenarioId;
         public long durationMS;
         public List<ECRecordContent> managedRecords = new List<ECRecordContent>();
+
+        [System.NonSerialized]
+        public List<ECRecordContent> runtimeManagedRecords = new List<ECRecordContent>();
         
         [System.NonSerialized]
         public List<ECRecordSkillScore> skillRecords = new List<ECRecordSkillScore>();
@@ -162,11 +165,7 @@ namespace SkillsVR.EnterpriseCloudSDK.Data
 
         public void SubmitUserScore(Action<AbstractAPI.EmptyResponse> success = null, Action<string> failed = null)
         {
-            TryLoginThen(
-                () => TryCreateSessionThen(
-                    () => ECAPI.SubmitUserLearningRecord(currentConfig.scenarioId, currentConfig.durationMS, currentConfig.managedRecords, currentConfig.skillRecords, success, failed), 
-                    Debug.LogError)
-            , failed);
+            ECAPI.SubmitUserLearningRecord(currentConfig.scenarioId, currentConfig.durationMS, currentConfig.managedRecords, currentConfig.skillRecords, success, failed);
         }
 
         public void TryCreateSessionThen(Action actionAfterLogin, Action<string> onError)

@@ -170,10 +170,12 @@ namespace SkillsVR.EnterpriseCloudSDK.Data
 
         public void TryCreateSessionThen(Action actionAfterLogin, Action<string> onError)
         {
+        #if UNITY_EDITOR
             ECAPI.CreateSession(currentConfig.scenarioId, (response) => {
                 ECAPI.activePinCode = response.data.players[0].pinCode;
                 actionAfterLogin.Invoke();
             });
+#endif
         }
 
         public void TryLoginThen(Action actionAfterLogin, Action<string> onError)

@@ -166,6 +166,12 @@ namespace SkillsVR.EnterpriseCloudSDK.Data
         public void SubmitUserScore(Action<AbstractAPI.EmptyResponse> success = null, Action<string> failed = null)
         {
         #if UNITY_EDITOR
+TryLoginThen(
+                () => TryCreateSessionThen(
+                    () => ECAPI.SubmitUserLearningRecord(currentConfig.scenarioId, currentConfig.durationMS, currentConfig.managedRecords, currentConfig.skillRecords, success, failed), 
+                    Debug.LogError)
+            , failed);
+#else
             ECAPI.SubmitUserLearningRecord(currentConfig.scenarioId, currentConfig.durationMS, currentConfig.managedRecords, currentConfig.skillRecords, success, failed);
         #endif
         }

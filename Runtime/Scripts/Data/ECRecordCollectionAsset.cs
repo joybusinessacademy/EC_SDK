@@ -165,17 +165,17 @@ namespace SkillsVR.EnterpriseCloudSDK.Data
 
         public void SubmitUserScore(Action<AbstractAPI.EmptyResponse> success = null, Action<string> failed = null)
         {
+        #if UNITY_EDITOR
             ECAPI.SubmitUserLearningRecord(currentConfig.scenarioId, currentConfig.durationMS, currentConfig.managedRecords, currentConfig.skillRecords, success, failed);
+        #endif
         }
 
         public void TryCreateSessionThen(Action actionAfterLogin, Action<string> onError)
         {
-        #if UNITY_EDITOR
             ECAPI.CreateSession(currentConfig.scenarioId, (response) => {
                 ECAPI.activePinCode = response.data.players[0].pinCode;
                 actionAfterLogin.Invoke();
             });
-#endif
         }
 
         public void TryLoginThen(Action actionAfterLogin, Action<string> onError)

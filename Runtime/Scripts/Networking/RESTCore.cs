@@ -53,10 +53,10 @@ namespace SkillsVR.EnterpriseCloudSDK.Networking
             ECAPI.TryFetchAccessTokenFromIntent();
 
             var request = new UnityWebRequest(url, httpType);
-            string key = ECAPI.TryFetchStringFromIntent("OCAPIM_SUB_KEY") ?? PlayerPrefs.GetString("OCAPIM_SUB_KEY", "373a68fc76d1440aa2ada7d03d9dc464");
+            string key = ECAPI.TryFetchStringFromIntent("OCAPIM_SUB_KEY") ?? PlayerPrefs.GetString("OCAPIM_SUB_KEY", "2d0a094d71ab400d866008be60a3f37c");
             request.SetRequestHeader("Ocp-Apim-Subscription-Key", key);
 
-            string orgCode = ECAPI.TryFetchStringFromIntent("ORGCODE") ?? PlayerPrefs.GetString("ORGCODE", "asdad");
+            string orgCode = ECAPI.TryFetchStringFromIntent("ORGCODE") ?? PlayerPrefs.GetString("ORGCODE", "skillvrnz");
             request.SetRequestHeader("x-ent-org-code", orgCode);
 
             if (authenticated)

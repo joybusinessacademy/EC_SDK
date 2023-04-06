@@ -188,6 +188,7 @@ namespace SkillsVR.EnterpriseCloudSDK
                 {
                     asset.currentConfig.runtimeManagedRecords[x].gameScoreBool = asset.currentConfig.managedRecords[x].gameScoreBool;
                 }
+                targeRecords = asset.currentConfig.runtimeManagedRecords;
             }
 
             SubmitUserLearningRecord(asset.currentConfig.scenarioId, asset.currentConfig.durationMS, targeRecords, asset.currentConfig.skillRecords, success, failed);

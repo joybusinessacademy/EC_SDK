@@ -221,6 +221,12 @@ TryLoginThen(
         {
             currentConfig.managedRecords = ECRecordUtil.OrderContents(currentConfig.managedRecords);
         }
+        
+        public void OrderRuntimeManagedRecords(GetConfig.Response response)
+        {
+            currentConfig.runtimeManagedRecords.AddRange(response.data);
+            currentConfig.runtimeManagedRecords = ECRecordUtil.OrderContents(currentConfig.runtimeManagedRecords);
+        }
 
         public void AddRange(IEnumerable<ECRecordContent> contentCollection)
         {

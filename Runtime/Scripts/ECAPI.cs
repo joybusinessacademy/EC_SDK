@@ -180,7 +180,7 @@ namespace SkillsVR.EnterpriseCloudSDK
             }
 
             var targeRecords = asset.currentConfig.managedRecords;
-
+            var targetScenarioId = asset.currentConfig.scenarioId;
             // remap here
             if (asset.currentConfig.managedRecords.Count == asset.currentConfig.runtimeManagedRecords.Count)
             {
@@ -189,9 +189,10 @@ namespace SkillsVR.EnterpriseCloudSDK
                     asset.currentConfig.runtimeManagedRecords[x].gameScoreBool = asset.currentConfig.managedRecords[x].gameScoreBool;
                 }
                 targeRecords = asset.currentConfig.runtimeManagedRecords;
+                targetScenarioId = ECAPI.TryFetchStringFromIntent(ECAPI.IntentScenarioIdKey) ?? i.currentConfig.scenarioId;
             }
 
-            SubmitUserLearningRecord(asset.currentConfig.scenarioId, asset.currentConfig.durationMS, targeRecords, asset.currentConfig.skillRecords, success, failed);
+            SubmitUserLearningRecord(targetScenarioId, asset.currentConfig.durationMS, targeRecords, asset.currentConfig.skillRecords, success, failed);
         }
 
         /// <summary>

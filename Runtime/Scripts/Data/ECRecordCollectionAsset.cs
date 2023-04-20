@@ -83,6 +83,8 @@ namespace SkillsVR.EnterpriseCloudSDK.Data
                 if (assets.Count > 0)
                     instance = assets.First();
             }
+            if (!string.IsNullOrEmpty(ECAPI.TryFetchStringFromIntent(ECAPI.domainIntentId)))
+                instance.currentConfig.domain = ECAPI.TryFetchStringFromIntent(ECAPI.domainIntentId);
             return instance;
         }
 

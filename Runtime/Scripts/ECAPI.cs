@@ -192,7 +192,7 @@ namespace SkillsVR.EnterpriseCloudSDK
                 targetScenarioId = ECAPI.TryFetchStringFromIntent(ECAPI.IntentScenarioIdKey) ?? asset.currentConfig.scenarioId;
             }
 
-            SubmitUserLearningRecord(targetScenarioId, asset.currentConfig.durationMS, targeRecords, asset.currentConfig.skillRecords, success, failed);
+            SubmitUserLearningRecord(targetScenarioId, asset.currentConfig.durationMS, asset.currentConfig.userEmail, targeRecords, asset.currentConfig.skillRecords, success, failed);
         }
 
         /// <summary>
@@ -202,7 +202,7 @@ namespace SkillsVR.EnterpriseCloudSDK
         /// <param name="recordCollection">List of records to be sent. Note: for v1.0.0 only send records that type is 0 (bool type game score).</param>
         /// <param name="success">Action runs when submit success. Params: AbstractAPI.EmptyResponse - not in use, empty data.</param>
         /// <param name="failed">Action runs when submit fail, including http and network errors. Params: string - the error message.</param>
-        public static void SubmitUserLearningRecord(string xScenarioId, long durationMS, IEnumerable<ECRecordContent> recordCollection, IEnumerable<ECRecordSkillScore> skillCollection = null, System.Action<AbstractAPI.EmptyResponse> success = null, System.Action<string> failed = null)
+        public static void SubmitUserLearningRecord(string xScenarioId, long durationMS, string userEmail, IEnumerable<ECRecordContent> recordCollection, IEnumerable<ECRecordSkillScore> skillCollection = null, System.Action<AbstractAPI.EmptyResponse> success = null, System.Action<string> failed = null)
         {
             if (null == recordCollection)
             {
@@ -283,6 +283,7 @@ namespace SkillsVR.EnterpriseCloudSDK
                 {
                     moduleId = xScenarioId,
                     duration = durationWebUTC,
+                    email = userEmail,
                     userLearningRecords = scoreArray.ToList(),
                     skillScores = skillScores.ToList()
                 }

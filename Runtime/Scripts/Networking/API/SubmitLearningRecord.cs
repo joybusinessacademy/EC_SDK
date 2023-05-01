@@ -15,13 +15,14 @@ namespace SkillsVR.EnterpriseCloudSDK.Networking.API
             public string moduleId;
             public string location;
             public string duration;
+            public string email;
             public string project;
             public string pinCode;
 
             public List<Scores> userLearningRecords = new List<Scores>();
             public List<SkillScores> skillScores = new List<SkillScores>();
 
-            [System.Serializable]
+			[System.Serializable]
             public class Scores
             {
                 public bool gameScore;

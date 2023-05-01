@@ -20,6 +20,7 @@ namespace SkillsVR.EnterpriseCloudSDK.Data
 
         public string scenarioId;
         public long durationMS;
+		public string userEmail;
         public List<ECRecordContent> managedRecords = new List<ECRecordContent>();
 
         [System.NonSerialized]
@@ -27,8 +28,7 @@ namespace SkillsVR.EnterpriseCloudSDK.Data
         
         [System.NonSerialized]
         public List<ECRecordSkillScore> skillRecords = new List<ECRecordSkillScore>();
-
-    }
+	}
     public class ECRecordCollectionAsset : ScriptableObject
     {
         public const string ASSET_PATH = "Assets";
@@ -170,12 +170,24 @@ namespace SkillsVR.EnterpriseCloudSDK.Data
         #if UNITY_EDITOR
 TryLoginThen(
                 () => TryCreateSessionThen(
-                    () => ECAPI.SubmitUserLearningRecord(currentConfig.scenarioId, currentConfig.durationMS, currentConfig.managedRecords, currentConfig.skillRecords, success, failed), 
+                    () => ECAPI.SubmitUserLearningRecord(currentConfig.scenarioId, currentConfig.durationMS, currentConfig.userEmail, currentConfig.managedRecords, currentConfig.skillRecords, success, failed), 
                     Debug.LogError)
             , failed);
 #else
-            ECAPI.SubmitUserLearningRecord(currentConfig.scenarioId, currentConfig.durationMS, currentConfig.managedRecords, currentConfig.skillRecords, success, failed);
-        #endif
+            // REMAP HERE
+            if (currentConfig.managedRecords.Count == currentConfig.runtimeManagedRecords.Count)
+            {
+                for (int x = 0; x < currentConfig.managedRecords.Count; x++)
+                {
+                    currentConfig.runtimeManagedRecords[x].gameScoreBool = currentConfig.managedRecords[x].gameScoreBool;
+                }
+                currentConfig.managedRecords = currentConfig.runtimeManagedRecords;
+                currentConfig.scenarioId = ECAPI.TryFetchStringFromIntent(ECAPI.IntentScenarioIdKey) ?? currentConfig.scenarioId;
+            }
+
+            ECAPI.SubmitUserLearningRecord(currentConfig.scenarioId, currentConfig.durationMS, currentConfig.userEmail, currentConfig.managedRecords, currentConfig.skillRecords, success, failed);
+#endif
+
         }
 
         public void TryCreateSessionThen(Action actionAfterLogin, Action<string> onError)

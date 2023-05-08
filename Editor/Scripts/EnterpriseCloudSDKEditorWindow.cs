@@ -212,8 +212,17 @@ namespace SkillsVR.EnterpriseCloudSDK.Editor
 
         private void SendLogin()
         {
+            // us
+            if (recordAsset.currentConfig.loginData.clientId == "6ac24db6-10c0-4037-bd52-aef40e581007")
+                PlayerPrefs.SetString("OCAPIM_SUB_KEY", "e1e2e5ddf41640b3afe061c02df1bd8a");
+
+            // au
+            if (recordAsset.currentConfig.loginData.clientId == "2d1ee365-b7e5-44e8-b23b-aa9a30cb696c")
+                PlayerPrefs.SetString("OCAPIM_SUB_KEY", "2d0a094d71ab400d866008be60a3f37c");
+
             interactable = false;
             ECAPI.Login(recordAsset.currentConfig.loginData, OnLoginSuccess, LogError);
+            PlayerPrefs.Save();
         }
 
         private void OnLoginSuccess(SSOLoginResponse response)

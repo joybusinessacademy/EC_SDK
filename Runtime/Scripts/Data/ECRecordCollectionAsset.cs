@@ -174,20 +174,21 @@ TryLoginThen(
                     Debug.LogError)
             , failed);
 #else
-            // REMAP HERE
+#endif
+            var targeRecords = currentConfig.managedRecords;
+            var targetScenarioId = currentConfig.scenarioId;
+            // remap here
             if (currentConfig.managedRecords.Count == currentConfig.runtimeManagedRecords.Count)
             {
                 for (int x = 0; x < currentConfig.managedRecords.Count; x++)
                 {
                     currentConfig.runtimeManagedRecords[x].gameScoreBool = currentConfig.managedRecords[x].gameScoreBool;
                 }
-                currentConfig.managedRecords = currentConfig.runtimeManagedRecords;
-                currentConfig.scenarioId = ECAPI.TryFetchStringFromIntent(ECAPI.IntentScenarioIdKey) ?? currentConfig.scenarioId;
+                targeRecords = currentConfig.runtimeManagedRecords;
+                targetScenarioId = ECAPI.TryFetchStringFromIntent(ECAPI.IntentScenarioIdKey) ?? currentConfig.scenarioId;
             }
 
-            ECAPI.SubmitUserLearningRecord(currentConfig.scenarioId, currentConfig.durationMS, currentConfig.userEmail, currentConfig.managedRecords, currentConfig.skillRecords, success, failed);
-#endif
-
+            ECAPI.SubmitUserLearningRecord(targetScenarioId, currentConfig.durationMS, currentConfig.userEmail, targeRecords, currentConfig.skillRecords, success, failed);
         }
 
         public void TryCreateSessionThen(Action actionAfterLogin, Action<string> onError)

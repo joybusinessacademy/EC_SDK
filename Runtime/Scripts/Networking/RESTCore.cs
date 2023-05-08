@@ -78,7 +78,7 @@ namespace SkillsVR.EnterpriseCloudSDK.Networking
         public static string RepackRequestToJson<DATA>(UnityWebRequest request, DATA data)
         {
             RequestJson requestJson = new RequestJson();
-            requestJson.pairs.Add(new RequestJson.KeyValuePair() { key = "url", value = url });
+            requestJson.pairs.Add(new RequestJson.KeyValuePair() { key = "url", value = request.url });
             requestJson.pairs.Add(new RequestJson.KeyValuePair() { key = "body", value = JsonUtility.ToJson(data) });
             requestJson.pairs.Add(new RequestJson.KeyValuePair() { key = "accessToken", value = RESTCore.AccessToken });
             requestJson.pairs.Add(new RequestJson.KeyValuePair() { key = "refreshToken", value = RESTCore.RefreshToken });

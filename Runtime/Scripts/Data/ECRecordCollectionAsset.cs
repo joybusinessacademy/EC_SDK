@@ -174,7 +174,6 @@ TryLoginThen(
                     Debug.LogError)
             , failed);
 #else
-#endif
             var targeRecords = currentConfig.managedRecords;
             var targetScenarioId = currentConfig.scenarioId;
             // remap here
@@ -189,6 +188,7 @@ TryLoginThen(
             }
 
             ECAPI.SubmitUserLearningRecord(targetScenarioId, currentConfig.durationMS, currentConfig.userEmail, targeRecords, currentConfig.skillRecords, success, failed);
+#endif
         }
 
         public void TryCreateSessionThen(Action actionAfterLogin, Action<string> onError)

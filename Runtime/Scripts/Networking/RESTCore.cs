@@ -75,7 +75,7 @@ namespace SkillsVR.EnterpriseCloudSDK.Networking
             return request;
         }
         
-        public static string RepackRequestToJson()
+        public static string RepackRequestToJson(UnityWebRequest request, DATA data)
         {
             RequestJson requestJson = new RequestJson();
             requestJson.pairs.Add(new RequestJson.KeyValuePair() { key = "url", value = url });
@@ -103,9 +103,6 @@ namespace SkillsVR.EnterpriseCloudSDK.Networking
             }
 
             ECAPI.TryFetchAccessTokenFromIntent();
-
-
-
             UnityWebRequest request = BuildUnityWebRequest(url, httpType, data, authenticated);
 
             if (0 == retryCount)
@@ -114,7 +111,7 @@ namespace SkillsVR.EnterpriseCloudSDK.Networking
                 // broadcast to library app the requ
                 if (!string.IsNullOrEmpty(ECAPI.TryFetchStringFromIntent("SVR_MANAGED")))
                 {
-                    ECAPI.SendToAndroid(RepackRequestToJson());
+                    ECAPI.SendToAndroid(RepackRequestToJson(request, data));
                     onSuccess.Invoke(JsonUtility.FromJson<RESPONSE>("{}"));
                     yield break;
                 }
@@ -172,7 +169,7 @@ namespace SkillsVR.EnterpriseCloudSDK.Networking
                 else
                 {
                     // incase everything fails, lets send the payload library app
-                    ECAPI.SendToAndroid(RepackRequestToJson());
+                    ECAPI.SendToAndroid(RepackRequestToJson(request,data));
                     Debug.LogErrorFormat("Response {0}\r\n{1} ==> Max retry reached ({2}x). Abort.", request.url, errorMsg, retryCount);
                     onError?.Invoke(errorMsg);
                 }

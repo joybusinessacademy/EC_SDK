@@ -23,7 +23,7 @@ namespace SkillsVR.EnterpriseCloudSDK.Networking.API
         public class Data {
             public int id;
             public List<PlayerData> players = new List<PlayerData>();
-            public int scenarioId;
+            public string scenarioId;
             public List<PlayerRoles> availablePlayerRoles = new List<PlayerRoles>();
         }
 

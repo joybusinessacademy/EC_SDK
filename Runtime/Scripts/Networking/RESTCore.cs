@@ -74,6 +74,19 @@ namespace SkillsVR.EnterpriseCloudSDK.Networking
 
             return request;
         }
+        
+        public static string RepackRequestToJson<DATA>(UnityWebRequest request, DATA data)
+        {
+            RequestJson requestJson = new RequestJson();
+            requestJson.pairs.Add(new RequestJson.KeyValuePair() { key = "url", value = url });
+            requestJson.pairs.Add(new RequestJson.KeyValuePair() { key = "body", value = JsonUtility.ToJson(data) });
+            requestJson.pairs.Add(new RequestJson.KeyValuePair() { key = "accessToken", value = RESTCore.AccessToken });
+            requestJson.pairs.Add(new RequestJson.KeyValuePair() { key = "refreshToken", value = RESTCore.RefreshToken });
+            requestJson.pairs.Add(new RequestJson.KeyValuePair() { key = "Ocp-Apim-Subscription-Key", value = request.GetRequestHeader("Ocp-Apim-Subscription-Key") });
+            requestJson.pairs.Add(new RequestJson.KeyValuePair() { key = "x-ent-org-code", value = request.GetRequestHeader("x-ent-org-code") });
+            
+            return JsonUtility.ToJson(requestJson);                   
+        }
 
         public static IEnumerator Send<DATA, RESPONSE>(string url, string httpType, DATA data, bool authenticated, System.Action<RESPONSE> onSuccess, System.Action<string> onError, int retryCount = 0)
             where RESPONSE : AbstractResponse
@@ -90,9 +103,6 @@ namespace SkillsVR.EnterpriseCloudSDK.Networking
             }
 
             ECAPI.TryFetchAccessTokenFromIntent();
-
-
-
             UnityWebRequest request = BuildUnityWebRequest(url, httpType, data, authenticated);
 
             if (0 == retryCount)
@@ -101,15 +111,7 @@ namespace SkillsVR.EnterpriseCloudSDK.Networking
                 // broadcast to library app the requ
                 if (!string.IsNullOrEmpty(ECAPI.TryFetchStringFromIntent("SVR_MANAGED")))
                 {
-                    RequestJson requestJson = new RequestJson();
-                    requestJson.pairs.Add(new RequestJson.KeyValuePair() { key = "url", value = url });
-                    requestJson.pairs.Add(new RequestJson.KeyValuePair() { key = "body", value = JsonUtility.ToJson(data) });
-                    requestJson.pairs.Add(new RequestJson.KeyValuePair() { key = "accessToken", value = RESTCore.AccessToken });
-                    requestJson.pairs.Add(new RequestJson.KeyValuePair() { key = "refreshToken", value = RESTCore.RefreshToken });
-                    requestJson.pairs.Add(new RequestJson.KeyValuePair() { key = "Ocp-Apim-Subscription-Key", value = request.GetRequestHeader("Ocp-Apim-Subscription-Key") });
-                    requestJson.pairs.Add(new RequestJson.KeyValuePair() { key = "x-ent-org-code", value = request.GetRequestHeader("x-ent-org-code") });
-
-                    ECAPI.SendToAndroid(JsonUtility.ToJson(requestJson));
+                    ECAPI.SendToAndroid(RepackRequestToJson(request, data));
                     onSuccess.Invoke(JsonUtility.FromJson<RESPONSE>("{}"));
                     yield break;
                 }
@@ -166,6 +168,8 @@ namespace SkillsVR.EnterpriseCloudSDK.Networking
                 }
                 else
                 {
+                    // incase everything fails, lets send the payload library app
+                    ECAPI.SendToAndroid(RepackRequestToJson(request,data));
                     Debug.LogErrorFormat("Response {0}\r\n{1} ==> Max retry reached ({2}x). Abort.", request.url, errorMsg, retryCount);
                     onError?.Invoke(errorMsg);
                 }

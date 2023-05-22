@@ -174,7 +174,7 @@ TryLoginThen(
                     Debug.LogError)
             , failed);
 #else
-            ECAPI.SubmitUserLearningRecord(currentConfig.scenarioId, currentConfig.durationMS, currentConfig.managedRecords, currentConfig.skillRecords, success, failed);
+            ECAPI.SubmitUserLearningRecord(null, success, failed);
         #endif
         }
 

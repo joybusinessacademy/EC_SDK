@@ -46,6 +46,7 @@ namespace SkillsVR.EnterpriseCloudSDK.Networking
             GameObject runtimeServiceObject = new GameObject(nameof(RESTService));
             GameObject.DontDestroyOnLoad(runtimeServiceObject);
             globalRestServiceProvider = runtimeServiceObject.AddComponent<RESTService>();
+            PlayerPrefs.SetString("StartTimeStamp", System.DateTime.Now.Ticks.ToString());
 #if UNITY_EDITOR
             Debug.Log("Rest Service " + globalRestServiceProvider.GetType().Name);
 #endif

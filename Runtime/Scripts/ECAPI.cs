@@ -273,9 +273,10 @@ namespace SkillsVR.EnterpriseCloudSDK
                 return;
             }*/
 
-            System.TimeSpan span = new System.TimeSpan(0, 25, 0);
+            var startTimeStamp = new DateTime(long.Parse(PlayerPrefs.GetString("StartTimeStamp")));
+            var currentTimeStamp = DateTime.Now;
 
-            var dt = new System.DateTime(TimeSpan.TicksPerMillisecond * durationMS);
+            var dt = new DateTime((currentTimeStamp - startTimeStamp).Ticks);
             var durationWebUTC = dt.ToString("yyyy'-'MM'-'dd'T'HH':'mm':'ss'.'fff'Z'").Split('.')[0];
             SubmitLearningRecord submitLearningRecordRequest = new SubmitLearningRecord()
             {

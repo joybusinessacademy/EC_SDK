@@ -273,7 +273,7 @@ namespace SkillsVR.EnterpriseCloudSDK
                 return;
             }*/
 
-            var startTimeStamp = new DateTime(long.Parse(PlayerPrefs.GetString("StartTimeStamp")));
+            var startTimeStamp = new DateTime(long.Parse(PlayerPrefs.GetString("StartTimeStamp",0)));
             var currentTimeStamp = DateTime.Now;
 
             var dt = new DateTime((currentTimeStamp - startTimeStamp).Ticks);

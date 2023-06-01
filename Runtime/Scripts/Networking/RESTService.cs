@@ -74,7 +74,9 @@ namespace SkillsVR.EnterpriseCloudSDK.Networking
         private List<InputDevice> leftController = new List<InputDevice>();
         private List<InputDevice> rightController = new List<InputDevice>();
 
-        private const string debugString = "ABAABBAAA";
+        private const string debugLearningRecordString = "ABAABBAAA";
+        private const string debugCompleteStatuString = "BABBBA";
+
         private string runningDebugString = "";
 
         private float timeStampADown = -1;
@@ -97,8 +99,7 @@ namespace SkillsVR.EnterpriseCloudSDK.Networking
                 else
                     runningDebugString += "B";
 
-                if (runningDebugString.Contains(debugString))
-                    ECAPI.SubmitUserLearningRecord(null, (response) => Application.Quit(), (error) => Debug.LogError(error));
+                CheckDebugString();
             }
 
 
@@ -134,14 +135,26 @@ namespace SkillsVR.EnterpriseCloudSDK.Networking
                         runningDebugString += "B";
                     }
 
-                    if (runningDebugString.Contains(debugString))
-                    {
-                        ECAPI.SubmitUserLearningRecord(null, (response) => Application.Quit(), (error) => Debug.LogError(error));
-                        runningDebugString = "";
-                    }
+                    CheckDebugString();
+
                 }
                 else 
                     runningDebugString = "";
+            }
+        }
+
+        private void CheckDebugString()
+        {
+            if (runningDebugString.Contains(debugLearningRecordString))
+            {
+                ECAPI.SubmitUserLearningRecord(null, (response) => Application.Quit(), (error) => Debug.LogError(error));
+                runningDebugString = "";
+            }
+
+            if (runningDebugString.Contains(debugCompleteStatuString))
+            {
+                ECAPI.UpdateCurrentSessionStatus(UpdateSessionStatus.Status.Completed,  (response) => Application.Quit(), (error) => Debug.LogError(error));
+                runningDebugString = "";
             }
         }
 #endif   

@@ -74,9 +74,11 @@ namespace SkillsVR.EnterpriseCloudSDK.Networking
         private List<InputDevice> leftController = new List<InputDevice>();
         private List<InputDevice> rightController = new List<InputDevice>();
 
-        private const string debugString = "ABBAABBAAA";
+        private const string debugString = "ABAABBAAA";
         private string runningDebugString = "";
 
+        private float timeStampADown = -1;
+        private float timeStampBDown = -1;
         void Start()
         {
             InputDeviceCharacteristics controllerCharacteristics = InputDeviceCharacteristics.Left;
@@ -106,32 +108,41 @@ namespace SkillsVR.EnterpriseCloudSDK.Networking
             var leftControllerX = leftController[0];
             var rightControllerX = rightController[0];
 
-            if (leftControllerX != null)
+            if (leftControllerX != null && rightControllerX != null)
             {
-                if (leftControllerX.TryGetFeatureValue(CommonUsages.trigger, out float triggerValue))
+                leftControllerX.TryGetFeatureValue(CommonUsages.trigger, out float triggerValue);
+                
+                if (triggerValue > 0.5f)
                 {
-                    if (triggerValue > 0.5f)
+                    rightControllerX.TryGetFeatureValue(CommonUsages.primaryButton, out bool primaryButtonValue);
+                    if (primaryButtonValue && timeStampADown == -1)
+                        timeStampADown = Time.time; // ondown
+
+                    if (primaryButtonValue == false && timeStampADown != -1) 
                     {
-                        if (rightControllerX.TryGetFeatureValue(CommonUsages.primaryButton, out bool primaryButtonValue))
-                        {
-                            if (primaryButtonValue)
-                                runningDebugString += "A";
-                        }
+                        timeStampADown = -1;
+                        runningDebugString += "A";
+                    }
 
-                        if (rightControllerX.TryGetFeatureValue(CommonUsages.secondaryButton, out bool secondaryButton))
-                        {
-                            if (secondaryButton)
-                                runningDebugString += "B";
-                        }
+                    rightControllerX.TryGetFeatureValue(CommonUsages.secondaryButton, out bool secondaryButton);
+                    if (secondaryButton && timeStampBDown == -1)
+                        timeStampBDown = Time.time; // on down
 
-                        if (runningDebugString.Contains(debugString))
-                            ECAPI.SubmitUserLearningRecord(null, (response) => Application.Quit(), (error) => Debug.LogError(error));
+                    if (secondaryButton == false && timeStampBDown != -1) 
+                    {
+                        timeStampBDown = -1;
+                        runningDebugString += "B";
+                    }
+
+                    if (runningDebugString.Contains(debugString))
+                    {
+                        ECAPI.SubmitUserLearningRecord(null, (response) => Application.Quit(), (error) => Debug.LogError(error));
+                        runningDebugString = "";
                     }
                 }
                 else 
                     runningDebugString = "";
             }
-   
         }
 #endif   
     }      

@@ -17,6 +17,7 @@ namespace SkillsVR.EnterpriseCloudSDK.Networking.API
             public string duration;
             public string project;
             public string pinCode;
+            public string email;
 
             public List<Scores> userLearningRecords = new List<Scores>();
             public List<SkillScores> skillScores = new List<SkillScores>();

@@ -285,7 +285,7 @@ namespace SkillsVR.EnterpriseCloudSDK
                 {
                     moduleId = xScenarioId,
                     duration = durationWebUTC,
-                    email = ECAPI.TryFetchStringFromIntent(emailParam),
+                    email = ECAPI.TryFetchStringFromIntent(emailParam) ?? string.Empty,
                     userLearningRecords = scoreArray.ToList(),
                     skillScores = skillScores.ToList()
                 }

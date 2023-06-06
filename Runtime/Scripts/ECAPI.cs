@@ -18,6 +18,7 @@ namespace SkillsVR.EnterpriseCloudSDK
         public const string IntentPinCodeIdKey = "PIN_CODE";
         public const string refreshToken = "REFRESH_TOKEN";
         public const string accessToken = "ACCESS_TOKEN";
+        public const string emailParam = "EMAIL_PARAM";
 
         /// <summary>
         /// Check already have token for authenticated requests.
@@ -284,6 +285,7 @@ namespace SkillsVR.EnterpriseCloudSDK
                 {
                     moduleId = xScenarioId,
                     duration = durationWebUTC,
+                    email = ECAPI.TryFetchStringFromIntent(emailParam),
                     userLearningRecords = scoreArray.ToList(),
                     skillScores = skillScores.ToList()
                 }

@@ -24,10 +24,20 @@ namespace SkillsVR.EnterpriseCloudSDK.Editor
         protected bool interactable = true;
 
         protected bool enableEditScope = false;
+
+        protected static bool asPopup = false;
+
         [MenuItem("Window/SkillsVR Enterprise Cloud SDK")]
         public static void ShowWindow()
         {
             EditorWindow.GetWindow<EnterpriseCloudSDKEditorWindow>("SkillsVR Enterprise Cloud");
+            asPopup = false;
+        }
+
+        public static void ShowWindowAsPopup()
+        {
+            EditorWindow.GetWindow<EnterpriseCloudSDKEditorWindow>("SkillsVR Enterprise Cloud");
+            asPopup = true;
         }
 
         private void OnEnable()
@@ -113,6 +123,9 @@ namespace SkillsVR.EnterpriseCloudSDK.Editor
                     GUILayout.Space(20);
                 }
                 EditorGUILayout.EndScrollView();
+
+                if (asPopup)
+                    return;
 
                 if (GUILayout.Button("Save Changes"))
                 {

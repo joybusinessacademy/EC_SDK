@@ -74,8 +74,6 @@ namespace SkillsVR.EnterpriseCloudSDK.Editor
 
             GUI.enabled = interactable;
             EditorGUILayout.EndHorizontal();
-            recordAsset.currentConfig.domain = EditorGUILayout.TextField("Domain:", recordAsset.currentConfig.domain);
-            ECAPI.domain = recordAsset.currentConfig.domain;
 
             recordAsset.currentConfig.loginData = DrawLoginDataGUI(recordAsset.currentConfig.loginData);
 
@@ -138,17 +136,19 @@ namespace SkillsVR.EnterpriseCloudSDK.Editor
             GUI.enabled = true;
         }
 
+
         private SSOLoginData DrawLoginDataGUI(SSOLoginData loginData)
         {
             if (null == loginData)
             {
                 loginData = new SSOLoginData();
             }
+
+            loginData.selectedRegion = EditorGUILayout.Popup("Region", loginData.selectedRegion, SSOLoginData.regions);
+
             loginData.userName = EditorGUILayout.TextField("Username:", loginData.userName);
             loginData.password = EditorGUILayout.PasswordField("Password:", loginData.password);
-            loginData.clientId = EditorGUILayout.TextField("Client Id:", loginData.clientId);
-            loginData.loginUrl = EditorGUILayout.TextField("Login Url:", loginData.loginUrl);
-            loginData.scope = DrawScopeGUI(loginData.scope);
+
             return loginData;
         }
 
@@ -164,6 +164,7 @@ namespace SkillsVR.EnterpriseCloudSDK.Editor
             GUILayout.BeginVertical();
             GUILayout.BeginHorizontal();
             GUILayout.FlexibleSpace();
+
             if (GUILayout.Button("Reset to Default", GUILayout.ExpandWidth(false)))
             {
                 scope = SSOLoginData.GetDefaultScopeString();
@@ -212,15 +213,38 @@ namespace SkillsVR.EnterpriseCloudSDK.Editor
 
         private void SendLogin()
         {
-            // us
-            if (recordAsset.currentConfig.loginData.clientId == "6ac24db6-10c0-4037-bd52-aef40e581007")
-                PlayerPrefs.SetString("OCAPIM_SUB_KEY", "e1e2e5ddf41640b3afe061c02df1bd8a");
-
-            // au
-            if (recordAsset.currentConfig.loginData.clientId == "2d1ee365-b7e5-44e8-b23b-aa9a30cb696c")
-                PlayerPrefs.SetString("OCAPIM_SUB_KEY", "2d0a094d71ab400d866008be60a3f37c");
-
             interactable = false;
+            // configure my config now
+            string targetId = string.Empty;
+
+            switch (SSOLoginData.regions[recordAsset.currentConfig.loginData.selectedRegion])
+            {
+                case "US":
+                    targetId = "prod-us";
+                    break;
+                case "AU":
+                    targetId = "prod-au";
+                    break;
+                case "US-Test":
+                    targetId = "test-us";
+                    break;
+                case "AU-Test":
+                    targetId = "test-au";
+                    break;
+                case "AU-Dev":
+                    targetId = "dev-au";
+                    break;
+            }
+
+            var config = SkillsVR.EnterpriseCloudSDK.Editor.Networking.ConfigService.Get(targetId);
+
+            recordAsset.currentConfig.loginData.clientId = config.clientId;
+            recordAsset.currentConfig.loginData.loginUrl = config.ropcUrl;
+            recordAsset.currentConfig.loginData.scope = config.scope;
+            recordAsset.currentConfig.domain = config.domain;
+
+            PlayerPrefs.SetString("OCAPIM_SUB_KEY", config.subscriptionKey);
+            ECAPI.domain = config.domain;
             ECAPI.Login(recordAsset.currentConfig.loginData, OnLoginSuccess, LogError);
             PlayerPrefs.Save();
         }

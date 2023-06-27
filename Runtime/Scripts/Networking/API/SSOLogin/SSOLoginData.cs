@@ -12,6 +12,15 @@ namespace SkillsVR.EnterpriseCloudSDK.Networking.API
         public string clientId;
         public string loginUrl;
 
+        public static readonly string[] regions = { "US", "AU"
+#if SKILLS_VR
+            ,"US-Test"
+            ,"AU-Test"
+            ,"AU-Dev"
+#endif
+        };
+        public int selectedRegion = 0;
+
         public SSOLoginData()
         {
             Init();

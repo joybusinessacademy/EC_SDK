@@ -94,6 +94,10 @@ namespace SkillsVR.EnterpriseCloudSDK.Editor.Editors
             else if (sourceRecordContent.isScoreTypeBool)
             {
                 sourceRecordContent.gameScoreBool = GUILayout.Toggle(sourceRecordContent.gameScoreBool, "");
+                if (GUILayout.Button("Copy ID"))
+                {
+                    EditorGUIUtility.systemCopyBuffer = sourceRecordContent.id;
+                }
             }
             else
             {

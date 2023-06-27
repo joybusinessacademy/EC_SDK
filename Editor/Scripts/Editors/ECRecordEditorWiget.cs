@@ -99,8 +99,12 @@ namespace SkillsVR.EnterpriseCloudSDK.Editor.Editors
             {
                 GUILayout.Space(20);
             }
+
+            GUIStyle wrappedLabelStyle = new GUIStyle(GUI.skin.label);
+            wrappedLabelStyle.wordWrap = true;
+
             GUILayout.Label(sourceRecordContent.id.ToString(), GUILayout.ExpandWidth(false));
-            GUILayout.Label(sourceRecordContent.name);
+            GUILayout.Label(sourceRecordContent.name, wrappedLabelStyle);
 
             GUILayout.FlexibleSpace();
             EditorGUILayout.EndHorizontal();

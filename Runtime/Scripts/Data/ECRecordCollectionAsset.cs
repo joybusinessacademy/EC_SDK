@@ -88,7 +88,7 @@ namespace SkillsVR.EnterpriseCloudSDK.Data
                 if (File.Exists(Path.Combine(Application.dataPath, "Resources", ASSET_FILE_NAME)))
                 {
                     var ii = Resources.FindObjectsOfTypeAll<ECRecordCollectionAsset>();
-                    if (ii.Count > 0)
+                    if (ii.Length > 0)
                         instance = ii.Last();
                 }
             }

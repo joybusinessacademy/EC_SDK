@@ -185,7 +185,39 @@ TryLoginThen(
             , failed);
 #else
             ECAPI.SubmitUserLearningRecord(null, success, failed);
-        #endif
+#endif
+        }
+
+        private ECRecordContent GetRecordById(string id)
+        {
+            foreach (var config in managedConfigs)
+            {
+                foreach (var record in config.managedRecords)
+                {
+                    if (record.id.Equals(id))
+                        return record;
+                }
+            }
+
+            return null;
+        }
+
+        public string BuildReadableId(ECRecordContent record)
+        {
+            // safe check
+            if (record == null)
+                return "";
+
+            string id = (record.index + 1).ToString();
+
+            if (!string.IsNullOrEmpty(record.parentId))
+            {
+                ECRecordContent parent = GetRecordById(record.parentId);
+                string parentId = BuildReadableId(parent);
+                return parentId + "." + id;
+            }
+
+            return id;
         }
 
         public void TryCreateSessionThen(Action actionAfterLogin, Action<string> onError)

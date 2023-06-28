@@ -107,8 +107,22 @@ namespace SkillsVR.EnterpriseCloudSDK.Editor.Editors
             GUIStyle wrappedLabelStyle = new GUIStyle(GUI.skin.label);
             wrappedLabelStyle.wordWrap = true;
 
-            GUILayout.Label(sourceRecordContent.id.ToString(), GUILayout.ExpandWidth(false));
-            GUILayout.Label(sourceRecordContent.name, wrappedLabelStyle);
+            var internalId = string.Empty;
+            switch (sourceRecordContent.depth)
+            {
+                case 0:
+                    internalId = string.Format("Outcome {0}", ECRecordCollectionAsset.GetECRecordAsset().BuildReadableId(sourceRecordContent));
+                    break;
+                case 1:
+                    internalId = string.Format("Criteria {0}", ECRecordCollectionAsset.GetECRecordAsset().BuildReadableId(sourceRecordContent));
+                    break;
+                case 2:
+                    internalId = string.Format("{0}", ECRecordCollectionAsset.GetECRecordAsset().BuildReadableId(sourceRecordContent));
+                    break;
+            }
+                    
+            //GUILayout.Label(sourceRecordContent.id.ToString(), GUILayout.ExpandWidth(false));
+            GUILayout.Label(internalId + " " + sourceRecordContent.name, wrappedLabelStyle);
 
             GUILayout.FlexibleSpace();
             EditorGUILayout.EndHorizontal();

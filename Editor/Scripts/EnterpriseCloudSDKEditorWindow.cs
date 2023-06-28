@@ -111,7 +111,6 @@ namespace SkillsVR.EnterpriseCloudSDK.Editor
                 foreach(var item in widgets)
                 {
                     item?.Draw();
-                    GUILayout.Space(20);
                 }
                 EditorGUILayout.EndScrollView();
 

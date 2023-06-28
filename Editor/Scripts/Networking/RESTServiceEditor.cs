@@ -81,7 +81,7 @@ namespace SkillsVR.EnterpriseCloudSDK.Editor.Networking
 
         public static Config Get(string id)
         {
-            if (instance == null)
+            if (instance == null || instance.configs.Count == 0)
                 instance = new ConfigService();
 
             return instance.configs.Find(k => k.region.Equals(id));

@@ -109,7 +109,7 @@ namespace SkillsVR.EnterpriseCloudSDK.Editor
             {
                 if (null == widgets || 0 == widgets.Count)
                 {
-                    widgets = ECRecordContentEditorWidget.GetEditorRenderingWidgetListFromRecordCollection(recordAsset.currentConfig.managedRecords);
+                    widgets = ECRecordContentEditorWidget.GetEditorRenderingWidgetListFromRecordCollection(recordAsset.currentConfig.manageRecordsMemory);
                 }
                 scrollViewPos = EditorGUILayout.BeginScrollView(scrollViewPos, GUILayout.ExpandHeight(true));
                 foreach(var item in widgets)
@@ -288,7 +288,7 @@ namespace SkillsVR.EnterpriseCloudSDK.Editor
             recordAsset.AddRange(obj.data);
             SaveRecordAsset();
 
-            widgets = ECRecordContentEditorWidget.GetEditorRenderingWidgetListFromRecordCollection(recordAsset.currentConfig.managedRecords);
+            widgets = ECRecordContentEditorWidget.GetEditorRenderingWidgetListFromRecordCollection(recordAsset.currentConfig.manageRecordsMemory);
             interactable = true;
         }
 

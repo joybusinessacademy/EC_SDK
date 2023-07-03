@@ -79,7 +79,10 @@ namespace SkillsVR.EnterpriseCloudSDK.UI
             }
             asset.currentConfig.managedRecords = ECRecordUtil.OrderContents(asset.currentConfig.managedRecords);
 
-            foreach (var item in asset.currentConfig.managedRecords)
+            asset.currentConfig.manageRecordsMemory = null;
+            _ = asset.currentConfig.ManageRecordsMemory;
+
+            foreach (var item in asset.currentConfig.ManageRecordsMemory)
             {
                 var uiItem = createUIAction.Invoke();
                 uiItem.SetSource(item, asset);

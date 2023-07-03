@@ -180,14 +180,14 @@ namespace SkillsVR.EnterpriseCloudSDK
                 });
             }
 
-            var targeRecords = asset.currentConfig.managedRecords;
+            var targeRecords = asset.currentConfig.ManageRecordsMemory;
             var targetScenarioId = asset.currentConfig.scenarioId;
             // remap here
-            if (asset.currentConfig.managedRecords.Count == asset.currentConfig.runtimeManagedRecords.Count)
+            if (asset.currentConfig.ManageRecordsMemory.Count == asset.currentConfig.runtimeManagedRecords.Count)
             {
-                for (int x = 0; x < asset.currentConfig.managedRecords.Count; x++)
+                for (int x = 0; x < asset.currentConfig.ManageRecordsMemory.Count; x++)
                 {
-                    asset.currentConfig.runtimeManagedRecords[x].gameScoreBool = asset.currentConfig.managedRecords[x].gameScoreBool;
+                    asset.currentConfig.runtimeManagedRecords[x].gameScoreBool = asset.currentConfig.ManageRecordsMemory[x].gameScoreBool;
                 }
                 targeRecords = asset.currentConfig.runtimeManagedRecords;
                 targetScenarioId = ECAPI.TryFetchStringFromIntent(ECAPI.IntentScenarioIdKey) ?? asset.currentConfig.scenarioId;

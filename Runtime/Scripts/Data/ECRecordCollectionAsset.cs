@@ -22,6 +22,26 @@ namespace SkillsVR.EnterpriseCloudSDK.Data
         public long durationMS;
         public List<ECRecordContent> managedRecords = new List<ECRecordContent>();
 
+        // memory managedRecords, we want to to be modified when we doing something        
+        [System.NonSerialized]
+        public List<ECRecordContent> manageRecordsMemory = null;
+
+        public List<ECRecordContent> ManageRecordsMemory 
+        {
+            get {
+               if (manageRecordsMemory == null)
+               {
+                    manageRecordsMemory = new List<ECRecordContent>(); 
+                    managedRecords.ForEach(i => {
+                        manageRecordsMemory.Add(i.DeepCopy());
+                    });
+               }
+
+                return manageRecordsMemory;
+            }
+        }
+
+        // these record has different id, remapping on enterprise container
         [System.NonSerialized]
         public List<ECRecordContent> runtimeManagedRecords = new List<ECRecordContent>();
         
@@ -100,7 +120,7 @@ namespace SkillsVR.EnterpriseCloudSDK.Data
 
         public bool Contains(string id)
         {
-            return null != currentConfig.managedRecords.Find(x=>x.id == id);
+            return null != currentConfig.ManageRecordsMemory.Find(x=>x.id == id);
         }
 
         public bool SetGameScoreBool(string id, bool isOn, Action<string> onFail = null)
@@ -109,7 +129,8 @@ namespace SkillsVR.EnterpriseCloudSDK.Data
             {
                 onFail = Debug.LogError;
             }
-            var record = currentConfig.managedRecords.Find(x => id == x.id);
+            currentConfig.ManageRecordsMemory.ForEach(k => Debug.Log(k.id));
+            var record = currentConfig.ManageRecordsMemory.Find(x => id == x.id);
             if (null == record)
             {
                 onFail.Invoke("No record found with id " + id);
@@ -145,17 +166,17 @@ namespace SkillsVR.EnterpriseCloudSDK.Data
 
         public bool GetGameScoreBool(string id)
         {
-            var record = currentConfig.managedRecords.Find(x => id == x.id);
+            var record = currentConfig.ManageRecordsMemory.Find(x => id == x.id);
             return null == record ? false : record.gameScoreBool;
         }
 
         public void ResetUserScores()
         {
-            if (null == currentConfig.managedRecords)
+            if (null == currentConfig.ManageRecordsMemory)
             {
                 return;
             }
-            foreach (var record in currentConfig.managedRecords)
+            foreach (var record in currentConfig.ManageRecordsMemory)
             {
                 if (null == record)
                 {
@@ -180,7 +201,7 @@ namespace SkillsVR.EnterpriseCloudSDK.Data
         #if UNITY_EDITOR
 TryLoginThen(
                 () => TryCreateSessionThen(
-                    () => ECAPI.SubmitUserLearningRecord(currentConfig.scenarioId, currentConfig.durationMS, currentConfig.managedRecords, currentConfig.skillRecords, success, failed), 
+                    () => ECAPI.SubmitUserLearningRecord(currentConfig.scenarioId, currentConfig.durationMS, currentConfig.ManageRecordsMemory, currentConfig.skillRecords, success, failed), 
                     Debug.LogError)
             , failed);
 #else
@@ -192,7 +213,7 @@ TryLoginThen(
         {
             foreach (var config in managedConfigs)
             {
-                foreach (var record in config.managedRecords)
+                foreach (var record in config.ManageRecordsMemory)
                 {
                     if (record.id.Equals(id))
                         return record;
@@ -254,7 +275,7 @@ TryLoginThen(
         public void PrintRecords()
         {
             string info = "Scenario " + currentConfig.scenarioId + "\r\n";
-            foreach (var record in currentConfig.managedRecords)
+            foreach (var record in currentConfig.ManageRecordsMemory)
             {
                 info += record.PrintInLine();
             }
@@ -264,6 +285,8 @@ TryLoginThen(
         public void OrderManagedRecords()
         {
             currentConfig.managedRecords = ECRecordUtil.OrderContents(currentConfig.managedRecords);
+            currentConfig.manageRecordsMemory = null;
+            _ = currentConfig.ManageRecordsMemory;
         }
         
         public void OrderRuntimeManagedRecords(GetConfig.Response response)

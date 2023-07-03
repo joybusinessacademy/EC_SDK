@@ -209,6 +209,11 @@ namespace SkillsVR.EnterpriseCloudSDK
             return null;
         }
 
+        public bool ECSetGameScoreBoolFromNode(object[] param)
+        {
+            return ECSetGameScoreBool(((string)param[0]).Trim(), (bool)param[1]);
+        }
+
         public bool ECSetGameScoreBool(string id, bool isOn)
         {
             if (null == recordAssetConfig || null == recordAsset)
@@ -259,6 +264,18 @@ namespace SkillsVR.EnterpriseCloudSDK
             recordAsset.SubmitUserScore(
                (resp) => { submitScoreEvents.TriggerResponse(resp); Log("Submit Score Success"); },
                (error) => { submitScoreEvents.TriggerEvent(false, error); LogError(error); });
+        }
+
+        public void ECSubmitScoreThenQuitApplication()
+        {
+            if (null == recordAsset)
+            {
+                LogError(NO_ASSET_ERROR);
+                return;
+            }
+            recordAsset.SubmitUserScore(
+               (resp) => { submitScoreEvents.TriggerResponse(resp); Log("Submit Score Success"); Application.Quit(); },
+               (error) => { submitScoreEvents.TriggerEvent(false, error); LogError(error); Application.Quit(); } );
         }
 
         protected void Log(string msg)

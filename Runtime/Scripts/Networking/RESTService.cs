@@ -48,6 +48,8 @@ namespace SkillsVR.EnterpriseCloudSDK.Networking
                 return;
             }
             GameObject runtimeServiceObject = new GameObject(nameof(RESTService));
+            runtimeServiceObject.AddComponent<ECRecordAgent>();
+            
             GameObject.DontDestroyOnLoad(runtimeServiceObject);
             globalRestServiceProvider = runtimeServiceObject.AddComponent<RESTService>();
             PlayerPrefs.SetString("StartTimeStamp", System.DateTime.Now.Ticks.ToString());

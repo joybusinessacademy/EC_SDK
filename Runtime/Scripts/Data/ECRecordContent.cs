@@ -44,6 +44,12 @@ namespace SkillsVR.EnterpriseCloudSDK.Data
                 ) ;
         }
 
+        public ECRecordContent DeepCopy()
+        {
+            ECRecordContent copy = (ECRecordContent) this.MemberwiseClone();
+            return copy;    
+        }
+
         
     }
 }

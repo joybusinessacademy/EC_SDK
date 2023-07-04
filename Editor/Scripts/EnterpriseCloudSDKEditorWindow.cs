@@ -261,7 +261,7 @@ namespace SkillsVR.EnterpriseCloudSDK.Editor
 
             // parse token
             JSONNode node = Decode(RESTCore.AccessToken);
-            UnityEngine.Debug.Log(node["extension_OrgCode"].ToString().Replace("\"", string.Empty));
+            
             PlayerPrefs.SetString("ORGCODE", node["extension_OrgCode"].ToString().Replace("\"", string.Empty));
             PlayerPrefs.Save();
         }

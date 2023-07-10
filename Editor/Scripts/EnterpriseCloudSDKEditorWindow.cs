@@ -29,7 +29,7 @@ namespace SkillsVR.EnterpriseCloudSDK.Editor
 
         protected bool enableEditScope = false;
 
-        [MenuItem("Skills Node/Configure Enterprise Cloud", false, 2)]
+        [MenuItem("SkillsVR CCK/Configure Enterprise Cloud", false, 2)]
         public static void ShowWindow()
         {
             EditorWindow.GetWindow<EnterpriseCloudSDKEditorWindow>("SkillsVR Enterprise Cloud");

@@ -1,4 +1,4 @@
-﻿using SkillsVR.EnterpriseCloudSDK.Networking;
+using SkillsVR.EnterpriseCloudSDK.Networking;
 using SkillsVR.EnterpriseCloudSDK.Networking.API;
 using System;
 using System.Collections;
@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using Unity.EditorCoroutines.Editor;
 using UnityEditor;
 using UnityEngine;
+using Unity.EditorCoroutines.Editor;
 
 namespace SkillsVR.EnterpriseCloudSDK.Editor.Networking
 {
@@ -39,8 +40,15 @@ namespace SkillsVR.EnterpriseCloudSDK.Editor.Networking
             {
                 return;
             }
-            _ = new ConfigService();
+
+            EditorCoroutineUtility.StartCoroutineOwnerless(CreateConfigService());
             SetupEditorRestServiceProvider();
+        }
+
+        static IEnumerator CreateConfigService()
+        {
+            yield return new EditorWaitForSeconds(.1f);
+            _ = new ConfigService();
         }
 
         public static void SetupEditorRestServiceProvider()
@@ -81,7 +89,7 @@ namespace SkillsVR.EnterpriseCloudSDK.Editor.Networking
 
         public static Config Get(string id)
         {
-            if (instance == null || instance.configs == null || instance.configs.Count == 0)
+            if (instance == null || instance.configs.Count == 0)
                 instance = new ConfigService();
 
             return instance.configs.Find(k => k.region.Equals(id));

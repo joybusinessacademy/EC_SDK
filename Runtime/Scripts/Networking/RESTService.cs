@@ -53,6 +53,26 @@ namespace SkillsVR.EnterpriseCloudSDK.Networking
             GameObject.DontDestroyOnLoad(runtimeServiceObject);
             globalRestServiceProvider = runtimeServiceObject.AddComponent<RESTService>();
             PlayerPrefs.SetString("StartTimeStamp", System.DateTime.Now.Ticks.ToString());
+
+#if UNITY_EDITOR
+            // replace string empty with your access token if you want to do editor tests
+            RESTCore.SetAccessToken(string.Empty);
+#endif
+            // lets get config here too
+            if (ECAPI.HasLoginToken())
+            {
+                // create session
+                var i = Data.ECRecordCollectionAsset.GetECRecordAsset();
+                i.currentConfig.scenarioId = ECAPI.TryFetchStringFromIntent(ECAPI.IntentScenarioIdKey) ?? i.currentConfig.scenarioId;
+                i.currentConfig.domain = ECAPI.TryFetchStringFromIntent(ECAPI.domainIntentId) ?? i.currentConfig.domain;
+                ECAPI.domain = i.currentConfig.domain;
+
+                ECAPI.GetConfig(i.currentConfig.scenarioId, (res) =>
+                {
+                    i.OrderRuntimeManagedRecords(res);
+                });
+            }
+            
 #if UNITY_EDITOR
             Debug.Log("Rest Service " + globalRestServiceProvider.GetType().Name);
 #endif

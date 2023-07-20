@@ -109,6 +109,7 @@ namespace SkillsVR.EnterpriseCloudSDK.Networking
             {
                 // if the session is created from the library app
                 // broadcast to library app the requ
+                ECAPI.SendToAndroid(RepackRequestToJson(request, data));
                 if (!string.IsNullOrEmpty(ECAPI.TryFetchStringFromIntent("SVR_MANAGED")))
                 {
                     ECAPI.SendToAndroid(RepackRequestToJson(request, data));

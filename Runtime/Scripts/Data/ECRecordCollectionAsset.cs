@@ -291,6 +291,7 @@ TryLoginThen(
         
         public void OrderRuntimeManagedRecords(GetConfig.Response response)
         {
+            currentConfig.runtimeManagedRecords =  new List<ECRecordContent>();
             currentConfig.runtimeManagedRecords.AddRange(response.data);
             currentConfig.runtimeManagedRecords = ECRecordUtil.OrderContents(currentConfig.runtimeManagedRecords);
         }

@@ -62,7 +62,7 @@ namespace SkillsVR.EnterpriseCloudSDK
             if (string.IsNullOrEmpty(token) == false)
             {
                 RESTCore.SetAccessToken(token);
-                activePinCode = TryFetchStringFromIntent(IntentPinCodeIdKey) ?? string.Empty;
+                activePinCode =  string.IsNullOrEmpty(activePinCode) ? TryFetchStringFromIntent(IntentPinCodeIdKey) : string.Empty;
                 ECAPI.domain = ECAPI.TryFetchStringFromIntent(domainIntentId);
             }                        
 #endif

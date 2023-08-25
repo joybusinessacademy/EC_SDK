@@ -360,7 +360,7 @@ namespace SkillsVR.EnterpriseCloudSDK
             ECAPI.TryFetchAccessTokenFromIntent();
             if (ECAPI.HasLoginToken())
             {               
-                UpdateSessionStatus updateSessionStatusRequest = new UpdateSessionStatus(int.Parse(TryFetchSessionIdFromIntent()), status);
+                UpdateSessionStatus updateSessionStatusRequest = new UpdateSessionStatus(TryFetchSessionIdFromIntent(), status);
                 RESTService.Send(updateSessionStatusRequest, success, failed);
                 return;
             }

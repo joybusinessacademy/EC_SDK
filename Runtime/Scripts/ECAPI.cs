@@ -344,7 +344,7 @@ namespace SkillsVR.EnterpriseCloudSDK
         /// <summary>
         /// Update session with target id
         /// </summary> 
-        public static void UpdateSessionStatus(int sessionId, UpdateSessionStatus.Status status, System.Action<AbstractAPI.EmptyResponse> success = null, System.Action<string> failed = null)
+        public static void UpdateSessionStatus(string sessionId, UpdateSessionStatus.Status status, System.Action<AbstractAPI.EmptyResponse> success = null, System.Action<string> failed = null)
         {
             UpdateSessionStatus updateSessionStatusRequest = new UpdateSessionStatus(sessionId, status);
             RESTService.Send(updateSessionStatusRequest, success, failed);
@@ -359,7 +359,7 @@ namespace SkillsVR.EnterpriseCloudSDK
             ECAPI.TryFetchAccessTokenFromIntent();
             if (ECAPI.HasLoginToken())
             {               
-                UpdateSessionStatus updateSessionStatusRequest = new UpdateSessionStatus(int.Parse(TryFetchSessionIdFromIntent()), status);
+                UpdateSessionStatus updateSessionStatusRequest = new UpdateSessionStatus(TryFetchSessionIdFromIntent(), status);
                 RESTService.Send(updateSessionStatusRequest, success, failed);
                 return;
             }

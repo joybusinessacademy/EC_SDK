@@ -22,9 +22,9 @@ namespace SkillsVR.EnterpriseCloudSDK.Networking.API
             public int status;
         }
         
-        public UpdateSessionStatus(int sessionId, Status iStatus) : base(string.Format(ECAPI.domain + "/api/plannedsession/status").ToString())
+        public UpdateSessionStatus(string sessionId, Status iStatus) : base(string.Format(ECAPI.domain + "/api/plannedsession/status").ToString())
         {
-            data = new Data() { id = sessionId.ToString(), status = (int)iStatus };
+            data = new Data() { id = sessionId, status = (int)iStatus };
             requestType = HttpRequestType.PUT;
             authenticated = true;            
         }

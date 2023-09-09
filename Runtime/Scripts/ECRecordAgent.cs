@@ -256,6 +256,8 @@ namespace SkillsVR.EnterpriseCloudSDK
 
         public void ECSubmitScore()
         {
+            PlayerPrefs.SetString("StartTimeStamp", System.DateTime.Now.Ticks.ToString());
+            PlayerPrefs.Save();
             if (null == recordAsset)
             {
                 LogError(NO_ASSET_ERROR);
@@ -268,7 +270,9 @@ namespace SkillsVR.EnterpriseCloudSDK
 
         public void ECSubmitScoreThen(object[] param)
         {
-        
+            PlayerPrefs.SetString("StartTimeStamp", System.DateTime.Now.Ticks.ToString());
+            PlayerPrefs.Save();
+            
             GameObject sender = param[0] as GameObject;
             string functionNameCallBack = param[1] as string;
             
@@ -286,6 +290,9 @@ namespace SkillsVR.EnterpriseCloudSDK
         
         public void ECSubmitScoreThenQuitApplication()
         {
+            PlayerPrefs.SetString("StartTimeStamp", System.DateTime.Now.Ticks.ToString());
+            PlayerPrefs.Save();
+            
             if (null == recordAsset)
             {
                 LogError(NO_ASSET_ERROR);

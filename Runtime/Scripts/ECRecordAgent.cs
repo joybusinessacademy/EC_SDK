@@ -266,13 +266,29 @@ namespace SkillsVR.EnterpriseCloudSDK
                (error) => { submitScoreEvents.TriggerEvent(false, error); LogError(error); });
         }
 
+        public void ECSubmitScoreThen(GameObject sender, string functionNameCallBack)
+        {
+            if (null == recordAsset)
+            {
+                LogError(NO_ASSET_ERROR);
+                sender.SendMessage(functionNameCallBack, SendMessageOptions.DontRequireReceiver);
+                return;
+            }
+            
+            recordAsset.SubmitUserScore(
+               (resp) => { submitScoreEvents.TriggerResponse(resp); Log("Submit Score Success"); sender.SendMessage(functionNameCallBack, SendMessageOptions.DontRequireReceiver); },
+               (error) => { submitScoreEvents.TriggerEvent(false, error); LogError(error); sender.SendMessage(functionNameCallBack, SendMessageOptions.DontRequireReceiver); } );
+        }
+        
         public void ECSubmitScoreThenQuitApplication()
         {
             if (null == recordAsset)
             {
                 LogError(NO_ASSET_ERROR);
+                Application.Quit();
                 return;
             }
+            
             recordAsset.SubmitUserScore(
                (resp) => { submitScoreEvents.TriggerResponse(resp); Log("Submit Score Success"); Application.Quit(); },
                (error) => { submitScoreEvents.TriggerEvent(false, error); LogError(error); Application.Quit(); } );

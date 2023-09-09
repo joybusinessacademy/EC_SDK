@@ -266,8 +266,12 @@ namespace SkillsVR.EnterpriseCloudSDK
                (error) => { submitScoreEvents.TriggerEvent(false, error); LogError(error); });
         }
 
-        public void ECSubmitScoreThen(GameObject sender, string functionNameCallBack)
+        public void ECSubmitScoreThen(object[] param)
         {
+        
+            GameObject sender = param[0] as GameObject;
+            string functionNameCallBack = param[1] as string;
+            
             if (null == recordAsset)
             {
                 LogError(NO_ASSET_ERROR);

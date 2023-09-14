@@ -346,6 +346,12 @@ namespace SkillsVR.EnterpriseCloudSDK
         /// </summary> 
         public static void UpdateSessionStatus(string sessionId, UpdateSessionStatus.Status status, System.Action<AbstractAPI.EmptyResponse> success = null, System.Action<string> failed = null)
         {
+            // reroute to userlearning record complete instead
+            if (status == UpdateSessionStatus.Status.Completed)
+            {
+                SubmitUserLearningRecord();
+                return;
+            }
             UpdateSessionStatus updateSessionStatusRequest = new UpdateSessionStatus(sessionId, status);
             RESTService.Send(updateSessionStatusRequest, success, failed);
         }

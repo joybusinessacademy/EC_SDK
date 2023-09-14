@@ -349,7 +349,7 @@ namespace SkillsVR.EnterpriseCloudSDK
             // reroute to userlearning record complete instead
             if (status == UpdateSessionStatus.Status.Completed)
             {
-                SubmitUserLearningRecord();
+                SubmitUserLearningRecord(null, success, failed);
                 return;
             }
             UpdateSessionStatus updateSessionStatusRequest = new UpdateSessionStatus(sessionId, status);
@@ -364,7 +364,13 @@ namespace SkillsVR.EnterpriseCloudSDK
         {
             ECAPI.TryFetchAccessTokenFromIntent();
             if (ECAPI.HasLoginToken())
-            {               
+            {      
+                // reroute to userlearning record complete instead
+                if (status == UpdateSessionStatus.Status.Completed)
+                {
+                    SubmitUserLearningRecord(null, success, failed);
+                    return;
+                }
                 UpdateSessionStatus updateSessionStatusRequest = new UpdateSessionStatus(TryFetchSessionIdFromIntent(), status);
                 RESTService.Send(updateSessionStatusRequest, success, failed);
                 return;

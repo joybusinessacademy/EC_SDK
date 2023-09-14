@@ -347,7 +347,7 @@ namespace SkillsVR.EnterpriseCloudSDK
         public static void UpdateSessionStatus(string sessionId, UpdateSessionStatus.Status status, System.Action<AbstractAPI.EmptyResponse> success = null, System.Action<string> failed = null)
         {
             // reroute to userlearning record complete instead
-            if (status == UpdateSessionStatus.Status.Completed)
+            if (status == SkillsVR.EnterpriseCloudSDK.Networking.API.UpdateSessionStatus.Status.Completed)
             {
                 SubmitUserLearningRecord(null, success, failed);
                 return;
@@ -366,7 +366,7 @@ namespace SkillsVR.EnterpriseCloudSDK
             if (ECAPI.HasLoginToken())
             {      
                 // reroute to userlearning record complete instead
-                if (status == UpdateSessionStatus.Status.Completed)
+                if (status == SkillsVR.EnterpriseCloudSDK.Networking.API.UpdateSessionStatus.Status.Completed)
                 {
                     SubmitUserLearningRecord(null, success, failed);
                     return;

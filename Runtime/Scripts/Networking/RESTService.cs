@@ -103,13 +103,18 @@ namespace SkillsVR.EnterpriseCloudSDK.Networking
 
         private float timeStampADown = -1;
         private float timeStampBDown = -1;
-        void Start()
+        
+        IEnumerator Start()
         {
-            InputDeviceCharacteristics controllerCharacteristics = InputDeviceCharacteristics.Left;
-            InputDevices.GetDevicesWithCharacteristics(controllerCharacteristics, leftController);
-
-            controllerCharacteristics = InputDeviceCharacteristics.Right;
-            InputDevices.GetDevicesWithCharacteristics(controllerCharacteristics, rightController);
+            while (leftController.Count == 0 || rightController.Count == 0)
+            {
+                InputDeviceCharacteristics controllerCharacteristics = InputDeviceCharacteristics.Left;
+                InputDevices.GetDevicesWithCharacteristics(controllerCharacteristics, leftController);
+    
+                controllerCharacteristics = InputDeviceCharacteristics.Right;
+                InputDevices.GetDevicesWithCharacteristics(controllerCharacteristics, rightController);
+                yield return null;
+            }
         }
 
         void Update()

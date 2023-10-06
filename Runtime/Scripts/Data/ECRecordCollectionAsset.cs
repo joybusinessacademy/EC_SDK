@@ -292,7 +292,10 @@ TryLoginThen(
         public void OrderRuntimeManagedRecords(GetConfig.Response response)
         {
             currentConfig.runtimeManagedRecords =  new List<ECRecordContent>();
-            currentConfig.runtimeManagedRecords.AddRange(response.data);
+
+            if (response.data != null && response.data.Length > 0)
+                currentConfig.runtimeManagedRecords.AddRange(response.data);
+
             currentConfig.runtimeManagedRecords = ECRecordUtil.OrderContents(currentConfig.runtimeManagedRecords);
         }
 

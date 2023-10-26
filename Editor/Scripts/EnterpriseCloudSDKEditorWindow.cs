@@ -137,6 +137,21 @@ namespace SkillsVR.EnterpriseCloudSDK.Editor
                     SendLearningRecord();
                 }
             }
+
+            LicenseManager licenseManager = new LicenseManager();
+
+            if (GUILayout.Button("Check License"))
+            {
+                licenseManager.GetLicenseDetailsFromEnterprise();
+            }
+
+            if(licenseManager.HasData())
+			{
+                EditorGUILayout.LabelField("IS LICENSE VALID: " + licenseManager.IsLicenseValid());
+                EditorGUILayout.LabelField("LICENSE ACTIVATION DATE: " + licenseManager.GetActivationDate());
+                EditorGUILayout.LabelField("LICENSE EXPERATION DATE: " + licenseManager.GetExpirationDate());
+            }
+
             EditorGUILayout.EndVertical();
             GUI.enabled = true;
         }

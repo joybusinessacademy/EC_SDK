@@ -42,7 +42,7 @@ namespace SkillsVR.EnterpriseCloudSDK.Networking.API
             public string apkFileVersion;
             public string appName;      
             public string description;
-            public List<AdditionalFile> additionalFiles;
+            public List<AdditionalFile> additionalFiles = new List<AdditionalFile>();
         }
 
         [System.Serializable]

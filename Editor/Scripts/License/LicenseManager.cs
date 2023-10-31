@@ -80,4 +80,20 @@ public class LicenseManager
 		else
 			return true;
 	}
+
+	public void ShowBlockingWindow()
+	{
+		LicenseBlocker.Show();
+		LicenseBlocker.windowInstance.licenseBlockerClosed += CheckIfReopenWindow();
+	}
+
+	private LicenseBlocker.LicenseBlockerWindowClosed CheckIfReopenWindow()
+	{
+		if (!IsLicenseValid())
+			return null;
+			//ShowBlockingWindow();
+
+		return null;
+	}
+
 }

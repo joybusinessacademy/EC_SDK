@@ -152,12 +152,18 @@ namespace SkillsVR.EnterpriseCloudSDK.Editor
                 EditorGUILayout.LabelField("LICENSE EXPERATION DATE: " + licenseManager.GetExpirationDate());
             }
 
+            if(licenseManager.HasData())
+                if(GUILayout.Button("Temp"))
+                {
+                    licenseManager.ShowBlockingWindow();
+                }
+
             EditorGUILayout.EndVertical();
             GUI.enabled = true;
         }
 
 
-        private SSOLoginData DrawLoginDataGUI(SSOLoginData loginData)
+		private SSOLoginData DrawLoginDataGUI(SSOLoginData loginData)
         {
             if (null == loginData)
             {

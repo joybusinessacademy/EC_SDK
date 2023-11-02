@@ -33,8 +33,8 @@ public class LicenseBlocker : EditorWindow
 
 		windowInstance = CreateInstance<LicenseBlocker>();
 		windowInstance.titleContent = new GUIContent(windowTitle);
-		windowInstance.minSize = new Vector2(600, 400);
-		windowInstance.maxSize = new Vector2(600, 400);
+		windowInstance.minSize = new Vector2(600, 200);
+		windowInstance.maxSize = new Vector2(600, 200);
 		windowInstance.rootVisualElement.name = "new-scene-window";
 		windowInstance.rootVisualElement.styleSheets.Add(Resources.Load<StyleSheet>("StyleSheets/NewSceneWindow"));
 
@@ -46,30 +46,35 @@ public class LicenseBlocker : EditorWindow
 		
 
 		VisualElement buttonContainer = new VisualElement();
-		buttonContainer.style.flexGrow = 1;
 		buttonContainer.style.flexDirection = FlexDirection.Row;
+		buttonContainer.style.paddingLeft = 5;
+		buttonContainer.style.paddingRight = 5;
+		buttonContainer.style.paddingBottom = 5;
+		buttonContainer.style.paddingTop = 5;
+		buttonContainer.style.alignContent = Align.Center;
 
 		buttonContainer.Add(OpenEnterpriseURL());
-		buttonContainer.Add(CloseWindow());
+		buttonContainer.Add(RecheckLicense());
 		windowInstance.rootVisualElement.Add(buttonContainer);
 
 		windowInstance.ShowModal();
 	}
 
-	private static Button CloseWindow()
+	private static Button RecheckLicense()
 	{
-		Button clearSelectionButton = new()
-		{
-			name = "scene-button",
-		};
+		Button clearSelectionButton = new();
 
-		clearSelectionButton.text = "Close Window";
+		clearSelectionButton.text = "Check License";
 		clearSelectionButton.style.flexGrow = 1;
 		clearSelectionButton.style.flexDirection = FlexDirection.Row;
 
 		clearSelectionButton.clicked += () =>
 		{
-			windowInstance.Close();
+			LicenseManager licenseManager = new LicenseManager();
+			licenseManager.GetLicenseDetailsFromEnterprise();
+
+			if(licenseManager.IsLicenseValid())
+				windowInstance.Close();
 		};
 
 		return clearSelectionButton;
@@ -77,10 +82,7 @@ public class LicenseBlocker : EditorWindow
 
 	private static Button OpenEnterpriseURL()
 	{
-		Button clearSelectionButton = new()
-		{
-			name = "scene-button",
-		};
+		Button clearSelectionButton = new();
 
 		clearSelectionButton.text = "Extend License";
 		clearSelectionButton.style.flexGrow = 1;

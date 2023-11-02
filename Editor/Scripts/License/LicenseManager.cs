@@ -12,6 +12,14 @@ public class LicenseManager
 	private string jsonFileName = "LicenseMockData.txt";
 	private string enterpriseLicenseURL = "https://skillsvr.com/";
 
+	public void CheckLicenseValid()
+	{
+		GetLicenseDetailsFromEnterprise();
+
+		if (!IsLicenseValid())
+			ShowBlockingWindow();
+	}
+
 	public void GetLicenseDetailsFromEnterprise()
 	{
 		//Send API Call for License
@@ -90,8 +98,7 @@ public class LicenseManager
 	private LicenseBlocker.LicenseBlockerWindowClosed CheckIfReopenWindow()
 	{
 		if (!IsLicenseValid())
-			return null;
-			//ShowBlockingWindow();
+			ShowBlockingWindow();
 
 		return null;
 	}

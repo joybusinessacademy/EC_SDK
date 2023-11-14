@@ -29,6 +29,7 @@ namespace SkillsVR.EnterpriseCloudSDK.Networking
         public static string RefreshToken => ECAPI.TryFetchStringFromIntent(ECAPI.refreshToken);
 
         private static string accessToken = string.Empty;
+        private static string deviceToken = string.Empty;
 
         [RuntimeInitializeOnLoadMethod]
         public static void ResetAssessToken()
@@ -38,6 +39,10 @@ namespace SkillsVR.EnterpriseCloudSDK.Networking
         public static void SetAccessToken(string token)
         {
             accessToken = token;
+        }
+        public static void SetDeviceToken(string token)
+        {
+            deviceToken = token;
         }
 
         private const int FAIL_RETRY_TIMES = 3;
@@ -60,7 +65,17 @@ namespace SkillsVR.EnterpriseCloudSDK.Networking
             request.SetRequestHeader("x-ent-org-code", orgCode);
 
             if (authenticated)
-                request.SetRequestHeader("Authorization", string.Format("Bearer {0}", accessToken));
+            {
+                // Use device token
+                if(!string.IsNullOrEmpty(deviceToken))
+                {
+                    request.SetRequestHeader("x-ent-device-token", deviceToken);
+                }
+                else
+                {
+                    request.SetRequestHeader("Authorization", string.Format("Bearer {0}", accessToken));
+                }
+            }
 
             if (data != null)
             {

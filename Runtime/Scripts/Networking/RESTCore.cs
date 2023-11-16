@@ -103,7 +103,7 @@ namespace SkillsVR.EnterpriseCloudSDK.Networking
             return JsonUtility.ToJson(requestJson);                   
         }
 
-        public static IEnumerator Send<DATA, RESPONSE>(string url, string httpType, DATA data, bool authenticated, System.Action<RESPONSE> onSuccess, System.Action<string> onError, int retryCount = 0)
+        public static IEnumerator Send<DATA, RESPONSE>(string url, string httpType, DATA data, bool authenticated, System.Action<RESPONSE> onSuccess, System.Action<string> onError, int retryCount = 0, bool forceSendToAndroid = false)
             where RESPONSE : AbstractResponse
         {
             if (string.IsNullOrWhiteSpace(url))
@@ -124,7 +124,7 @@ namespace SkillsVR.EnterpriseCloudSDK.Networking
             {
                 // if the session is created from the library app
                 // broadcast to library app the requ                
-                if (!string.IsNullOrEmpty(ECAPI.TryFetchStringFromIntent("SVR_MANAGED")) || PlayerPrefs.GetString("OFFLINEMODE") == "TRUE")
+                if (forceSendToAndroid || (!string.IsNullOrEmpty(ECAPI.TryFetchStringFromIntent("SVR_MANAGED")) || PlayerPrefs.GetString("OFFLINEMODE") == "TRUE"))
                 {
                     ECAPI.SendToAndroid(RepackRequestToJson(request, data));
                     onSuccess.Invoke(JsonUtility.FromJson<RESPONSE>("{}"));

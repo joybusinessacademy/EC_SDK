@@ -267,10 +267,10 @@ namespace SkillsVR.EnterpriseCloudSDK.Editor
             PlayerPrefs.SetString("ORGCODE", node["extension_OrgCode"].ToString().Replace("\"", string.Empty));
             PlayerPrefs.Save();
 
+            Close();
+            
             string license = node["lic"] == null ? node["lic"] : String.Empty;
             onLoginSuccess?.Invoke(license);
-
-            Close();
         }
 
         private void SendGetConfig()

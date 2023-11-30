@@ -29,6 +29,8 @@ namespace SkillsVR.EnterpriseCloudSDK.Editor
 
         protected bool enableEditScope = false;
 
+        public static event Action<string> onLoginSuccess = delegate { };
+
         [MenuItem("SkillsVR CCK/Configure Enterprise Cloud", false, 2)]
         public static void ShowWindow()
         {
@@ -264,6 +266,11 @@ namespace SkillsVR.EnterpriseCloudSDK.Editor
             
             PlayerPrefs.SetString("ORGCODE", node["extension_OrgCode"].ToString().Replace("\"", string.Empty));
             PlayerPrefs.Save();
+
+            string license = node["lic"] == null ? node["lic"] : String.Empty;
+            onLoginSuccess?.Invoke(license);
+
+            Close();
         }
 
         private void SendGetConfig()

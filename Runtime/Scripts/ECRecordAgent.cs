@@ -256,23 +256,29 @@ namespace SkillsVR.EnterpriseCloudSDK
 
         public void ECSubmitScore()
         {
-            PlayerPrefs.SetString("StartTimeStamp", System.DateTime.Now.Ticks.ToString());
-            PlayerPrefs.Save();
+
             if (null == recordAsset)
             {
                 LogError(NO_ASSET_ERROR);
                 return;
             }
             recordAsset.SubmitUserScore(
-               (resp) => { submitScoreEvents.TriggerResponse(resp); Log("Submit Score Success"); },
-               (error) => { submitScoreEvents.TriggerEvent(false, error); LogError(error); });
+               (resp) => { 
+                   submitScoreEvents.TriggerResponse(resp); 
+                   Log("Submit Score Success"); 
+                   PlayerPrefs.SetString("StartTimeStamp", System.DateTime.Now.Ticks.ToString());
+                   PlayerPrefs.Save();
+               },
+               (error) => { 
+                   submitScoreEvents.TriggerEvent(false, error); 
+                   LogError(error); 
+                   PlayerPrefs.SetString("StartTimeStamp", System.DateTime.Now.Ticks.ToString());
+                   PlayerPrefs.Save();
+               });
         }
 
         public void ECSubmitScoreThen(object[] param)
         {
-            PlayerPrefs.SetString("StartTimeStamp", System.DateTime.Now.Ticks.ToString());
-            PlayerPrefs.Save();
-            
             GameObject sender = param[0] as GameObject;
             string functionNameCallBack = param[1] as string;
             
@@ -284,15 +290,24 @@ namespace SkillsVR.EnterpriseCloudSDK
             }
             
             recordAsset.SubmitUserScore(
-               (resp) => { submitScoreEvents.TriggerResponse(resp); Log("Submit Score Success"); sender.SendMessage(functionNameCallBack, SendMessageOptions.DontRequireReceiver); },
-               (error) => { submitScoreEvents.TriggerEvent(false, error); LogError(error); sender.SendMessage(functionNameCallBack, SendMessageOptions.DontRequireReceiver); } );
+               (resp) => { 
+                   submitScoreEvents.TriggerResponse(resp); 
+                   Log("Submit Score Success"); 
+                   sender.SendMessage(functionNameCallBack, SendMessageOptions.DontRequireReceiver); 
+                   PlayerPrefs.SetString("StartTimeStamp", System.DateTime.Now.Ticks.ToString());
+                   PlayerPrefs.Save();
+               },
+               (error) => { 
+                   submitScoreEvents.TriggerEvent(false, error); 
+                   LogError(error); 
+                   sender.SendMessage(functionNameCallBack, SendMessageOptions.DontRequireReceiver); 
+                   PlayerPrefs.SetString("StartTimeStamp", System.DateTime.Now.Ticks.ToString());
+                   PlayerPrefs.Save();
+               } );
         }
         
         public void ECSubmitScoreThenQuitApplication()
         {
-            PlayerPrefs.SetString("StartTimeStamp", System.DateTime.Now.Ticks.ToString());
-            PlayerPrefs.Save();
-            
             if (null == recordAsset)
             {
                 LogError(NO_ASSET_ERROR);

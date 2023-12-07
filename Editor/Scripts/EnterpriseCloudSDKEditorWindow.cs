@@ -91,21 +91,21 @@ namespace SkillsVR.EnterpriseCloudSDK.Editor
             }
             GUI.enabled = interactable;
 
-            //recordAsset.currentConfig.scenarioId = EditorGUILayout.TextField("Scenario ID:", recordAsset.currentConfig.scenarioId);
+            recordAsset.currentConfig.scenarioId = EditorGUILayout.TextField("Scenario ID:", recordAsset.currentConfig.scenarioId);
 
-            //if (ECAPI.HasLoginToken())
-            //{
-            //    GUI.enabled = interactable && !string.IsNullOrEmpty(recordAsset.currentConfig.scenarioId);
-            //    if (GUILayout.Button("Get Config"))
-            //    {
-            //        SendGetConfig();
-            //    }
-            //    GUI.enabled = interactable;
-            //}
-            //else
-            //{
-            //    EditorGUILayout.HelpBox("Display records from local cached . Please login to enable submit and more functions.", MessageType.Warning);
-            //}
+            if (ECAPI.HasLoginToken())
+            {
+                GUI.enabled = interactable && !string.IsNullOrEmpty(recordAsset.currentConfig.scenarioId);
+                if (GUILayout.Button("Get Config"))
+                {
+                    SendGetConfig();
+                }
+                GUI.enabled = interactable;
+            }
+            else
+            {
+                EditorGUILayout.HelpBox("Display records from local cached . Please login to enable submit and more functions.", MessageType.Warning);
+            }
 
             if (recordAsset.currentConfig.managedRecords.Count > 0)
             {
@@ -266,8 +266,6 @@ namespace SkillsVR.EnterpriseCloudSDK.Editor
             
             PlayerPrefs.SetString("ORGCODE", node["extension_OrgCode"].ToString().Replace("\"", string.Empty));
             PlayerPrefs.Save();
-
-            Close();
             
             string license = node["lic"] == null ? node["lic"] : String.Empty;
             onLoginSuccess?.Invoke(license);

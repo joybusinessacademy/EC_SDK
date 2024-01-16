@@ -1,4 +1,4 @@
-﻿using SkillsVR.EnterpriseCloudSDK.Networking.API;
+using SkillsVR.EnterpriseCloudSDK.Networking.API;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -30,6 +30,7 @@ namespace SkillsVR.EnterpriseCloudSDK.Networking
 
         private static string accessToken = string.Empty;
         private static string deviceToken = string.Empty;
+        private static Dictionary<string, string> customAuthHeaders = new Dictionary<string, string>();
 
         [RuntimeInitializeOnLoadMethod]
         public static void ResetAssessToken()
@@ -43,6 +44,11 @@ namespace SkillsVR.EnterpriseCloudSDK.Networking
         public static void SetDeviceToken(string token)
         {
             deviceToken = token;
+        }
+
+        public static void SetAuthenticationHeaders(Dictionary<string, string> authHeaders)
+        {
+            customAuthHeaders = authHeaders;
         }
 
         private const int FAIL_RETRY_TIMES = 3;
@@ -66,8 +72,13 @@ namespace SkillsVR.EnterpriseCloudSDK.Networking
 
             if (authenticated)
             {
-                // Use device token
-                if(!string.IsNullOrEmpty(deviceToken))
+                if(customAuthHeaders != null && customAuthHeaders.Count > 0)
+                {
+                    foreach(KeyValuePair<string, string> header in customAuthHeaders)
+                    {
+                        request.SetRequestHeader(header.Key, header.Value);
+                    }
+                } else if(!string.IsNullOrEmpty(deviceToken)) // Use device token
                 {
                     request.SetRequestHeader("x-ent-device-token", deviceToken);
                 }
@@ -103,7 +114,7 @@ namespace SkillsVR.EnterpriseCloudSDK.Networking
             return JsonUtility.ToJson(requestJson);                   
         }
 
-        public static IEnumerator Send<DATA, RESPONSE>(string url, string httpType, DATA data, bool authenticated, System.Action<RESPONSE> onSuccess, System.Action<string> onError, int retryCount = 0, bool forceSendToAndroid = false)
+        public static IEnumerator Send<DATA, RESPONSE>(string url, string httpType, DATA data, bool authenticated, System.Action<RESPONSE> onSuccess, System.Action<string> onError, int retryCount = 0)
             where RESPONSE : AbstractResponse
         {
             if (string.IsNullOrWhiteSpace(url))
@@ -124,7 +135,7 @@ namespace SkillsVR.EnterpriseCloudSDK.Networking
             {
                 // if the session is created from the library app
                 // broadcast to library app the requ                
-                if (forceSendToAndroid || (!string.IsNullOrEmpty(ECAPI.TryFetchStringFromIntent("SVR_MANAGED")) || PlayerPrefs.GetString("OFFLINEMODE") == "TRUE"))
+                if (!string.IsNullOrEmpty(ECAPI.TryFetchStringFromIntent("SVR_MANAGED")) || PlayerPrefs.GetString("OFFLINEMODE") == "TRUE")
                 {
                     ECAPI.SendToAndroid(RepackRequestToJson(request, data));
                     onSuccess.Invoke(JsonUtility.FromJson<RESPONSE>("{}"));
@@ -154,7 +165,6 @@ namespace SkillsVR.EnterpriseCloudSDK.Networking
             {
                 try
                 {
-
                     response = JsonUtility.FromJson<RESPONSE>(request.downloadHandler.text);
                     Debug.LogFormat("Response {0}\r\n{1}", request.url, request.downloadHandler.text);
                     response.Read(request.downloadHandler.text);

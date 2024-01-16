@@ -34,7 +34,7 @@ namespace SkillsVR.EnterpriseCloudSDK.Networking.API
         [System.Serializable]
         public class ApkConfig
         {
-            public string name;            
+            public string name;
             public string sas;
             public string videoLink;
             public int scenarioId;
@@ -42,6 +42,15 @@ namespace SkillsVR.EnterpriseCloudSDK.Networking.API
             public string apkFileVersion;
             public string appName;      
             public string description;
+            public List<AdditionalFile> additionalFiles = new List<AdditionalFile>();
+        }
+
+        [System.Serializable]
+        public class AdditionalFile
+        {
+            public string fileName;
+            public string blobName;
+            public string filePath;
         }
     }
 }

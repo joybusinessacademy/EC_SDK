@@ -1,4 +1,4 @@
-﻿using SkillsVR.EnterpriseCloudSDK.Networking.API;
+using SkillsVR.EnterpriseCloudSDK.Networking.API;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -29,6 +29,8 @@ namespace SkillsVR.EnterpriseCloudSDK.Networking
         public static string RefreshToken => ECAPI.TryFetchStringFromIntent(ECAPI.refreshToken);
 
         private static string accessToken = string.Empty;
+        private static string deviceToken = string.Empty;
+        private static Dictionary<string, string> customAuthHeaders = new Dictionary<string, string>();
 
         [RuntimeInitializeOnLoadMethod]
         public static void ResetAssessToken()
@@ -38,6 +40,15 @@ namespace SkillsVR.EnterpriseCloudSDK.Networking
         public static void SetAccessToken(string token)
         {
             accessToken = token;
+        }
+        public static void SetDeviceToken(string token)
+        {
+            deviceToken = token;
+        }
+
+        public static void SetAuthenticationHeaders(Dictionary<string, string> authHeaders)
+        {
+            customAuthHeaders = authHeaders;
         }
 
         private const int FAIL_RETRY_TIMES = 3;
@@ -60,7 +71,22 @@ namespace SkillsVR.EnterpriseCloudSDK.Networking
             request.SetRequestHeader("x-ent-org-code", orgCode);
 
             if (authenticated)
-                request.SetRequestHeader("Authorization", string.Format("Bearer {0}", accessToken));
+            {
+                if(customAuthHeaders != null && customAuthHeaders.Count > 0)
+                {
+                    foreach(KeyValuePair<string, string> header in customAuthHeaders)
+                    {
+                        request.SetRequestHeader(header.Key, header.Value);
+                    }
+                } else if(!string.IsNullOrEmpty(deviceToken)) // Use device token
+                {
+                    request.SetRequestHeader("x-ent-device-token", deviceToken);
+                }
+                else
+                {
+                    request.SetRequestHeader("Authorization", string.Format("Bearer {0}", accessToken));
+                }
+            }
 
             if (data != null)
             {
@@ -139,7 +165,6 @@ namespace SkillsVR.EnterpriseCloudSDK.Networking
             {
                 try
                 {
-
                     response = JsonUtility.FromJson<RESPONSE>(request.downloadHandler.text);
                     Debug.LogFormat("Response {0}\r\n{1}", request.url, request.downloadHandler.text);
                     response.Read(request.downloadHandler.text);

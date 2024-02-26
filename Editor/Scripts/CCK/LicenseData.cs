@@ -2,6 +2,13 @@ using System;
 
 namespace SkillsVR.EnterpriseCloudSDK.Editor
 {
+	public class LicenseDataHolder
+	{
+		public int code { get; set; }
+		public string message { get; set; }
+		public LicenseData data { get; set; }
+	}
+
 	public class LicenseData
 	{
 		public string orgAdminEmail { get; set; }

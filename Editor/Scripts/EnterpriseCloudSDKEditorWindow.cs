@@ -15,6 +15,7 @@ using UnityEngine.Networking;
 using Unity.EditorCoroutines.Editor;
 using System.Web;
 using static SkillsVR.EnterpriseCloudSDK.Editor.Networking.ConfigService;
+using Newtonsoft.Json;
 
 namespace SkillsVR.EnterpriseCloudSDK.Editor
 {
@@ -347,11 +348,14 @@ namespace SkillsVR.EnterpriseCloudSDK.Editor
 				Debug.Log("Response: " + jsonResponse);
 
 				// Deserialize JSON response into OrganizationData object
-				LicenseData data = JsonUtility.FromJson<LicenseData>(jsonResponse);
+				//LicenseDataHolder data = JsonUtility.FromJson<LicenseDataHolder>(jsonResponse);
+				LicenseDataHolder data = JsonConvert.DeserializeObject<LicenseDataHolder>(jsonResponse);
+
+				licenseData = data.data;
 
 				// Now you can access data properties like:
-				Debug.Log("Org Admin Email: " + data.orgAdminEmail);
-				Debug.Log("Expiry Date: " + data.expiryDate);
+				Debug.Log("Org Admin Email: " + licenseData.orgAdminEmail);
+				Debug.Log("Expiry Date: " + licenseData.expiryDate);
                 // Access other properties similarly
 
                 onLicenseSuccess?.Invoke(jsonResponse);

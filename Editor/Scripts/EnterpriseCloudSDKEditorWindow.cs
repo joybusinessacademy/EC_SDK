@@ -10,8 +10,11 @@ using System.Collections;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Linq;
 using System;
+using UnityEngine.Networking;
+using Unity.EditorCoroutines.Editor;
+using System.Web;
+using static SkillsVR.EnterpriseCloudSDK.Editor.Networking.ConfigService;
 
 namespace SkillsVR.EnterpriseCloudSDK.Editor
 {
@@ -30,6 +33,8 @@ namespace SkillsVR.EnterpriseCloudSDK.Editor
         protected bool enableEditScope = false;
 
         public static event Action<object[]> onLoginSuccess = delegate { };
+
+        private LicenseData licenseData = null;
 
         [MenuItem("SkillsVR CCK/Configure Enterprise Cloud", false, 2)]
         public static void ShowWindow()
@@ -243,16 +248,26 @@ namespace SkillsVR.EnterpriseCloudSDK.Editor
                     break;
             }
 
-            var config = SkillsVR.EnterpriseCloudSDK.Editor.Networking.ConfigService.Get(targetId);
+            bool debug = false;
 
-            recordAsset.currentConfig.loginData.clientId = config.clientId;
-            recordAsset.currentConfig.loginData.loginUrl = config.ropcUrl;
-            recordAsset.currentConfig.loginData.scope = config.scope;
-            recordAsset.currentConfig.domain = config.domain;
-            
-            PlayerPrefs.SetString("OCAPIM_SUB_KEY", config.subscriptionKey);
+            if(debug)
+            {
+				var config = SkillsVR.EnterpriseCloudSDK.Editor.Networking.ConfigService.Get(targetId);
 
-            ECAPI.domain = config.domain;
+				recordAsset.currentConfig.loginData.clientId = config.clientId;
+				recordAsset.currentConfig.loginData.loginUrl = config.ropcUrl;
+				recordAsset.currentConfig.loginData.scope = config.scope;
+				recordAsset.currentConfig.domain = config.domain;
+
+				PlayerPrefs.SetString("OCAPIM_SUB_KEY", config.subscriptionKey);
+                ECAPI.domain = config.domain;
+			}
+            else
+			{
+				PlayerPrefs.SetString("OCAPIM_SUB_KEY", "373a68fc76d1440aa2ada7d03d9dc464");
+                ECAPI.domain = recordAsset.currentConfig.domain;
+			}
+
             ECAPI.Login(recordAsset.currentConfig.loginData, OnLoginSuccess, LogError);
             PlayerPrefs.Save();
         }
@@ -276,10 +291,72 @@ namespace SkillsVR.EnterpriseCloudSDK.Editor
             PlayerPrefs.SetString("ORGCODE", node["extension_OrgCode"].ToString().Replace("\"", string.Empty));
             PlayerPrefs.Save();
 
-            string license = node["lic"] == null ? node["lic"] : String.Empty;
-            object[] arguments = new object[] { license, this }; 
-            onLoginSuccess?.Invoke(arguments);
+            SendRequestForLicenseData();
         }
+
+        private Action<string> onLicenseSuccess;
+        private Action<string> onLicenseFail;
+
+        private void SendRequestForLicenseData()
+        {
+            onLicenseSuccess += OnLicenseSuccess;
+            onLicenseFail += OnLicenseFail;
+
+            Debug.Log("Send Request for License");
+
+			EditorCoroutineUtility.StartCoroutineOwnerless(GetOrganizationLicenseData());
+		}
+
+		private void OnLicenseSuccess(string response)
+		{
+			onLicenseSuccess -= OnLicenseSuccess;
+
+			object[] arguments = new object[] { response, this };
+			onLoginSuccess?.Invoke(arguments);
+		}
+
+		private void OnLicenseFail(string response)
+		{
+			onLicenseFail -= OnLicenseFail;
+		}
+
+		private IEnumerator GetOrganizationLicenseData()
+        {
+			string licenseAPI = "https://api-anz-dev.skillsvr.com/api/users/cck-license";
+
+			UnityWebRequest request = UnityWebRequest.Get(licenseAPI);
+            request.SetRequestHeader("Ocp-Apim-Subscription-Key", "373a68fc76d1440aa2ada7d03d9dc464");
+			//request.SetRequestHeader("Ocp-Apim-Subscription-Key", PlayerPrefs.GetString("OCAPIM_SUB_KEY"));
+			request.SetRequestHeader("Authorization", "Bearer " + RESTCore.AccessToken);
+
+            Debug.Log("Bearer " + RESTCore.AccessToken);
+
+			Debug.Log("Sending Request for License for Unity Web Request");
+
+			yield return request.SendWebRequest();
+
+			if (request.result == UnityWebRequest.Result.ConnectionError ||
+				request.result == UnityWebRequest.Result.ProtocolError)
+			{
+				Debug.LogError("Error: " + request.error);
+                onLicenseFail?.Invoke(request.error);
+			}
+			else
+			{
+				string jsonResponse = request.downloadHandler.text;
+				Debug.Log("Response: " + jsonResponse);
+
+				// Deserialize JSON response into OrganizationData object
+				LicenseData data = JsonUtility.FromJson<LicenseData>(jsonResponse);
+
+				// Now you can access data properties like:
+				Debug.Log("Org Admin Email: " + data.orgAdminEmail);
+				Debug.Log("Expiry Date: " + data.expiryDate);
+                // Access other properties similarly
+
+                onLicenseSuccess?.Invoke(jsonResponse);
+			}
+		}
 
         private void SendGetConfig()
         {

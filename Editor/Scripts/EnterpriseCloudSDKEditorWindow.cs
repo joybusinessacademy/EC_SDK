@@ -29,6 +29,8 @@ namespace SkillsVR.EnterpriseCloudSDK.Editor
 
         protected bool enableEditScope = false;
 
+        public static event Action<object[]> onLoginSuccess = delegate { };
+
         [MenuItem("SkillsVR CCK/Configure Enterprise Cloud", false, 2)]
         public static void ShowWindow()
         {
@@ -255,6 +257,15 @@ namespace SkillsVR.EnterpriseCloudSDK.Editor
             PlayerPrefs.Save();
         }
 
+        private void PassDetails(string userEmail, string userPassword)
+		{
+            if (recordAsset == null)
+                Debug.LogError("Missing Record Asset");
+
+            recordAsset.currentConfig.loginData.userName = userEmail;
+            recordAsset.currentConfig.loginData.password = userPassword;
+        }
+
         private void OnLoginSuccess(SSOLoginResponse response)
         {
             interactable = true;
@@ -264,6 +275,10 @@ namespace SkillsVR.EnterpriseCloudSDK.Editor
             
             PlayerPrefs.SetString("ORGCODE", node["extension_OrgCode"].ToString().Replace("\"", string.Empty));
             PlayerPrefs.Save();
+
+            string license = node["lic"] == null ? node["lic"] : String.Empty;
+            object[] arguments = new object[] { license, this }; 
+            onLoginSuccess?.Invoke(arguments);
         }
 
         private void SendGetConfig()

@@ -348,7 +348,6 @@ namespace SkillsVR.EnterpriseCloudSDK.Editor
 				Debug.Log("Response: " + jsonResponse);
 
 				// Deserialize JSON response into OrganizationData object
-				//LicenseDataHolder data = JsonUtility.FromJson<LicenseDataHolder>(jsonResponse);
 				LicenseDataHolder data = JsonConvert.DeserializeObject<LicenseDataHolder>(jsonResponse);
 
 				licenseData = data.data;

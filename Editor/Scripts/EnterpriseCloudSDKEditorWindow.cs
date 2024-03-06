@@ -35,8 +35,6 @@ namespace SkillsVR.EnterpriseCloudSDK.Editor
 
         public static event Action<object[]> onLoginSuccess = delegate { };
 
-        private LicenseData licenseData = null;
-
         [MenuItem("SkillsVR CCK/Configure Enterprise Cloud", false, 2)]
         public static void ShowWindow()
         {
@@ -249,27 +247,18 @@ namespace SkillsVR.EnterpriseCloudSDK.Editor
                     break;
             }
 
-            bool debug = false;
 
-            if(debug)
-            {
-				var config = SkillsVR.EnterpriseCloudSDK.Editor.Networking.ConfigService.Get(targetId);
+			var config = SkillsVR.EnterpriseCloudSDK.Editor.Networking.ConfigService.Get(targetId);
 
-				recordAsset.currentConfig.loginData.clientId = config.clientId;
-				recordAsset.currentConfig.loginData.loginUrl = config.ropcUrl;
-				recordAsset.currentConfig.loginData.scope = config.scope;
-				recordAsset.currentConfig.domain = config.domain;
+			recordAsset.currentConfig.loginData.clientId = config.clientId;
+			recordAsset.currentConfig.loginData.loginUrl = config.ropcUrl;
+			recordAsset.currentConfig.loginData.scope = config.scope;
+			recordAsset.currentConfig.domain = config.domain;
 
-				PlayerPrefs.SetString("OCAPIM_SUB_KEY", config.subscriptionKey);
-                ECAPI.domain = config.domain;
-			}
-            else
-			{
-				PlayerPrefs.SetString("OCAPIM_SUB_KEY", "373a68fc76d1440aa2ada7d03d9dc464");
-                ECAPI.domain = recordAsset.currentConfig.domain;
-			}
+			PlayerPrefs.SetString("OCAPIM_SUB_KEY", config.subscriptionKey);
+			ECAPI.domain = config.domain;
 
-            ECAPI.Login(recordAsset.currentConfig.loginData, OnLoginSuccess, LogError);
+			ECAPI.Login(recordAsset.currentConfig.loginData, OnLoginSuccess, LogError);
             PlayerPrefs.Save();
         }
 
@@ -291,75 +280,7 @@ namespace SkillsVR.EnterpriseCloudSDK.Editor
             
             PlayerPrefs.SetString("ORGCODE", node["extension_OrgCode"].ToString().Replace("\"", string.Empty));
             PlayerPrefs.Save();
-
-            SendRequestForLicenseData();
         }
-
-        private Action<string> onLicenseSuccess;
-        private Action<string> onLicenseFail;
-
-        private void SendRequestForLicenseData()
-        {
-            onLicenseSuccess += OnLicenseSuccess;
-            onLicenseFail += OnLicenseFail;
-
-            Debug.Log("Send Request for License");
-
-			EditorCoroutineUtility.StartCoroutineOwnerless(GetOrganizationLicenseData());
-		}
-
-		private void OnLicenseSuccess(string response)
-		{
-			onLicenseSuccess -= OnLicenseSuccess;
-
-			object[] arguments = new object[] { response, this };
-			onLoginSuccess?.Invoke(arguments);
-		}
-
-		private void OnLicenseFail(string response)
-		{
-			onLicenseFail -= OnLicenseFail;
-		}
-
-		private IEnumerator GetOrganizationLicenseData()
-        {
-			string licenseAPI = "https://api-anz-dev.skillsvr.com/api/users/cck-license";
-
-			UnityWebRequest request = UnityWebRequest.Get(licenseAPI);
-            request.SetRequestHeader("Ocp-Apim-Subscription-Key", "373a68fc76d1440aa2ada7d03d9dc464");
-			//request.SetRequestHeader("Ocp-Apim-Subscription-Key", PlayerPrefs.GetString("OCAPIM_SUB_KEY"));
-			request.SetRequestHeader("Authorization", "Bearer " + RESTCore.AccessToken);
-
-            Debug.Log("Bearer " + RESTCore.AccessToken);
-
-			Debug.Log("Sending Request for License for Unity Web Request");
-
-			yield return request.SendWebRequest();
-
-			if (request.result == UnityWebRequest.Result.ConnectionError ||
-				request.result == UnityWebRequest.Result.ProtocolError)
-			{
-				Debug.LogError("Error: " + request.error);
-                onLicenseFail?.Invoke(request.error);
-			}
-			else
-			{
-				string jsonResponse = request.downloadHandler.text;
-				Debug.Log("Response: " + jsonResponse);
-
-				// Deserialize JSON response into OrganizationData object
-				LicenseDataHolder data = JsonConvert.DeserializeObject<LicenseDataHolder>(jsonResponse);
-
-				licenseData = data.data;
-
-				// Now you can access data properties like:
-				Debug.Log("Org Admin Email: " + licenseData.orgAdminEmail);
-				Debug.Log("Expiry Date: " + licenseData.expiryDate);
-                // Access other properties similarly
-
-                onLicenseSuccess?.Invoke(jsonResponse);
-			}
-		}
 
         private void SendGetConfig()
         {

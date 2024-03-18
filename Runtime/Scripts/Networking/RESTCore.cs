@@ -152,11 +152,22 @@ namespace SkillsVR.EnterpriseCloudSDK.Networking
             }
 
 
-            yield return request.SendWebRequest();
+            request.SendWebRequest();
+            
+            float timeout = 15f;
+            while (timeout > 0)
+            {
+                timeout -= Time.deltaTime;
+                if (request.isDone)
+                    break;
+                yield return new WaitForEndOfFrame();
+            }
+
+            
             bool success = false;
             string errorMsg = null;
             RESPONSE response = null;
-            if (request.isHttpError || request.isNetworkError)
+            if (request.isHttpError || request.isNetworkError || timeout <= 0)
             {
                 success = false;
                 errorMsg = request.error;

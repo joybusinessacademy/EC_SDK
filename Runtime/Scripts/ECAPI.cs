@@ -27,7 +27,7 @@ namespace SkillsVR.EnterpriseCloudSDK
         public static bool HasLoginToken()
         {
             TryFetchAccessTokenFromIntent();
-            return !string.IsNullOrWhiteSpace(RESTCore.AccessToken);
+            return !string.IsNullOrWhiteSpace(RESTCore.AccessToken) || RestCore.HasDeviceToken() || RestCore.HasCustomAuthHeaders();
         }
 
 #if !UNITY_EDITOR

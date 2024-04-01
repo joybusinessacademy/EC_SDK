@@ -95,6 +95,11 @@ namespace SkillsVR.EnterpriseCloudSDK
             return null;
         }
 
+        public static bool IsSvrManaged()
+        {
+            return !string.IsNullOrEmpty(TryFetchStringFromIntent("SVR_MANAGED"));
+        }
+
         /// <summary>
         /// Login user to EC backend and grab access token.
         /// </summary>

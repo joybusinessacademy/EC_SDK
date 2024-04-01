@@ -45,12 +45,20 @@ namespace SkillsVR.EnterpriseCloudSDK.Networking
         {
             deviceToken = token;
         }
-
         public static void SetAuthenticationHeaders(Dictionary<string, string> authHeaders)
         {
             customAuthHeaders = authHeaders;
         }
 
+        public static bool HasDeviceToken()
+        {
+            return !string.IsNullOrEmpty(deviceToken);
+        }
+        public static bool HasCustomAuthHeaders()
+        {
+            return customAuthHeaders != null && customAuthHeaders.Count > 0;
+        }
+        
         private const int FAIL_RETRY_TIMES = 3;
 
         public static UnityWebRequest BuildUnityWebRequest<DATA>(string url, string httpType, DATA data, bool authenticated = false)

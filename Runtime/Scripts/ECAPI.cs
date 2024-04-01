@@ -28,8 +28,8 @@ namespace SkillsVR.EnterpriseCloudSDK
         {
             TryFetchAccessTokenFromIntent();
             return !string.IsNullOrWhiteSpace(RESTCore.AccessToken) 
-                || RestCore.HasDeviceToken() 
-                || RestCore.HasCustomAuthHeaders() 
+                || RESTCore.HasDeviceToken() 
+                || RESTCore.HasCustomAuthHeaders() 
                 || IsSvrManaged();
         }
 

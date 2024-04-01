@@ -143,7 +143,7 @@ namespace SkillsVR.EnterpriseCloudSDK.Networking
             {
                 // if the session is created from the library app
                 // broadcast to library app the requ                
-                if (!string.IsNullOrEmpty(ECAPI.TryFetchStringFromIntent("SVR_MANAGED")) || PlayerPrefs.GetString("OFFLINEMODE") == "TRUE")
+                if (ECAPI.IsSvrManaged() || PlayerPrefs.GetString("OFFLINEMODE") == "TRUE")
                 {
                     ECAPI.SendToAndroid(RepackRequestToJson(request, data));
                     onSuccess.Invoke(JsonUtility.FromJson<RESPONSE>("{}"));

@@ -2,8 +2,6 @@ using SkillsVR.EnterpriseCloudSDK.Networking.API;
 using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.Runtime.CompilerServices;
-using System.Security;
 using System.Text;
 using UnityEngine;
 using UnityEngine.Networking;
@@ -98,6 +96,10 @@ namespace SkillsVR.EnterpriseCloudSDK.Networking
             request.SetRequestHeader("Content-Type", "application/json");
             request.downloadHandler = new DownloadHandlerBuffer();
 
+            request.disposeCertificateHandlerOnDispose = true;
+            request.disposeDownloadHandlerOnDispose = true;
+            request.disposeUploadHandlerOnDispose = true;
+
             return request;
         }
         
@@ -138,6 +140,7 @@ namespace SkillsVR.EnterpriseCloudSDK.Networking
                 if (!string.IsNullOrEmpty(ECAPI.TryFetchStringFromIntent("SVR_MANAGED")) || PlayerPrefs.GetString("OFFLINEMODE") == "TRUE")
                 {
                     ECAPI.SendToAndroid(RepackRequestToJson(request, data));
+                    request.Dispose();
                     onSuccess.Invoke(JsonUtility.FromJson<RESPONSE>("{}"));
                     yield break;
                 }
@@ -191,6 +194,7 @@ namespace SkillsVR.EnterpriseCloudSDK.Networking
 
             }
 
+            request.Dispose();
             if (success)
             {
                 onSuccess?.Invoke(response);
@@ -200,14 +204,14 @@ namespace SkillsVR.EnterpriseCloudSDK.Networking
                 if (retryCount < FAIL_RETRY_TIMES)
                 {
                     ++retryCount;
-                    Debug.LogErrorFormat("Response {0}\r\n{1} ==> start {2}x retry.", request.url, errorMsg, retryCount);
+                    Debug.LogErrorFormat("Response {0}\r\n{1} ==> start {2}x retry.", url, errorMsg, retryCount);
                     yield return Send<DATA, RESPONSE>(url, httpType, data, authenticated, onSuccess, onError, retryCount);
                 }
                 else
                 {
                     // incase everything fails, lets send the payload library app
                     ECAPI.SendToAndroid(RepackRequestToJson(request,data));
-                    Debug.LogErrorFormat("Response {0}\r\n{1} ==> Max retry reached ({2}x). Abort.", request.url, errorMsg, retryCount);
+                    Debug.LogErrorFormat("Response {0}\r\n{1} ==> Max retry reached ({2}x). Abort.", url, errorMsg, retryCount);
                     onError?.Invoke(errorMsg);
                 }
             }

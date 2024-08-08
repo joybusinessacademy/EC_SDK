@@ -6,7 +6,6 @@ using System.Collections.Generic;
 using Unity.EditorCoroutines.Editor;
 using UnityEditor;
 using UnityEngine;
-using Unity.EditorCoroutines.Editor;
 
 namespace SkillsVR.EnterpriseCloudSDK.Editor.Networking
 {
@@ -54,7 +53,6 @@ namespace SkillsVR.EnterpriseCloudSDK.Editor.Networking
         public static void SetupEditorRestServiceProvider()
         {
             RESTService.SetRestServiceProvider(new RESTServiceEditor());
-            UnityEngine.Debug.Log("Rest Service RESTServiceEditor");
         }
 
         public void SendCustomCoroutine(IEnumerator coro)

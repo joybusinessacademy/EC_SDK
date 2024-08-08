@@ -158,13 +158,17 @@ namespace SkillsVR.EnterpriseCloudSDK.Networking
             request.SendWebRequest();
             
             long ticksPerSeconds = 10000000;
-            long timeoutTicks = DateTime.Now.Ticks + (15 * ticksPerSeconds);
+            int timeoutInSec = Mathf.Max(request.timeout, 15);
+            long timeoutTicks = DateTime.Now.Ticks + (timeoutInSec * ticksPerSeconds);
             
             while (timeoutTicks > DateTime.Now.Ticks)
             {
                 if (request.isDone)
+                {
                     break;
-                yield return new WaitForEndOfFrame();
+                }
+
+                yield return null;
                 
             }
 

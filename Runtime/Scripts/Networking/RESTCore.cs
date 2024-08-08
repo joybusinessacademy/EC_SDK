@@ -171,10 +171,16 @@ namespace SkillsVR.EnterpriseCloudSDK.Networking
             bool success = false;
             string errorMsg = null;
             RESPONSE response = null;
-            if (request.isHttpError || request.isNetworkError || timeoutTicks <= DateTime.Now.Ticks)
+            if (UnityWebRequest.Result.ConnectionError == request.result
+                || UnityWebRequest.Result.ConnectionError == request.result)
             {
                 success = false;
                 errorMsg = request.error;
+            }
+            else if (timeoutTicks <= DateTime.Now.Ticks)
+            {
+                success = false;
+                errorMsg = "Request timeout.";
             }
             else
             {

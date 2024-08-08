@@ -1,8 +1,5 @@
-﻿using SkillsVR.EnterpriseCloudSDK.Networking;
-using SkillsVR.EnterpriseCloudSDK.Networking.API;
-using System;
+﻿using System;
 using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Networking;
 
@@ -28,7 +25,8 @@ namespace SkillsVR.EnterpriseCloudSDK.Networking.API
                 www.SetRequestHeader("Content-Type", "application/x-www-form-urlencoded");
                 yield return www.SendWebRequest();
 
-                if (www.isNetworkError || www.isHttpError)
+                if (UnityWebRequest.Result.ConnectionError == www.result
+                || UnityWebRequest.Result.ConnectionError == www.result)
                 {
                     Debug.LogError(string.Join(" ", "Login Fail:", www.error, loginData.userName, loginData.loginUrl));
                     onFail?.Invoke(www.error);

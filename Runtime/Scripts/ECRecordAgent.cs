@@ -215,6 +215,16 @@ namespace SkillsVR.EnterpriseCloudSDK
             return ECSetGameScoreBool(((string)param[0]).Trim(), (bool)param[1]);
         }
 
+        public void ECSetGameScoreTrue(string id)
+        {
+            ECSetGameScoreBool(id, true);
+        }
+
+        public void ECSetGameScoreFalse(string id)
+        {
+            ECSetGameScoreBool(id, false);
+        }
+
         public bool ECSetGameScoreBool(string id, bool isOn)
         {
             if (null == recordAssetConfig || null == recordAsset)
@@ -368,6 +378,12 @@ namespace SkillsVR.EnterpriseCloudSDK
         {
             bool value = ECGetGameScoreBool(setScoreId);
             recordEvents?.onGetRecordBoolScore?.Invoke(setScoreId, value);
+        }
+
+        public void ECGetScoreInvokeAction(string id)
+        {
+            bool value = ECGetGameScoreBool(id);
+            recordEvents?.onGetRecordBoolScore?.Invoke(id, value);
         }
 
         public void LogScore(int id, bool value)

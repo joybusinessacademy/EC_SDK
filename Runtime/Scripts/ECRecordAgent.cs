@@ -359,19 +359,16 @@ namespace SkillsVR.EnterpriseCloudSDK
         private string setScoreId;
         private bool setScoreValue;
 
-        [Obsolete("Use ECSetGameScoreTrue(id) or ECSetGameScoreFalse(id) for quick action.")]
         public void ECSetScoreIdAction(string id)
         {
             setScoreId = id;
         }
 
-        [Obsolete("Use ECSetGameScoreTrue(id) or ECSetGameScoreFalse(id) for quick action.")]
         public void ECSetScoreValueAction(bool value)
         {
             setScoreValue = value;
         }
 
-        [Obsolete("Use ECSetGameScoreTrue(id) or ECSetGameScoreFalse(id) for quick action.")]
         public void ECSetScoreInvokeAction()
         {
             ECSetGameScoreBool(setScoreId, setScoreValue);

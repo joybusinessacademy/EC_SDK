@@ -45,10 +45,21 @@ namespace SkillsVR.EnterpriseCloudSDK.Networking.API
                         Debug.LogError(string.Join(" ", "Login Fail:", e.Message, loginData.userName, loginData.loginUrl));
                         onFail?.Invoke(e.Message);
                     }
-                    if (success)
+
+                    if (string.IsNullOrWhiteSpace(response.error)
+                        && string.IsNullOrWhiteSpace(response.error_description)
+                        && success)
                     {
                         Debug.Log(string.Join(" ", "Login Success ", loginData.userName, "at", loginData.loginUrl));
                         onSuccess?.Invoke(response);
+                    }
+                    else
+                    {
+                        response.error = string.IsNullOrWhiteSpace(response.error) ? "Error" : response.error;
+                        response.error_description = string.IsNullOrWhiteSpace(response.error_description) 
+                            ? "Error occurs." : response.error_description;
+                        string msg = string.Join(" ", "Login Fail:", response.error, response.error_description, loginData.userName, loginData.loginUrl);
+                        onFail?.Invoke(msg);
                     }
                 }
             }

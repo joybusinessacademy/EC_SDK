@@ -9,6 +9,9 @@ namespace SkillsVR.EnterpriseCloudSDK.Networking.API
         public string expires_in;
         public string refresh_token;
 
+        public string error;
+        public string error_description;
+
         public override void Read(dynamic objs)
         {
             string json = objs as string;

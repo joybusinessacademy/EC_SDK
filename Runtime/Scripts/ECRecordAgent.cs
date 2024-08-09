@@ -1,4 +1,5 @@
-﻿using SkillsVR.EnterpriseCloudSDK.Data;
+﻿using SkillsVR.EnterpriseCloudSDK;
+using SkillsVR.EnterpriseCloudSDK.Data;
 using SkillsVR.EnterpriseCloudSDK.Networking.API;
 using System;
 using System.Collections;
@@ -252,6 +253,11 @@ namespace SkillsVR.EnterpriseCloudSDK
                 return;
             }
             recordAsset.ResetUserScores();
+        }
+
+        public void ECSetGameSessionCompleted()
+        {
+            ECAPI.UpdateCurrentSessionStatus(UpdateSessionStatus.Status.Completed);
         }
 
         public void ECSubmitScore()

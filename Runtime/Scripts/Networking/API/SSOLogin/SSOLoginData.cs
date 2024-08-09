@@ -7,6 +7,7 @@ namespace SkillsVR.EnterpriseCloudSDK.Networking.API
     public class SSOLoginData
     {
         public string userName;
+        [HideInInspector]
         public string password;
         public string scope;
         public string clientId;

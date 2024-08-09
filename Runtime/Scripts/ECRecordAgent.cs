@@ -230,13 +230,13 @@ namespace SkillsVR.EnterpriseCloudSDK
             if (null == recordAssetConfig || null == recordAsset)
             {
                 recordEvents.setScoreResultEvents.TriggerEvent(false, NO_ASSET_ERROR);
-                LogError("Set record " + setScoreId + " Fail: " + NO_ASSET_ERROR);
+                LogError("Set record " + id + " Fail: " + NO_ASSET_ERROR);
                 return false;
             }
             bool success = recordAsset.SetGameScoreBool(id, isOn, (error) =>
             {
                 recordEvents.setScoreResultEvents.TriggerError(error);
-                LogError("Set record " + setScoreId + " Fail: " + error);
+                LogError("Set record " + id + " Fail: " + error);
             });
             if (success)
             {

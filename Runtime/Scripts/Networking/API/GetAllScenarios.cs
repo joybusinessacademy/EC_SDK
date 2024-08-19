@@ -28,6 +28,7 @@ namespace SkillsVR.EnterpriseCloudSDK.Networking.API
             public string description;
             public string uri;      
             public string bannerUri;
+            public bool badgeEnabled;
             public List<ApkConfig> apkFiles = new List<ApkConfig>();
         }
 

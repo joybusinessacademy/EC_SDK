@@ -174,6 +174,8 @@ namespace SkillsVR.EnterpriseCloudSDK.Networking
                     onError?.Invoke(errorMsg);
                 }
             }
+
+            request?.Dispose();
         }
     }
 

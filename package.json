@@ -1,6 +1,6 @@
 {
   "name": "com.skillsvr.enterprisecloudsdk",
-  "version": "1.4.1",
+  "version": "1.4.2",
   "displayName": "SkillsVR Enterprise Cloud SDK",
   "description": "Enterprise Cloud SDK package for SkillsVR games.",
   "unity": "2019.4",

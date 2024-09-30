@@ -37,6 +37,9 @@ namespace SkillsVR.EnterpriseCloudSDK.Editor
 
         private void OnEnable()
         {
+            PlayerPrefs.SetString("StartTimeStamp", System.DateTime.Now.Ticks.ToString());
+	    PlayerPrefs.Save();
+		   
             recordAsset = ECRecordCollectionAssetEditor.CreateOrLoadAsset();
             widgets.Clear();
             SerializedObject serializedObject = new SerializedObject(this);

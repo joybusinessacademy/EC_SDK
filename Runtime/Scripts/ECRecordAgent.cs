@@ -287,9 +287,7 @@ namespace SkillsVR.EnterpriseCloudSDK
                },
                (error) => { 
                    submitScoreEvents.TriggerEvent(false, error); 
-                   LogError(error); 
-                   PlayerPrefs.SetString("StartTimeStamp", System.DateTime.Now.Ticks.ToString());
-                   PlayerPrefs.Save();
+                   LogError(error);                    
                });
         }
 
@@ -316,9 +314,7 @@ namespace SkillsVR.EnterpriseCloudSDK
                (error) => { 
                    submitScoreEvents.TriggerEvent(false, error); 
                    LogError(error); 
-                   sender.SendMessage(functionNameCallBack, SendMessageOptions.DontRequireReceiver); 
-                   PlayerPrefs.SetString("StartTimeStamp", System.DateTime.Now.Ticks.ToString());
-                   PlayerPrefs.Save();
+                   sender.SendMessage(functionNameCallBack, SendMessageOptions.DontRequireReceiver);                    
                } );
         }
         

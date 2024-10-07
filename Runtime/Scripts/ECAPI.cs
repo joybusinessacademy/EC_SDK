@@ -286,7 +286,8 @@ namespace SkillsVR.EnterpriseCloudSDK
                     duration = durationWebUTC,
                     email = ECAPI.TryFetchStringFromIntent(emailParam) ?? string.Empty,
                     userLearningRecords = scoreArray.ToList(),
-                    skillScores = skillScores.ToList()
+                    skillScores = skillScores.ToList(),
+                    blobName = PlayerPrefs.GetString("LearningRecordBlobName", "")
                 }
             };
 

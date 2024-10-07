@@ -6,7 +6,6 @@ using System.Collections.Generic;
 using Unity.EditorCoroutines.Editor;
 using UnityEditor;
 using UnityEngine;
-using Unity.EditorCoroutines.Editor;
 
 namespace SkillsVR.EnterpriseCloudSDK.Editor.Networking
 {

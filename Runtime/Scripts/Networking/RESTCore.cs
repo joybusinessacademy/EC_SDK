@@ -65,12 +65,16 @@ namespace SkillsVR.EnterpriseCloudSDK.Networking
             if (data != null)
             {
                 var bytes = Encoding.UTF8.GetBytes(JsonUtility.ToJson(data as object));
-                request.uploadHandler = (UploadHandler)new UploadHandlerRaw(bytes);
+                request.uploadHandler = new UploadHandlerRaw(bytes);
             }
 
 
             request.SetRequestHeader("Content-Type", "application/json");
             request.downloadHandler = new DownloadHandlerBuffer();
+
+            request.disposeCertificateHandlerOnDispose = true;
+            request.disposeDownloadHandlerOnDispose = true;
+            request.disposeUploadHandlerOnDispose = true;
 
             return request;
         }
@@ -112,6 +116,7 @@ namespace SkillsVR.EnterpriseCloudSDK.Networking
                 if (!string.IsNullOrEmpty(ECAPI.TryFetchStringFromIntent("SVR_MANAGED")) || PlayerPrefs.GetString("OFFLINEMODE") == "TRUE")
                 {
                     ECAPI.SendToAndroid(RepackRequestToJson(request, data));
+                    request?.Dispose();
                     onSuccess.Invoke(JsonUtility.FromJson<RESPONSE>("{}"));
                     yield break;
                 }

@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.Runtime.CompilerServices;
 using System.Security;
 using System.Text;
+using UnityEditor;
 using UnityEngine;
 using UnityEngine.Networking;
 
@@ -25,19 +26,25 @@ namespace SkillsVR.EnterpriseCloudSDK.Networking
         }
 
 
-        public static string AccessToken => accessToken;
         public static string RefreshToken => ECAPI.TryFetchStringFromIntent(ECAPI.refreshToken);
 
-        private static string accessToken = string.Empty;
+        private const string CCK_ACCESS_TOKEN = "CCK_ACCESS_TOKEN";
+
+
+        public static string AccessToken
+        {
+            get => SessionState.GetString(CCK_ACCESS_TOKEN, string.Empty);
+            private set => SessionState.SetString(CCK_ACCESS_TOKEN, value);
+        }
 
         [RuntimeInitializeOnLoadMethod]
         public static void ResetAssessToken()
         {
-            accessToken = string.Empty;
+            AccessToken = string.Empty;
         }
         public static void SetAccessToken(string token)
         {
-            accessToken = token;
+            AccessToken = token;
         }
 
         private const int FAIL_RETRY_TIMES = 3;
@@ -60,12 +67,12 @@ namespace SkillsVR.EnterpriseCloudSDK.Networking
             request.SetRequestHeader("x-ent-org-code", orgCode);
 
             if (authenticated)
-                request.SetRequestHeader("Authorization", string.Format("Bearer {0}", accessToken));
+                request.SetRequestHeader("Authorization", string.Format("Bearer {0}", AccessToken));
 
             if (data != null)
             {
                 var bytes = Encoding.UTF8.GetBytes(JsonUtility.ToJson(data as object));
-                request.uploadHandler = new UploadHandlerRaw(bytes);
+                request.uploadHandler = (UploadHandler)new UploadHandlerRaw(bytes);
             }
 
 

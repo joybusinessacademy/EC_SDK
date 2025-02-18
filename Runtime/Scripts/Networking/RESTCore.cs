@@ -5,9 +5,11 @@ using System.Collections.Generic;
 using System.Runtime.CompilerServices;
 using System.Security;
 using System.Text;
-using UnityEditor;
 using UnityEngine;
 using UnityEngine.Networking;
+#if UNITY_EDITOR
+using UnityEditor;
+#endif
 
 namespace SkillsVR.EnterpriseCloudSDK.Networking
 {
@@ -31,10 +33,24 @@ namespace SkillsVR.EnterpriseCloudSDK.Networking
         private const string CCK_ACCESS_TOKEN = "CCK_ACCESS_TOKEN";
 
 
+        private static string accessToken = "";
         public static string AccessToken
         {
-            get => SessionState.GetString(CCK_ACCESS_TOKEN, string.Empty);
-            private set => SessionState.SetString(CCK_ACCESS_TOKEN, value);
+            get
+            {
+                #if UNITY_EDITOR
+                return SessionState.GetString(CCK_ACCESS_TOKEN, string.Empty);
+                #endif
+                return accessToken;
+            }
+            private set
+            {
+                #if UNITY_EDITOR
+                SessionState.SetString(CCK_ACCESS_TOKEN, value);
+                #endif
+                accessToken = value;
+
+            }
         }
 
         [RuntimeInitializeOnLoadMethod]

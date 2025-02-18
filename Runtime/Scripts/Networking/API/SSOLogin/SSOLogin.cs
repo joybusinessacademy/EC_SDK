@@ -4,9 +4,11 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Globalization;
-using UnityEditor;
 using UnityEngine;
 using UnityEngine.Networking;
+#if UNITY_EDITOR
+using UnityEditor;
+#endif
 
 namespace SkillsVR.EnterpriseCloudSDK.Networking.API
 {
@@ -64,9 +66,11 @@ namespace SkillsVR.EnterpriseCloudSDK.Networking.API
             Debug.Log(string.Join(" ", "Login Success ", loginData.userName, "at", loginData.loginUrl));
             onSuccess?.Invoke(response);
 
+            #if UNITY_EDITOR
             SessionState.SetString(TOKEN_EXPIRATION_TIME, DateTime.Now.AddSeconds(int.Parse(response.expires_in)).ToString(CultureInfo.InvariantCulture));
             EditorPrefs.SetString(REFRESH_TOKEN_EXPIRATION_TIME, DateTime.Now.AddDays(LENGHT_OF_REFRESH_TOKEN_EXPIRATION_TIME).ToString(CultureInfo.InvariantCulture));
             EditorPrefs.SetString(REFRESH_TOKEN, response.refresh_token);
+            #endif
         }
 
         public bool ValidateKey()
@@ -123,15 +127,18 @@ namespace SkillsVR.EnterpriseCloudSDK.Networking.API
             Debug.Log(string.Join(" ", "Refresh Login Success ", "at", loginData.loginUrl));
             onSuccess?.Invoke(response);
 
+#if UNITY_EDITOR
             SessionState.SetString(TOKEN_EXPIRATION_TIME, DateTime.Now.AddSeconds(int.Parse(response.expires_in)).ToString(CultureInfo.InvariantCulture));
             EditorPrefs.SetString(REFRESH_TOKEN_EXPIRATION_TIME, DateTime.Now.AddDays(int.Parse(response.refresh_token_expires_in)).ToString(CultureInfo.InvariantCulture));
-
             EditorPrefs.SetString(REFRESH_TOKEN, response.refresh_token);
+#endif
         }
 
 
         public static bool CurrentTokenIsValid()
         {
+#if UNITY_EDITOR
+
             bool hasKey = DateTime.TryParse(SessionState.GetString(TOKEN_EXPIRATION_TIME, ""), out DateTime timeSaved);
             if (!hasKey || string.IsNullOrWhiteSpace(RESTCore.AccessToken))
             {
@@ -139,10 +146,16 @@ namespace SkillsVR.EnterpriseCloudSDK.Networking.API
             }
 
             return timeSaved >= DateTime.Now;
+#endif
+
+            return false;
+
         }
 
         public static bool CurrentRefreshTokenIsValid()
         {
+#if UNITY_EDITOR
+
             bool hasKey = DateTime.TryParse(EditorPrefs.GetString(REFRESH_TOKEN_EXPIRATION_TIME, ""), out DateTime timeSaved);
             if (!hasKey)
             {
@@ -150,11 +163,19 @@ namespace SkillsVR.EnterpriseCloudSDK.Networking.API
             }
 
             return timeSaved >= DateTime.Now;
+#endif
+
+            return false;
         }
 
         public static string GetRefreshToken()
         {
+#if UNITY_EDITOR
+
             return EditorPrefs.GetString(REFRESH_TOKEN, "");
+#endif
+
+            return "";
         }
     }
 }

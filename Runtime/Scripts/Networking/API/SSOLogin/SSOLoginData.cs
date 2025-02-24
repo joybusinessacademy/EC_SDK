@@ -101,7 +101,7 @@ namespace SkillsVR.EnterpriseCloudSDK.Networking.API
 
         private static string GetDefaultLoginUrl()
         {
-            return "https://skillsvr.b2clogin.com/skillsvr.onmicrosoft.com/B2C_1_device-dashboard-dev-ropc/oauth2/v2.0/token";
+            return "https://skvrentprodau.b2clogin.com/skvrentprodau.onmicrosoft.com/B2C_1_ropc/oauth2/v2.0/token";
         }
     }
 }

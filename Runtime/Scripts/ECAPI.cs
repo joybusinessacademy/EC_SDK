@@ -106,6 +106,20 @@ namespace SkillsVR.EnterpriseCloudSDK
             RESTService.SendByCustomCoroutine(SSOLogin.SendSSOLoginForm(loginData, success, failed));
         }
 
+
+
+        /// <summary>
+        /// Login user to EC backend by using a refresh token
+        /// </summary>
+        /// <param name="loginData">user login data includes: refresh token, password, client id, login url and scope.</param>
+        /// <param name="success">Action runs when login success. Params: SSOLoginResponse - response data for login request.</param>
+        /// <param name="failed">Action runs when login fail, including http and network errors. Params: string - the error message.</param>
+        public static void RefreshLogin(SSORefreshData loginData, System.Action<SSORefreshResponse> success = null, System.Action<string> failed = null)
+        {
+            RESTService.SendByCustomCoroutine(SSOLogin.SendRefreshToken(loginData, success, failed));
+        }
+
+
         /// <summary>
         /// Set bool type game score to a record by record id.
         /// </summary>

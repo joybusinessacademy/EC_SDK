@@ -7,6 +7,9 @@ using System.Security;
 using System.Text;
 using UnityEngine;
 using UnityEngine.Networking;
+#if UNITY_EDITOR
+using UnityEditor;
+#endif
 
 namespace SkillsVR.EnterpriseCloudSDK.Networking
 {
@@ -25,19 +28,39 @@ namespace SkillsVR.EnterpriseCloudSDK.Networking
         }
 
 
-        public static string AccessToken => accessToken;
         public static string RefreshToken => ECAPI.TryFetchStringFromIntent(ECAPI.refreshToken);
 
-        private static string accessToken = string.Empty;
+        private const string CCK_ACCESS_TOKEN = "CCK_ACCESS_TOKEN";
+
+
+        private static string accessToken = "";
+        public static string AccessToken
+        {
+            get
+            {
+                #if UNITY_EDITOR
+                return SessionState.GetString(CCK_ACCESS_TOKEN, string.Empty);
+                #endif
+                return accessToken;
+            }
+            private set
+            {
+                #if UNITY_EDITOR
+                SessionState.SetString(CCK_ACCESS_TOKEN, value);
+                #endif
+                accessToken = value;
+
+            }
+        }
 
         [RuntimeInitializeOnLoadMethod]
         public static void ResetAssessToken()
         {
-            accessToken = string.Empty;
+            AccessToken = string.Empty;
         }
         public static void SetAccessToken(string token)
         {
-            accessToken = token;
+            AccessToken = token;
         }
 
         private const int FAIL_RETRY_TIMES = 3;
@@ -60,12 +83,12 @@ namespace SkillsVR.EnterpriseCloudSDK.Networking
             request.SetRequestHeader("x-ent-org-code", orgCode);
 
             if (authenticated)
-                request.SetRequestHeader("Authorization", string.Format("Bearer {0}", accessToken));
+                request.SetRequestHeader("Authorization", string.Format("Bearer {0}", AccessToken));
 
             if (data != null)
             {
                 var bytes = Encoding.UTF8.GetBytes(JsonUtility.ToJson(data as object));
-                request.uploadHandler = new UploadHandlerRaw(bytes);
+                request.uploadHandler = (UploadHandler)new UploadHandlerRaw(bytes);
             }
 
 

@@ -17,6 +17,7 @@ namespace SkillsVR.EnterpriseCloudSDK.Data
         public string domain;
 
         public SSOLoginData loginData = new SSOLoginData();
+        public SSORefreshData refreshData = new SSORefreshData();
 
         public string scenarioId;
         public long durationMS;

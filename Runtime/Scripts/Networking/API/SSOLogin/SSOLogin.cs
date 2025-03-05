@@ -69,7 +69,7 @@ namespace SkillsVR.EnterpriseCloudSDK.Networking.API
             #if UNITY_EDITOR
             SessionState.SetString(TOKEN_EXPIRATION_TIME, DateTime.Now.AddSeconds(int.Parse(response.expires_in)).ToString(CultureInfo.InvariantCulture));
             EditorPrefs.SetString(REFRESH_TOKEN_EXPIRATION_TIME, DateTime.Now.AddDays(LENGHT_OF_REFRESH_TOKEN_EXPIRATION_TIME).ToString(CultureInfo.InvariantCulture));
-            EditorPrefs.SetString(REFRESH_TOKEN, response.refresh_token);
+            //EditorPrefs.SetString(REFRESH_TOKEN, response.refresh_token);
             #endif
         }
 
@@ -154,6 +154,7 @@ namespace SkillsVR.EnterpriseCloudSDK.Networking.API
 
         public static bool CurrentRefreshTokenIsValid()
         {
+            return false;
 #if UNITY_EDITOR
 
             bool hasKey = DateTime.TryParse(EditorPrefs.GetString(REFRESH_TOKEN_EXPIRATION_TIME, ""), out DateTime timeSaved);

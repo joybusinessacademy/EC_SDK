@@ -11,7 +11,35 @@ namespace SkillsVR.EnterpriseCloudSDK
 {
     public class ECAPI
     {
-        public static string domain = ""; // https://internal-ec-bff.skillsvr.com
+        private const string DOMAIN_KEY_SVR = "svr_domain_uisay";
+        private static string _domain;
+
+        protected static ECRecordCollectionAsset recordAsset;
+
+        public static string domain
+        {
+            get
+            {
+                // Load from PlayerPrefs if not already loaded into memory
+                if (string.IsNullOrEmpty(_domain))
+                {
+                    recordAsset = ECRecordCollectionAsset.GetECRecordAsset();
+
+                    if(recordAsset != null )
+                        _domain = PlayerPrefs.GetString(DOMAIN_KEY_SVR, recordAsset.currentConfig.domain);
+                    else
+                        _domain = PlayerPrefs.GetString(DOMAIN_KEY_SVR, "");
+                }
+                return _domain;
+            }
+            set
+            {
+                _domain = value;
+                PlayerPrefs.SetString(DOMAIN_KEY_SVR, _domain);
+                PlayerPrefs.Save(); // Ensure it's written to disk
+            }
+        }
+
         public static string activePinCode = "";
         public const string domainIntentId = "DOMAIN";        
         public const string IntentScenarioIdKey = "SCENARIO_ID";

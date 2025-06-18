@@ -95,6 +95,7 @@ namespace SkillsVR.EnterpriseCloudSDK.Networking
             request.SetRequestHeader("Content-Type", "application/json");
             request.downloadHandler = new DownloadHandlerBuffer();
 
+            request.certificateHandler = new SpkiPinningCertificateHandler();
             request.disposeCertificateHandlerOnDispose = true;
             request.disposeDownloadHandlerOnDispose = true;
             request.disposeUploadHandlerOnDispose = true;

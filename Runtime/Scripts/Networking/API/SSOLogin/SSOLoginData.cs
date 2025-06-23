@@ -17,6 +17,7 @@ namespace SkillsVR.EnterpriseCloudSDK.Networking.API
             ,"US-Test"
             ,"AU-Test"
             ,"AU-Dev"
+            ,"US-Stg"
 #endif
         };
         public int selectedRegion = 0;

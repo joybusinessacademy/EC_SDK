@@ -239,6 +239,9 @@ namespace SkillsVR.EnterpriseCloudSDK.Editor
                 case "AU-Dev":
                     targetId = "dev-au";
                     break;
+                case "US-Stg":
+                    targetId = "stg-us";
+                    break;
             }
 
             var config = SkillsVR.EnterpriseCloudSDK.Editor.Networking.ConfigService.Get(targetId);

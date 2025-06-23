@@ -21,7 +21,7 @@ namespace SkillsVR.EnterpriseCloudSDK
             get
             {
                 // Load from PlayerPrefs if not already loaded into memory
-                if (string.IsNullOrEmpty(_domain))
+                if (string.IsNullOrEmpty(_domain) || (_domain != PlayerPrefs.GetString(DOMAIN_KEY_SVR, "")))
                 {
                     recordAsset = ECRecordCollectionAsset.GetECRecordAsset();
 

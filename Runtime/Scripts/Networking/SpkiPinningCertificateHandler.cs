@@ -11,20 +11,20 @@ public class SpkiPinningCertificateHandler : CertificateHandler
 {
     private readonly IReadOnlyList<string> TRUSTED_CERTIFICATES = new List<string>()
         {
-            "8V7EJHIMZAnlDhA/Jlu6MOtFEe6lrHZjw3lLWV5b4SI=", // api-anz-dev.skillsvr.com
-            "H3fOLhh9YUTrZAa9NCdzLhc7a3cN1GEPTYdIVq2uK1U=", // cdn-dev.skillsvr.com
-            "FgUxlJIJ9nTVizAzfo/z9IeZdgPxvm8dybyGaR90BLk=", // api-anz-test.skillsvr.com
-            "SDVKAL1e/zQxBR65Nhz1WYi36ocsjmRx0ODLPQ507ks=", // cdn-test.skillsvr.com
-            "NDN17RR65/SYNE0xF1WNirNg9/VUgPTYQZ29PzUV3U0=", // api-us-stg.skillsvr.com
-            "ebqeRWOm3FrP/4sHnUJKaY5pDPqqKDGLlD+5IkgTiMc=", // cdn-stg.skillsvr.com
-            "HPZVtCDvPDrkcz4+FvjEv9Nx3E7LBOrzPlXNiJ4Dnt8=", // api-anz.skillsvr.com
-            "ELypq8xRNetvJtFhNSXi4D7xVTPHY1jACVV7lkzmZ0w=", // api-us.skillsvr.com
-            "fe+gBi6XCE/LfVelTQirCRBE4/l1TvEDI6gDSMpqWcI=", // cdn.skillsvr.com
+            "N3Yf3nUeQjP59CsBqAgnM8tzD7jssuTmZv5RyJlVJy4=", // api-anz-dev.skillsvr.com
+            "N3Yf3nUeQjP59CsBqAgnM8tzD7jssuTmZv5RyJlVJy4=", // cdn-dev.skillsvr.com
+            "pt0boNroUbh6ZMPw19Eo43QyKWBSF546X5VW8OgGC/w=", // api-anz-test.skillsvr.com
+            "pt0boNroUbh6ZMPw19Eo43QyKWBSF546X5VW8OgGC/w=", // cdn-test.skillsvr.com
+            "AkomCTcg9e8aBqcrUxbpRmwHtZR+CFNC+VM8UEfqGWs=", // api-us-stg.skillsvr.com
+            "AkomCTcg9e8aBqcrUxbpRmwHtZR+CFNC+VM8UEfqGWs=", // cdn-stg.skillsvr.com
+            "uGOlW6DZ0hejPXXdsGQTSYP71EgFS5wpNygAutUbARM=", // api-anz.skillsvr.com
+            "uGOlW6DZ0hejPXXdsGQTSYP71EgFS5wpNygAutUbARM=", // api-us.skillsvr.com
+            "uGOlW6DZ0hejPXXdsGQTSYP71EgFS5wpNygAutUbARM=", // cdn.skillsvr.com
 
-            "q9qG38hki2DExniBcrlowEs8virMP2Fu/zhjiKUoqLA=", // login.skvrentdevau.skillsvr.com
-            "/toC8a6Grx9nHbgqlVN2RcHF0yVar4fMaVNgTpRQ6a8=", // login.skvrenttestau.skillsvr.com
-            "Dx0YvS9SOno4Yyfp2XW6iT1CjDBME/yiXwtDxNDAu8o=", // login.skvrentstgus.skillsvr.com
-            "Uia3B59AJecB4y8wpRkfH+vjAQR5ofnY2O9uWvzLJp8=", // login.skvrentprodus.skillsvr.com AND login.skvrentprodau.skillsvr.com
+            "N3Yf3nUeQjP59CsBqAgnM8tzD7jssuTmZv5RyJlVJy4=", // login.skvrentdevau.skillsvr.com
+            "pt0boNroUbh6ZMPw19Eo43QyKWBSF546X5VW8OgGC/w=", // login.skvrenttestau.skillsvr.com
+            "AkomCTcg9e8aBqcrUxbpRmwHtZR+CFNC+VM8UEfqGWs=", // login.skvrentstgus.skillsvr.com
+            "uGOlW6DZ0hejPXXdsGQTSYP71EgFS5wpNygAutUbARM=", // login.skvrentprodus.skillsvr.com AND login.skvrentprodau.skillsvr.com
         };
 
     protected override bool ValidateCertificate(byte[] certificateData)

@@ -160,6 +160,26 @@ namespace SkillsVR.EnterpriseCloudSDK.Networking
             {
                 success = false;
                 errorMsg = request.error;
+
+                // Try to extract "message" field from the response body if present
+                if (!string.IsNullOrEmpty(request.downloadHandler?.text))
+                {
+                    try
+                    {
+                        var json = JsonUtility.FromJson<RESPONSE>(request.downloadHandler.text);
+                        var messageField = typeof(RESPONSE).GetField("message");
+                        if (messageField != null)
+                        {
+                            var messageValue = messageField.GetValue(json) as string;
+                            if (!string.IsNullOrEmpty(messageValue))
+                            {
+                                errorMsg = messageValue;
+                            }
+                        }
+                    }
+                    catch { }
+                }    
+
             }
             else
             {

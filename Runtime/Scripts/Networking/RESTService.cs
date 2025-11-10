@@ -43,6 +43,10 @@ namespace SkillsVR.EnterpriseCloudSDK.Networking
         [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.AfterSceneLoad)]
         private static void InitRuntimeRestService()
         {
+#if UNITY_WEBGL
+            return;
+#endif
+
             if (null != globalRestServiceProvider && typeof(RESTService) == globalRestServiceProvider.GetType())
             {
                 return;

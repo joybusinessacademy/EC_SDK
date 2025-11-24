@@ -15,6 +15,15 @@ namespace SkillsVR.EnterpriseCloudSDK
         private static string _domain;
 
         protected static ECRecordCollectionAsset recordAsset;
+        private static DateTime AppStartTime;
+
+        [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.BeforeSceneLoad)]
+        private static void Init()
+        {
+            AppStartTime = DateTime.Now;
+
+            Debug.Log("STARTED TIME: " + AppStartTime);
+        }
 
         public static string domain
         {
@@ -315,11 +324,17 @@ namespace SkillsVR.EnterpriseCloudSDK
                 return;
             }*/
 
-            var startTimeStamp = new DateTime(long.Parse(PlayerPrefs.GetString("StartTimeStamp","0")));
+
+            //var startTimeStamp = new DateTime(long.Parse(PlayerPrefs.GetString("StartTimeStamp","0")));
             var currentTimeStamp = DateTime.Now;
 
-            var dt = new DateTime((currentTimeStamp - startTimeStamp).Ticks);
+            var dt = new DateTime((currentTimeStamp - AppStartTime).Ticks);
+
             var durationWebUTC = dt.ToString("yyyy'-'MM'-'dd'T'HH':'mm':'ss'.'fff'Z'").Split('.')[0];
+
+            Debug.Log("CURRENT TIME: " + currentTimeStamp);
+            Debug.Log("durationWebUTC: " + durationWebUTC);
+
             SubmitLearningRecord submitLearningRecordRequest = new SubmitLearningRecord()
             {
                 data = new SubmitLearningRecord.Data
